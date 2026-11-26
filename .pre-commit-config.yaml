@@ -1,0 +1,50 @@
+# Canonical formatting, linting, and mandatory unit-test checks.
+# Keep the Ruff version aligned with CI and pyproject.toml.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        name: "Remove trailing whitespace"
+      - id: end-of-file-fixer
+        name: "Fix file endings"
+      - id: check-yaml
+        name: "Validate YAML syntax"
+      - id: check-added-large-files
+        name: "Check for large files"
+        args: [--maxkb=500]
+        # Saved viewer snapshots embed their image data on purpose.
+        exclude: ^docs/source/_static/snapshots/.*\.html$
+      - id: check-merge-conflict
+        name: "Check for merge conflicts"
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.37.1
+    hooks:
+      - id: yamllint
+        name: "Lint YAML files"
+        args: [-d, relaxed]
+        files: \.(yaml|yml)$
+
+  - repo: local
+    hooks:
+      - id: forbid-internal-and-vendor-files
+        name: "Block internal plans and vendor manuals"
+        entry: >-
+          internal/ and vendor manuals (for example ParaVision PDFs) must never
+          be committed
+        language: fail
+        files: (?i)(^internal/|paravision.*\.pdf$|^docs/[^/]+\.pdf$)
+      - id: unit-tests
+        name: "Require passing unit tests"
+        entry: bash scripts/hooks/run_tests.sh
+        language: system
+        pass_filenames: false
+        always_run: true
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.1
+    hooks:
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format

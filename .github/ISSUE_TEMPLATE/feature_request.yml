@@ -1,0 +1,37 @@
+name: Feature request
+description: Propose an improvement or new research workflow.
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Explain the user workflow and its maturity expectations. Registry
+        presence does not automatically make a feature part of the stable API.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: Describe the research need without confidential study details.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behaviour
+      description: Include the intended public API, data model, or workflow boundary.
+    validations:
+      required: true
+  - type: textarea
+    id: validation
+    attributes:
+      label: Scientific validation
+      description: List relevant references, expected results, and possible test data.
+  - type: checkboxes
+    id: data_safety
+    attributes:
+      label: Data-safety confirmation
+      options:
+        - label: I have not included patient data, identifying metadata, credentials, or confidential research data.
+          required: true

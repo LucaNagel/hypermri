@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FID Fit Monitor</title>
+<style>
+:root{
+  --bg:#f3f5f7; --panel:#fff; --ink:#16202b; --muted:#5a6675; --faint:#8b96a3; --rule:#d8dee6; --soft:#e9eef3;
+  --fit:#0d7a86; --phase:#c96a12; --t2:#6a43b8; --bad:#c23a3a; --ok:#2f8f4e; --win:rgba(13,122,134,.10);
+  --m0:#2f63d0; --m1:#c9416f; --m2:#2c8f57; --m3:#a77a06; --m4:#8a4fa8; --m5:#2f8fb5; --m6:#6f7d12; --m7:#b5523b;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1419; --panel:#161d24; --ink:#e3e9ef; --muted:#9aa6b3; --faint:#6b7784; --rule:#2a3540; --soft:#1d2630;
+  --fit:#3cc0cc; --phase:#f0a04b; --t2:#a98af0; --bad:#ef6b6b; --ok:#5cc47e; --win:rgba(60,192,204,.12);
+  --m0:#6f9bff; --m1:#f07aa3; --m2:#5fcf8c; --m3:#e0b23d; --m4:#d08ae6; --m5:#6cc3ea; --m6:#c3d35a; --m7:#f08a72; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1419; --panel:#161d24; --ink:#e3e9ef; --muted:#9aa6b3; --faint:#6b7784; --rule:#2a3540; --soft:#1d2630;
+  --fit:#3cc0cc; --phase:#f0a04b; --t2:#a98af0; --bad:#ef6b6b; --ok:#5cc47e; --win:rgba(60,192,204,.12);
+  --m0:#6f9bff; --m1:#f07aa3; --m2:#5fcf8c; --m3:#e0b23d; --m4:#d08ae6; --m5:#6cc3ea; --m6:#c3d35a; --m7:#f08a72; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:13.5px;line-height:1.4;margin:0}
+.wrap{max-width:1400px;margin:0 auto;padding:12px 16px 32px;display:flex;flex-direction:column;gap:10px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 18px}
+h1{font-size:17px;margin:0;font-weight:600}
+h3{font-size:13px;margin:0;font-weight:600}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:10px 12px;min-width:0}
+.status{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.status.err{color:var(--bad)} .status.busy{color:var(--phase)}
+.kpis{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:12.5px;color:var(--muted)}
+.kpis b{color:var(--ink);font-family:var(--mono);font-weight:500}
+.kpis b.bad{color:var(--bad)} .kpis b.ok{color:var(--ok)}
+.stepbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.stepbar input[type=range]{flex:1 1 240px;accent-color:var(--fit)}
+.stepinfo{font-family:var(--mono);font-size:12px;color:var(--muted);flex-basis:100%}
+.stepinfo b{color:var(--ink);font-weight:500}
+button{font:inherit;font-size:12px;border:1px solid var(--rule);background:var(--panel);color:var(--ink);border-radius:5px;padding:3px 8px;cursor:pointer}
+button:hover{border-color:var(--fit)} button:disabled{opacity:.4;cursor:default}
+button.on{background:var(--fit);color:var(--panel);border-color:var(--fit)}
+.seg{display:inline-flex;gap:0}
+.seg button{border-radius:0;margin-left:-1px} .seg button:first-child{border-radius:5px 0 0 5px;margin-left:0} .seg button:last-child{border-radius:0 5px 5px 0}
+.grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:1000px){.grid,.grid3{grid-template-columns:minmax(0,1fr)}}
+.chead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.readout{font-family:var(--mono);font-size:11px;color:var(--muted)}
+svg.plot{width:100%;height:auto;display:block;overflow:visible}
+svg text{font-family:var(--mono);font-size:10px;fill:var(--muted)}
+svg .axis{stroke:var(--rule);stroke-width:1} svg .gl{stroke:var(--soft);stroke-width:1}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--muted)}
+.sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.tbl-wrap{overflow-x:auto}
+table.res{border-collapse:collapse;width:100%;font-size:12px;font-variant-numeric:tabular-nums}
+table.res th,table.res td{padding:3px 7px;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap}
+table.res th:first-child,table.res td:first-child{text-align:left}
+table.res th{font-weight:500;color:var(--muted)}
+tr.off td{opacity:.5}
+.flag{font-family:var(--mono);font-size:10px;padding:0 4px;border-radius:3px;margin-left:3px;background:var(--bad);color:var(--panel)}
+.flag.t2{background:var(--t2)} .flag.ph{background:var(--phase)} .flag.mute{background:var(--faint)}
+.empty{color:var(--muted);font-size:12.5px;padding:30px 0;text-align:center}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>FID Fit Monitor</h1>
+    <span id="where" class="status"></span>
+    <span id="status" class="status">connecting…</span>
+  </header>
+  <div class="panel" id="kpiPanel"><div class="kpis" id="kpis"></div></div>
+  <div class="panel">
+    <div class="stepbar">
+      <button id="first" title="First step (Home)">⏮</button>
+      <button id="prev" title="Previous step (←)">◀</button>
+      <button id="play" title="Play / pause (space)">▶</button>
+      <button id="next" title="Next step (→)">▶▶</button>
+      <button id="last" title="Last step (End)">⏭</button>
+      <input id="step" type="range" min="0" max="0" value="0" aria-label="Optimization step">
+      <span class="seg" title="Steps shown">
+        <button id="fltAll" class="on">all</button><button id="fltMoves">moves</button>
+      </span>
+      <div class="stepinfo" id="stepinfo"></div>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="panel">
+      <div class="chead">
+        <h3 id="sigTitle">Spectrum</h3>
+        <span style="display:flex;gap:6px;flex-wrap:wrap">
+          <span class="seg"><button id="vSpec" class="on">spectrum</button><button id="vFid">FID</button></span>
+          <span class="seg"><button id="pRe" class="on">real</button><button id="pIm">imag</button><button id="pAbs">abs</button></span>
+          <span class="seg"><button id="aHz" class="on">Hz</button><button id="aPpm">ppm</button></span>
+          <span class="seg"><button id="zFull" class="on">full</button><button id="zWin">windows</button></span>
+        </span>
+      </div>
+      <svg class="plot" id="sig" viewBox="0 0 760 300"></svg>
+      <div class="legend" id="sigLegend"></div>
+    </div>
+    <div class="panel">
+      <div class="chead"><h3 id="gridTitle">Grid search</h3><span class="readout" id="gridInfo"></span></div>
+      <svg class="plot" id="gridSvg" viewBox="0 0 440 300"></svg>
+    </div>
+  </div>
+  <div class="grid3">
+    <div class="panel">
+      <div class="chead"><h3>Frequency and T2* in their bounds</h3></div>
+      <svg class="plot" id="bounds" viewBox="0 0 440 200"></svg>
+    </div>
+    <div class="panel">
+      <div class="chead"><h3>Complex amplitudes</h3><span class="readout" id="polarInfo"></span></div>
+      <svg class="plot" id="polar" viewBox="0 0 440 260"></svg>
+    </div>
+    <div class="panel">
+      <div class="chead"><h3>Phase law deviation</h3><span class="readout" id="phaseInfo"></span></div>
+      <svg class="plot" id="phase" viewBox="0 0 440 200"></svg>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="panel">
+      <div class="chead"><h3>Lines at this step</h3><span class="readout" id="tblInfo"></span></div>
+      <div class="tbl-wrap"><table class="res" id="tbl"></table></div>
+    </div>
+    <div class="panel">
+      <div class="chead"><h3>Objective per step</h3><span class="readout" id="objInfo"></span></div>
+      <svg class="plot" id="obj" viewBox="0 0 440 180"></svg>
+    </div>
+  </div>
+</div>
+<script>
+"use strict";
+const POLL_MS = 700;
+const S = {version: -1, trace: null, step: 0, steps: [], playing: null,
+  view: "spec", part: "re", axis: "hz", zoom: "full", filter: "all"};
+const $ = id => document.getElementById(id);
+const NS = "http://www.w3.org/2000/svg";
+const color = i => `var(--m${i % 8})`;
+const fmt = (v, d = 3) => (v === null || v === undefined || !isFinite(v)) ? "–" : Number(v).toPrecision(d);
+const fix = (v, d = 1) => (v === null || v === undefined || !isFinite(v)) ? "–" : Number(v).toFixed(d);
+const wrapRad = a => Math.atan2(Math.sin(a), Math.cos(a));
+const deg = r => r * 180 / Math.PI;
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+
+/* ---------- transport: arrays arrive as base64 little-endian float32 / uint8 ---------- */
+function b64bytes(s) { const b = atob(s), u = new Uint8Array(b.length); for (let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
+function decodeArray(o) {
+  const bytes = b64bytes(o.b64), shape = o.shape;
+  let flat;
+  if (o.dtype === "bool") flat = Array.from(bytes, v => v !== 0);
+  else flat = new Float32Array(bytes.buffer, bytes.byteOffset, bytes.byteLength / 4);
+  const complex = o.dtype === "complex";
+  const rowLen = shape.length === 2 ? shape[1] : (shape[0] || 0);
+  const row = r => {
+    const off = r * rowLen;
+    if (!complex) return o.dtype === "bool" ? flat.slice(off, off + rowLen) : flat.subarray(off, off + rowLen);
+    const re = new Float32Array(rowLen), im = new Float32Array(rowLen);
+    for (let i = 0; i < rowLen; i++) { re[i] = flat[2 * (off + i)]; im[i] = flat[2 * (off + i) + 1]; }
+    return {re, im};
+  };
+  if (shape.length === 2) return Array.from({length: shape[0]}, (_, r) => row(r));
+  return row(0);
+}
+function revive(key, v) {
+  if (v && typeof v === "object" && "__array__" in v) return decodeArray(v);
+  if (v && typeof v === "object" && "__float__" in v) return Number(v.__float__);
+  return v;
+}
+
+/* ---------- polling ---------- */
+async function poll() {
+  try {
+    const r = await fetch("version", {cache: "no-store"});
+    const v = await r.json();
+    setStatus(v.message, v.kind);
+    if (v.trace_version !== S.version) await load();
+  } catch (e) { setStatus("monitor stopped – restart it from the notebook", "err"); }
+  setTimeout(poll, POLL_MS);
+}
+async function load() {
+  const r = await fetch("state", {cache: "no-store"});
+  const st = JSON.parse(await r.text(), revive);
+  S.version = st.trace_version;
+  if (st.trace) {
+    const keepEnd = !S.trace || S.step >= S.steps.length - 1;
+    S.trace = st.trace;
+    buildSteps();
+    S.step = keepEnd ? S.steps.length - 1 : Math.min(S.step, S.steps.length - 1);
+    render();
+  }
+  if (!st.trace) renderEmpty();
+}
+function setStatus(msg, kind) {
+  const el = $("status");
+  el.textContent = msg || "";
+  el.className = "status" + (kind ? " " + kind : "");
+}
+
+/* ---------- helpers ---------- */
+function el(tag, attrs, parent, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text !== undefined) e.textContent = text;
+  if (parent) parent.appendChild(e);
+  return e;
+}
+function title(e, text) { el("title", {}, e, text); return e; }
+function scale(d0, d1, r0, r1) { const k = (d1 === d0) ? 0 : (r1 - r0) / (d1 - d0); return v => r0 + (v - d0) * k; }
+function ticks(a, b, n = 5) {
+  const lo = Math.min(a, b), hi = Math.max(a, b), span = hi - lo || 1;
+  const step0 = Math.pow(10, Math.floor(Math.log10(span / n)));
+  const step = [1, 2, 5, 10].map(m => m * step0).find(s => span / s <= n) || step0 * 10;
+  const out = []; for (let v = Math.ceil(lo / step) * step; v <= hi + step * 1e-9; v += step) out.push(+v.toPrecision(12));
+  return out;
+}
+function extent(arrs) {
+  let lo = Infinity, hi = -Infinity;
+  for (const a of arrs) for (const v of a) if (isFinite(v)) { if (v < lo) lo = v; if (v > hi) hi = v; }
+  if (!isFinite(lo)) { lo = 0; hi = 1; }
+  if (lo === hi) { lo -= 0.5; hi += 0.5; }
+  return [lo, hi];
+}
+function axes(svg, box, xs, ys, xlab, ylab, xfmt = v => v, yfmt = v => fmt(v, 2)) {
+  const [x0, y0, x1, y1] = box;
+  for (const t of ys.ticks) { const y = ys.f(t); if (y < y0 - .5 || y > y1 + .5) continue; el("line", {x1: x0, x2: x1, y1: y, y2: y, class: "gl"}, svg); el("text", {x: x0 - 4, y: y + 3, "text-anchor": "end"}, svg, yfmt(t)); }
+  for (const t of xs.ticks) { const x = xs.f(t); if (x < Math.min(x0, x1) - .5 || x > Math.max(x0, x1) + .5) continue; el("line", {x1: x, x2: x, y1: y1, y2: y1 + 3, class: "axis"}, svg); el("text", {x, y: y1 + 14, "text-anchor": "middle"}, svg, xfmt(t)); }
+  el("line", {x1: x0, x2: x1, y1: y1, y2: y1, class: "axis"}, svg);
+  el("line", {x1: x0, x2: x0, y1: y0, y2: y1, class: "axis"}, svg);
+  if (xlab) el("text", {x: x1, y: y1 + 27, "text-anchor": "end"}, svg, xlab);
+  if (ylab) el("text", {x: x0, y: y0 - 6}, svg, ylab);
+}
+function polyline(svg, xs, ys, attrs) {
+  let d = "", pen = false;
+  for (let i = 0; i < xs.length; i++) {
+    if (!isFinite(xs[i]) || !isFinite(ys[i])) { pen = false; continue; }
+    d += (pen ? "L" : "M") + xs[i].toFixed(1) + "," + ys[i].toFixed(1); pen = true;
+  }
+  return el("path", Object.assign({d, fill: "none"}, attrs), svg);
+}
+function part(c, which) {
+  const n = c.re.length, out = new Float64Array(n);
+  for (let i = 0; i < n; i++) out[i] = which === "re" ? c.re[i] : which === "im" ? c.im[i] : Math.hypot(c.re[i], c.im[i]);
+  return out;
+}
+function toPpm(hz) { const c = S.trace.ppm_conversion; return c.slope * hz + c.offset; }
+
+/* ---------- steps ---------- */
+function buildSteps() {
+  const T = S.trace;
+  S.steps = T.entries.map((e, i) => i).filter(i => S.filter === "all" || i === 0 || i === T.entries.length - 1
+    || T.entries[i].kind !== "grid" || T.entries[i].accepted);
+  const sl = $("step"); sl.max = Math.max(0, S.steps.length - 1);
+  $("aPpm").disabled = !T.ppm_conversion;
+  if (!T.ppm_conversion && S.axis === "ppm") S.axis = "hz";
+}
+function entryIndex() { return S.steps[Math.max(0, Math.min(S.step, S.steps.length - 1))] || 0; }
+function gridFor(ei) {
+  const E = S.trace.entries;
+  for (let i = ei; i >= 0; i--) if (E[i].grid >= 0) return E[i].grid;
+  return -1;
+}
+function activeLines(e) { return S.trace.lines.map((l, i) => i).filter(i => e.active[i] && !S.trace.lines[i].skipped); }
+
+/* ---------- render ---------- */
+function renderEmpty() {
+  if (S.trace) return;
+  for (const id of ["sig", "gridSvg", "bounds", "polar", "phase", "obj"]) $(id).innerHTML = "";
+  $("kpis").innerHTML = '<span class="empty">No trace yet. Turn on the Fit Monitor in the interactive fit widget and select a voxel.</span>';
+}
+function render() {
+  const T = S.trace; if (!T) return renderEmpty();
+  const ei = entryIndex(), e = T.entries[ei];
+  $("step").value = S.step;
+  $("where").textContent = Object.entries(T.selection).map(([k, v]) => `${k}=${v}`).join(" · ") || "single spectrum";
+  renderKpis(T);
+  renderStepInfo(T, e, ei);
+  renderSignal(T, e, ei);
+  renderGrid(T, ei);
+  renderBounds(T, e, ei);
+  renderPolar(T, e);
+  renderPhase(T, e);
+  renderTable(T, e);
+  renderObjective(T, ei);
+}
+function renderKpis(T) {
+  const r = T.result, c = T.stored_comparison;
+  const ok = r.status === "success";
+  let cmp = "";
+  if (c) cmp = c.matches ? '<span>stored result <b class="ok">matches</b></span>'
+    : `<span>stored result <b class="bad">differs</b> Δf ${fmt(c.frequency_difference_hz, 2)} Hz · ΔT2* ${fmt(100 * c.t2_relative_difference, 2)} % · Δ|a| ${fmt(100 * c.amplitude_relative_difference, 2)} %</span>`;
+  const o = T.options;
+  $("kpis").innerHTML = `<span>status <b class="${ok ? "ok" : "bad"}">${esc(r.status)}</b>${r.failure_reason && r.failure_reason !== "none" ? " (" + esc(r.failure_reason) + ")" : ""}</span>
+    <span>RSS <b>${fmt(r.rss, 4)}</b></span><span>${esc(T.objective_name || "objective")} <b>${fmt(r.objective, 4)}</b></span>
+    <span>steps <b>${T.entries.length}</b> · grids <b>${T.grids.length}</b></span>
+    <span>reps×iter <b>${o.n_repetitions}×${o.n_iterations}</b> · points <b>${o.n_points}</b> · zoom <b>${o.zoom_factor}</b></span>
+    <span>order <b>${esc(o.search_order)}</b> · joint <b>${o.joint_refinement ? "on" : "off"}</b>${o.min_peak_separation_hz ? ` · min sep <b>${fmt(o.min_peak_separation_hz, 3)} Hz</b>` : ""}</span>${cmp}`;
+}
+function renderStepInfo(T, e, ei) {
+  const name = e.line >= 0 ? T.lines[e.line].name : "";
+  let what = e.kind;
+  if (e.kind === "grid") { const g = T.grids[e.grid]; what = `${g.parameter} grid · <b>${esc(name)}</b> · ${g.accepted_index >= 0 ? '<b style="color:var(--ok)">moved</b>' : "stayed"}`; }
+  $("stepinfo").innerHTML = `step <b>${S.step + 1}</b>/${S.steps.length} (row ${e.history_row}) · <b>${what}</b> · round ${e.fit_round} · rep ${e.repetition} · iter ${e.iteration} · objective <b>${fmt(e.objective, 5)}</b>`;
+}
+
+function renderSignal(T, e, ei) {
+  const svg = $("sig"); svg.innerHTML = "";
+  const spec = S.view === "spec";
+  $("sigTitle").textContent = spec ? "Spectrum: measured and model" : "FID: measured and model";
+  const box = [58, 18, 748, 266];
+  let x = spec ? Array.from(T.frequency_hz) : Array.from(T.time_s, t => t * 1e3);
+  const ppm = spec && S.axis === "ppm" && T.ppm_conversion;
+  if (ppm) x = x.map(toPpm);
+  const meas = part(spec ? T.measured.spectrum : T.measured.fid, S.part);
+  const modelC = spec ? T.model_spectrum[ei] : T.model_fid[ei];
+  const model = part(modelC, S.part);
+  const resid = new Float64Array(meas.length);
+  const measC = spec ? T.measured.spectrum : T.measured.fid;
+  for (let i = 0; i < resid.length; i++) {
+    const dr = measC.re[i] - modelC.re[i], di = measC.im[i] - modelC.im[i];
+    resid[i] = S.part === "re" ? dr : S.part === "im" ? di : Math.hypot(dr, di);
+  }
+  let [xa, xb] = extent([x]);
+  const act = activeLines(e);
+  if (spec && S.zoom === "win" && act.length) {
+    let lo = Infinity, hi = -Infinity;
+    for (const i of act) { lo = Math.min(lo, T.lines[i].frequency_lower_hz); hi = Math.max(hi, T.lines[i].frequency_upper_hz); }
+    const pad = 0.25 * (hi - lo || 50); lo -= pad; hi += pad;
+    if (ppm) [lo, hi] = [toPpm(lo), toPpm(hi)].sort((a, b) => a - b);
+    xa = Math.max(xa, lo); xb = Math.min(xb, hi);
+  }
+  const vis = x.map(v => v >= xa && v <= xb);
+  const [ya, yb] = extent([meas.filter((_, i) => vis[i]), model.filter((_, i) => vis[i]), resid.filter((_, i) => vis[i])]);
+  const pad = 0.06 * (yb - ya);
+  const fx = ppm ? scale(xb, xa, box[0], box[2]) : scale(xa, xb, box[0], box[2]);
+  const fy = scale(ya - pad, yb + pad, box[3], box[1]);
+  const clip = el("clipPath", {id: "sigClip"}, el("defs", {}, svg));
+  el("rect", {x: box[0], y: box[1], width: box[2] - box[0], height: box[3] - box[1]}, clip);
+  axes(svg, box, {f: fx, ticks: ticks(xa, xb, 8)}, {f: fy, ticks: ticks(ya - pad, yb + pad, 5)},
+    spec ? (ppm ? "ppm" : "Hz") : "ms", T.amplitude_unit);
+  const g = el("g", {"clip-path": "url(#sigClip)"}, svg);
+  if (spec) {
+    for (let i = 0; i < T.lines.length; i++) {
+      const L = T.lines[i]; if (L.skipped) continue;
+      let lo = L.frequency_lower_hz, hi = L.frequency_upper_hz, f = e.frequency_hz[i];
+      if (ppm) { lo = toPpm(lo); hi = toPpm(hi); f = toPpm(f); }
+      const a = fx(lo), b = fx(hi);
+      title(el("rect", {x: Math.min(a, b), y: box[1], width: Math.abs(b - a), height: box[3] - box[1], fill: color(i), opacity: .08}, g),
+        `${L.name}: frequency bounds ${fix(L.frequency_lower_hz)} … ${fix(L.frequency_upper_hz)} Hz`);
+      if (e.active[i]) {
+        el("line", {x1: fx(f), x2: fx(f), y1: box[1], y2: box[3], stroke: color(i), "stroke-width": 1.2, "stroke-dasharray": "3 3"}, g);
+        el("text", {x: fx(f) + 3, y: box[1] + 10, style: `fill:${color(i)}`}, g, L.name);
+      }
+    }
+  }
+  polyline(g, x.map(fx), Array.from(resid, fy), {stroke: "var(--faint)", "stroke-width": .8, opacity: .8});
+  polyline(g, x.map(fx), Array.from(meas, fy), {stroke: "var(--ink)", "stroke-width": 1, opacity: .7});
+  polyline(g, x.map(fx), Array.from(model, fy), {stroke: "var(--fit)", "stroke-width": 1.8});
+  $("sigLegend").innerHTML = `<span><span class="sw" style="background:var(--ink);opacity:.7"></span>measured</span>
+    <span><span class="sw" style="background:var(--fit)"></span>model at this step</span>
+    <span><span class="sw" style="background:var(--faint)"></span>residual</span>
+    ${spec ? "<span>shaded: frequency bounds · dashed: current frequency</span>" : ""}`;
+}
+
+function renderGrid(T, ei) {
+  const svg = $("gridSvg"); svg.innerHTML = "";
+  const gi = gridFor(ei);
+  if (gi < 0) { $("gridTitle").textContent = "Grid search"; $("gridInfo").textContent = "no grid before this step";
+    el("text", {x: 220, y: 150, "text-anchor": "middle"}, svg, "start values – no grid searched yet"); return; }
+  const G = T.grids[gi], L = T.lines[G.line], isF = G.parameter === "frequency";
+  const cur = T.entries[ei].grid === gi;
+  $("gridTitle").textContent = `${isF ? "Frequency" : "T2*"} grid · ${L.name}`;
+  const moved = G.accepted_index >= 0 ? `moved ${fmt(conv(G.values[G.accepted_index]) - conv(G.values[G.center_index]), 3)} ${isF ? "Hz" : "ms"}` : "stayed at centre";
+  $("gridInfo").textContent = `round ${G.fit_round} · rep ${G.repetition} · iter ${G.iteration} · ${moved}${cur ? "" : " · last grid"}`;
+  const conv = v => isF ? v : v * 1e3;
+  const vals = Array.from(G.values, conv);
+  const lo = conv(isF ? L.frequency_lower_hz : L.t2_min_s), hi = conv(isF ? L.frequency_upper_hz : L.t2_max_s);
+  const box = [58, 18, 430, 254];
+  const [xa, xb] = extent([vals, [lo, hi]]);
+  const xp = 0.04 * (xb - xa);
+  const fx = scale(xa - xp, xb + xp, box[0], box[2]);
+  const okObj = Array.from(G.objective).filter((v, i) => G.evaluated[i] && isFinite(v));
+  let [ya, yb] = extent([okObj]); const yp = 0.1 * (yb - ya); ya -= yp; yb += yp;
+  const fy = scale(ya, yb, box[3], box[1] + 14);
+  axes(svg, box, {f: fx, ticks: ticks(xa - xp, xb + xp, 6)}, {f: fy, ticks: ticks(ya, yb, 5)}, isF ? "Hz" : "ms", "objective");
+  el("rect", {x: fx(Math.min(...vals)), y: box[1], width: fx(Math.max(...vals)) - fx(Math.min(...vals)), height: box[3] - box[1], fill: "var(--win)"}, svg);
+  el("rect", {x: box[0], y: box[1], width: Math.max(0, fx(lo) - box[0]), height: box[3] - box[1], fill: "var(--soft)"}, svg);
+  el("rect", {x: fx(hi), y: box[1], width: Math.max(0, box[2] - fx(hi)), height: box[3] - box[1], fill: "var(--soft)"}, svg);
+  for (const b of [lo, hi]) el("line", {x1: fx(b), x2: fx(b), y1: box[1], y2: box[3], stroke: "var(--bad)", "stroke-dasharray": "4 3"}, svg);
+  const order = vals.map((v, i) => i).filter(i => G.evaluated[i]).sort((a, b) => vals[a] - vals[b]);
+  polyline(svg, order.map(i => fx(vals[i])), order.map(i => fy(G.objective[i])), {stroke: "var(--faint)", "stroke-width": 1});
+  vals.forEach((v, i) => {
+    if (!G.evaluated[i]) {
+      const t = el("text", {x: fx(v), y: box[1] + 10, "text-anchor": "middle", style: "fill:var(--bad);font-size:12px"}, svg, "×");
+      title(t, `${fmt(v, 5)}: rejected (${G.rejection_reason[i]})`); return;
+    }
+    const acc = i === G.accepted_index, cen = i === G.center_index;
+    const c = el("circle", {cx: fx(v), cy: fy(G.objective[i]), r: acc ? 5 : 3.2,
+      fill: acc ? "var(--ok)" : cen && G.accepted_index < 0 ? "var(--fit)" : "var(--panel)",
+      stroke: acc ? "var(--ok)" : "var(--fit)", "stroke-width": 1.4}, svg);
+    title(c, `${fmt(v, 5)} ${isF ? "Hz" : "ms"}: objective ${fmt(G.objective[i], 6)}${acc ? " · accepted" : ""}${cen ? " · centre (previous value)" : ""}`);
+  });
+  const cx = fx(vals[G.center_index] ?? NaN);
+  if (isFinite(cx)) el("line", {x1: cx, x2: cx, y1: box[3], y2: box[3] - 8, stroke: "var(--ink)", "stroke-width": 2}, svg);
+}
+
+function renderBounds(T, e, ei) {
+  const svg = $("bounds"); svg.innerHTML = "";
+  const rows = T.lines.map((L, i) => i);
+  const h = 24 + rows.length * 36; svg.setAttribute("viewBox", `0 0 440 ${h}`);
+  const gi = gridFor(ei), G = gi >= 0 ? T.grids[gi] : null;
+  el("text", {x: 150, y: 12, "text-anchor": "middle"}, svg, "frequency (Hz)");
+  el("text", {x: 345, y: 12, "text-anchor": "middle"}, svg, "T2* (ms)");
+  rows.forEach((i, r) => {
+    const L = T.lines[i], y = 30 + r * 36;
+    el("text", {x: 0, y: y + 4, style: `fill:${color(i)};font-weight:600`}, svg, L.name.length > 9 ? L.name.slice(0, 8) + "…" : L.name);
+    if (L.skipped) { el("text", {x: 70, y: y + 4}, svg, "skipped – fixed at start values"); return; }
+    bar(svg, 70, 230, y, L.frequency_lower_hz, L.frequency_upper_hz, L.initial_frequency_hz, e.frequency_hz[i], color(i),
+      G && G.line === i && G.parameter === "frequency" ? G.values : null, v => fix(v, 1), L.frequency_range_hz > 0);
+    bar(svg, 265, 425, y, L.t2_min_s * 1e3, L.t2_max_s * 1e3, L.initial_t2_s * 1e3, e.t2_s[i] * 1e3, "var(--t2)",
+      G && G.line === i && G.parameter === "t2" ? Array.from(G.values, v => v * 1e3) : null, v => fix(v, 1), L.t2_range_s > 0);
+    if (L.t2_coupling) {
+      const k = T.metabolites.indexOf(L.t2_coupling.leader), ratio = k >= 0 ? e.t2_s[i] / e.t2_s[k] : NaN;
+      const want = L.t2_coupling.ratio, txt = Array.isArray(want) ? `${want[0]}–${want[1]}` : `${want}`;
+      el("text", {x: 265, y: y + 19, style: "font-size:9px"}, svg, `T2*/T2*(${L.t2_coupling.leader}) = ${fmt(ratio, 3)} (allowed ${txt})`);
+    }
+  });
+}
+function bar(svg, x0, x1, y, lo, hi, init, val, col, window, f, free) {
+  const span = hi - lo, pad = 0.08 * (isFinite(span) && span > 0 ? span : 1);
+  const fx = scale(lo - pad, hi + pad, x0, x1);
+  el("rect", {x: fx(lo), y: y - 4, width: Math.max(1, fx(hi) - fx(lo)), height: 8, rx: 2, fill: "var(--soft)", stroke: "var(--rule)"}, svg);
+  if (window && window.length) {
+    let a = Infinity, b = -Infinity; for (const v of window) if (isFinite(v)) { a = Math.min(a, v); b = Math.max(b, v); }
+    if (isFinite(a)) el("rect", {x: fx(Math.max(a, lo - pad)), y: y - 6, width: Math.max(1, fx(Math.min(b, hi + pad)) - fx(Math.max(a, lo - pad))), height: 12, fill: "var(--win)", stroke: "var(--fit)", "stroke-width": .8}, svg);
+  }
+  el("line", {x1: fx(init), x2: fx(init), y1: y - 7, y2: y + 7, stroke: "var(--faint)", "stroke-width": 1.2}, svg);
+  const near = Math.abs(val - lo) < 1e-6 * Math.max(1, Math.abs(lo)) || Math.abs(val - hi) < 1e-6 * Math.max(1, Math.abs(hi));
+  title(el("circle", {cx: fx(Math.min(Math.max(val, lo - pad), hi + pad)), cy: y, r: 4.5, fill: near ? "var(--bad)" : col, stroke: "var(--panel)", "stroke-width": 1}, svg),
+    `value ${f(val)} · start ${f(init)} · bounds ${f(lo)} … ${f(hi)}${near ? " · at bound" : ""}${free ? "" : " · fixed"}`);
+  el("text", {x: fx(lo), y: y + 16, "text-anchor": "start", style: "font-size:8.5px"}, svg, f(lo));
+  el("text", {x: fx(hi), y: y + 16, "text-anchor": "end", style: "font-size:8.5px"}, svg, f(hi));
+  el("text", {x: (x0 + x1) / 2, y: y - 8, "text-anchor": "middle", style: "font-size:9px;fill:var(--ink)"}, svg, f(val));
+}
+
+function renderPolar(T, e) {
+  const svg = $("polar"); svg.innerHTML = "";
+  const cx = 150, cy = 130, R = 115;
+  let amax = 0; for (const E of T.entries) for (let i = 0; i < T.lines.length; i++) { const v = Math.hypot(E.amplitude.re[i], E.amplitude.im[i]); if (isFinite(v) && v > amax) amax = v; }
+  amax = amax || 1;
+  const ref = isFinite(e.phase_reference_rad) ? e.phase_reference_rad : null;
+  $("polarInfo").textContent = ref === null ? "angle(a)" : `phase-law angle − reference, τ = ${fmt(1e3 * T.options.phase_band_tau_s, 3)} ms`;
+  for (const k of [.25, .5, .75, 1]) el("circle", {cx, cy, r: R * k, fill: "none", class: "gl"}, svg);
+  el("line", {x1: cx - R, x2: cx + R, y1: cy, y2: cy, class: "axis"}, svg);
+  el("line", {x1: cx, x2: cx, y1: cy - R, y2: cy + R, class: "axis"}, svg);
+  el("text", {x: cx + R + 2, y: cy + 3}, svg, "0°");
+  el("text", {x: cx - R, y: cy - R + 4}, svg, `|a| ≤ ${fmt(amax, 3)}`);
+  const rows = [];
+  T.lines.forEach((L, i) => {
+    if (L.skipped || !e.active[i]) return;
+    const a = Math.hypot(e.amplitude.re[i], e.amplitude.im[i]);
+    const ang = ref === null || L.phase_tolerance_deg === null ? Math.atan2(e.amplitude.im[i], e.amplitude.re[i]) : wrapRad(e.phase_law_rad[i] - ref);
+    const r = R * a / amax;
+    if (ref !== null && L.phase_tolerance_deg !== null) {
+      const tol = L.phase_tolerance_deg * Math.PI / 180, rr = Math.max(r, 10);
+      const p = (t) => `${cx + rr * Math.cos(t)},${cy - rr * Math.sin(t)}`;
+      el("path", {d: `M${cx},${cy} L${p(-tol)} A${rr},${rr} 0 0 0 ${p(tol)} Z`, fill: color(i), opacity: .12}, svg);
+    }
+    const x = cx + r * Math.cos(ang), y = cy - r * Math.sin(ang);
+    el("line", {x1: cx, y1: cy, x2: x, y2: y, stroke: color(i), "stroke-width": 2}, svg);
+    title(el("circle", {cx: x, cy: y, r: 3.5, fill: color(i)}, svg), `${L.name}: |a| ${fmt(a, 4)}, angle ${fix(deg(ang), 1)}°`);
+    rows.push([i, L.name, a, deg(ang)]);
+  });
+  rows.forEach(([i, n, a, d], k) => {
+    const y = 20 + k * 16;
+    el("rect", {x: 300, y: y - 8, width: 9, height: 9, rx: 2, fill: color(i)}, svg);
+    el("text", {x: 314, y, style: "fill:var(--ink)"}, svg, n.length > 9 ? n.slice(0, 8) + "…" : n);
+    el("text", {x: 438, y, "text-anchor": "end"}, svg, `${fmt(a, 3)} ∠${fix(d, 0)}°`);
+  });
+}
+
+function renderPhase(T, e) {
+  const svg = $("phase"); svg.innerHTML = "";
+  const band = T.lines.map((L, i) => i).filter(i => T.lines[i].phase_tolerance_deg !== null && !T.lines[i].skipped);
+  if (!band.length || !isFinite(e.phase_reference_rad)) {
+    $("phaseInfo").textContent = "";
+    el("text", {x: 220, y: 100, "text-anchor": "middle"}, svg, "no phase band in these fit parameters"); return;
+  }
+  $("phaseInfo").textContent = `reference ${fix(deg(e.phase_reference_rad), 1)}° (display estimate of φ0)`;
+  const h = 34 + band.length * 26; svg.setAttribute("viewBox", `0 0 440 ${h}`);
+  const tmax = Math.max(...band.map(i => T.lines[i].phase_tolerance_deg));
+  const lim = Math.min(180, Math.max(45, 3 * tmax));
+  const fx = scale(-lim, lim, 80, 430);
+  for (const t of ticks(-lim, lim, 6)) { el("line", {x1: fx(t), x2: fx(t), y1: 14, y2: h - 18, class: "gl"}, svg); el("text", {x: fx(t), y: h - 4, "text-anchor": "middle"}, svg, `${t}°`); }
+  el("line", {x1: fx(0), x2: fx(0), y1: 14, y2: h - 18, class: "axis"}, svg);
+  band.forEach((i, r) => {
+    const L = T.lines[i], y = 26 + r * 26, tol = L.phase_tolerance_deg;
+    const dev = deg(wrapRad(e.phase_law_rad[i] - e.phase_reference_rad));
+    el("text", {x: 0, y: y + 4, style: `fill:${color(i)};font-weight:600`}, svg, L.name.length > 10 ? L.name.slice(0, 9) + "…" : L.name);
+    el("rect", {x: fx(-tol), y: y - 7, width: fx(tol) - fx(-tol), height: 14, rx: 2, fill: "var(--phase)", opacity: .15}, svg);
+    if (!e.active[i]) { el("text", {x: fx(0) + 4, y: y + 4}, svg, "inactive"); return; }
+    const out = Math.abs(dev) > tol + 1e-6, xv = fx(Math.max(-lim, Math.min(lim, dev)));
+    el("line", {x1: fx(0), x2: xv, y1: y, y2: y, stroke: out ? "var(--bad)" : "var(--phase)", "stroke-width": 3}, svg);
+    title(el("circle", {cx: xv, cy: y, r: 4, fill: out ? "var(--bad)" : "var(--phase)"}, svg), `${L.name}: ${fix(dev, 1)}° (tolerance ±${tol}°)`);
+    el("text", {x: 438, y: y + 4, "text-anchor": "end"}, svg, `${fix(dev, 1)}°`);
+  });
+}
+
+function renderTable(T, e) {
+  const ppm = !!T.ppm_conversion;
+  let h = `<tr><th>line</th><th>f (Hz)</th>${ppm ? "<th>ppm</th>" : ""}<th>Δf start</th><th>T2* (ms)</th><th>|a|</th><th>∠a (°)</th><th>dev (°)</th><th></th></tr>`;
+  T.lines.forEach((L, i) => {
+    const f = e.frequency_hz[i], t2 = e.t2_s[i], a = Math.hypot(e.amplitude.re[i], e.amplitude.im[i]);
+    const flags = [];
+    if (L.skipped) flags.push('<span class="flag mute">skipped</span>');
+    else if (!e.active[i]) flags.push('<span class="flag mute">inactive</span>');
+    const atF = Math.abs(f - L.frequency_lower_hz) < 1e-6 || Math.abs(f - L.frequency_upper_hz) < 1e-6;
+    const atT = Math.abs(t2 - L.t2_min_s) < 1e-9 || Math.abs(t2 - L.t2_max_s) < 1e-9;
+    if (!L.skipped && atF && L.frequency_range_hz > 0) flags.push('<span class="flag">f bound</span>');
+    if (!L.skipped && atT && L.t2_range_s > 0) flags.push('<span class="flag t2">T2* bound</span>');
+    let dev = NaN;
+    if (L.phase_tolerance_deg !== null && isFinite(e.phase_reference_rad)) {
+      dev = deg(wrapRad(e.phase_law_rad[i] - e.phase_reference_rad));
+      if (e.active[i] && Math.abs(dev) > L.phase_tolerance_deg + 1e-6) flags.push('<span class="flag ph">phase band</span>');
+    }
+    h += `<tr class="${L.skipped || !e.active[i] ? "off" : ""}"><td><span class="sw" style="background:${color(i)}"></span>${esc(L.name)}</td>
+      <td>${fix(f, 2)}</td>${ppm ? `<td>${fix(toPpm(f), 3)}</td>` : ""}<td>${fix(f - L.initial_frequency_hz, 2)}</td><td>${fix(1e3 * t2, 2)}</td>
+      <td>${fmt(a, 4)}</td><td>${fix(deg(Math.atan2(e.amplitude.im[i], e.amplitude.re[i])), 1)}</td><td>${fix(dev, 1)}</td><td>${flags.join("")}</td></tr>`;
+  });
+  $("tbl").innerHTML = h;
+  $("tblInfo").textContent = `RSS ${fmt(e.rss, 5)}`;
+}
+
+function renderObjective(T, ei) {
+  const svg = $("obj"); svg.innerHTML = "";
+  const box = [58, 14, 430, 150];
+  const ys = T.entries.map(E => E.objective);
+  let [ya, yb] = extent([ys]);
+  const logy = ya > 0 && yb / ya > 50;
+  const tf = v => logy ? Math.log10(v) : v;
+  const [la, lb] = logy ? [Math.log10(ya), Math.log10(yb)] : [ya, yb];
+  const p = 0.08 * (lb - la || 1);
+  const fx = scale(0, Math.max(1, T.entries.length - 1), box[0], box[2]);
+  const fy = scale(la - p, lb + p, box[3], box[1]);
+  axes(svg, box, {f: fx, ticks: ticks(0, T.entries.length - 1, 8)}, {f: fy, ticks: ticks(la - p, lb + p, 4)}, "step", logy ? "log₁₀ objective" : "objective");
+  polyline(svg, T.entries.map((_, i) => fx(i)), ys.map(v => fy(tf(v))), {stroke: "var(--fit)", "stroke-width": 1.4});
+  T.entries.forEach((E, i) => {
+    if (E.kind === "grid" && !E.accepted) return;
+    const c = el("circle", {cx: fx(i), cy: fy(tf(E.objective)), r: E.kind === "grid" ? 2.6 : 3.4,
+      fill: E.kind === "grid" ? "var(--ok)" : "var(--phase)"}, svg);
+    title(c, `${i}: ${E.kind} ${fmt(E.objective, 5)}`);
+  });
+  el("line", {x1: fx(ei), x2: fx(ei), y1: box[1], y2: box[3], stroke: "var(--ink)", "stroke-dasharray": "3 2"}, svg);
+  $("objInfo").textContent = "green: accepted grid move · orange: step events";
+  svg.onclick = ev => {
+    const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+    const loc = pt.matrixTransform(svg.getScreenCTM().inverse());
+    const target = Math.round((loc.x - box[0]) / (box[2] - box[0]) * (T.entries.length - 1));
+    let best = 0; S.steps.forEach((s, k) => { if (Math.abs(s - target) < Math.abs(S.steps[best] - target)) best = k; });
+    go(best);
+  };
+}
+
+/* ---------- controls ---------- */
+function go(k) { if (!S.trace) return; S.step = Math.max(0, Math.min(S.steps.length - 1, k)); render(); }
+function stop() { if (S.playing) { clearInterval(S.playing); S.playing = null; $("play").textContent = "▶"; } }
+$("first").onclick = () => { stop(); go(0); };
+$("prev").onclick = () => { stop(); go(S.step - 1); };
+$("next").onclick = () => { stop(); go(S.step + 1); };
+$("last").onclick = () => { stop(); go(S.steps.length - 1); };
+$("step").oninput = ev => { stop(); go(+ev.target.value); };
+$("play").onclick = () => {
+  if (S.playing) return stop();
+  if (S.step >= S.steps.length - 1) go(0);
+  $("play").textContent = "⏸";
+  S.playing = setInterval(() => { if (S.step >= S.steps.length - 1) return stop(); go(S.step + 1); }, 350);
+};
+function toggle(ids, key, values) {
+  ids.forEach((id, k) => $(id).onclick = () => {
+    if ($(id).disabled) return;
+    S[key] = values[k]; ids.forEach(j => $(j).classList.toggle("on", j === id));
+    if (key === "filter" && S.trace) { const ei = entryIndex(); buildSteps(); S.step = Math.max(0, S.steps.findIndex(s => s >= ei)); }
+    render();
+  });
+}
+toggle(["vSpec", "vFid"], "view", ["spec", "fid"]);
+toggle(["pRe", "pIm", "pAbs"], "part", ["re", "im", "abs"]);
+toggle(["aHz", "aPpm"], "axis", ["hz", "ppm"]);
+toggle(["zFull", "zWin"], "zoom", ["full", "win"]);
+toggle(["fltAll", "fltMoves"], "filter", ["all", "moves"]);
+document.addEventListener("keydown", ev => {
+  if (ev.target.tagName === "INPUT" && ev.target.type !== "range") return;
+  const keys = {ArrowLeft: () => $("prev").click(), ArrowRight: () => $("next").click(), Home: () => $("first").click(), End: () => $("last").click(), " ": () => $("play").click()};
+  if (keys[ev.key]) { ev.preventDefault(); keys[ev.key](); }
+});
+renderEmpty();
+poll();
+</script>
+</body>
+</html>

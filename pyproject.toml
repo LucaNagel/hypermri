@@ -1,0 +1,301 @@
+[build-system]
+requires = ["setuptools>=77.0.3", "setuptools-scm>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hypermri"
+dynamic = ["version"]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "numpy >= 2.1, < 3",
+    "brukerapi>=0.4.6,<0.5",
+    "matplotlib >= 3.9",
+    "matplotlib-scalebar>=0.8.1",
+    "pydicom>=3.0.0",
+    "scipy >= 1.11, < 2",
+    "tqdm >= 4.65.0",
+    "joblib >= 1.2.0",
+    "pandas >= 1.5.3",
+    "scikit-image >= 0.19.3",
+    "nmrglue>=0.12,<0.13",
+    "xarray >= 2024.3.0, < 2027",
+    "imageio",
+    "pillow",
+    "PyYAML",
+]
+
+readme = "README.md"
+license = "AGPL-3.0-only"
+license-files = [
+    "LICENSE",
+    "NOTICE",
+    "LICENSES/brukerMRI-Apache-2.0.txt",
+    "LICENSES/brukerapi-MIT.txt",
+]
+description = "Research tools for loading, reconstructing, and visualizing MRI data"
+keywords = ["MRI", "Bruker", "hyperpolarized MRI", "medical imaging"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Intended Audience :: Science/Research",
+]
+authors = [
+  {name = "HyperMRI contributors"},
+]
+maintainers = [
+  {name = "Luca Nagel"},
+]
+
+[project.urls]
+Homepage = "https://github.com/LucaNagel/hypermri"
+Documentation = "https://hypermri.readthedocs.io/"
+Repository = "https://github.com/LucaNagel/hypermri"
+Issues = "https://github.com/LucaNagel/hypermri/issues"
+
+[project.scripts]
+hypermri-download-example-data = "hypermri.datasets.fetch:main"
+
+[project.optional-dependencies]
+visualization = [
+  "ipywidgets >= 8.0.4",
+  "IPython",
+  "anywidget",
+  "traitlets",
+  "cmap",
+  "plotly >= 5.0",
+]
+notebook = [
+  "hypermri[visualization]",
+  "nbclassic >= 0.5.3",
+  "notebook >= 6.5.0",
+  "ipykernel >= 7.4, < 8",
+  "ipympl >= 0.9.3",
+]
+siemens = [
+  "twixtools>=0.24",
+]
+test = [
+  "hypermri[notebook,siemens]",
+  "pytest >= 8.0",
+  "pytest-cov >= 4.0.0",
+  "dask[array] >= 2024.3.0",
+]
+dev = [
+  "hypermri[test]",
+  "pip-tools >= 7.4.1",
+  "tox >= 4.4.6",
+  "mypy >= 1.0",
+  "bandit >= 1.7.0",
+  "packaging >= 24",
+  "pre-commit >= 2.15.0",
+  "yamllint >= 1.32.0",
+  "tomli >= 1.2.0",
+  "ruff == 0.15.1",
+]
+docs = [
+  "hypermri[notebook]",
+  "sphinx>=7.2",
+  "pydata-sphinx-theme",
+  "sphinx-autodoc-typehints",
+  "myst-nb>=1.1",
+  "sphinx-copybutton",
+  "sphinxcontrib-mermaid",
+  "sphinx-design",
+]
+motion = [
+  "SimpleITK",
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+hypermri = [
+    "config/*.json",
+    "datasets/*.json",
+    "sequences/config/*.yaml",
+    "vendors/config/*.yaml",
+    "visualization/*.html",
+    "visualization/*.js",
+    "visualization/*.css",
+    "visualization/browser/*.js",
+    "visualization/browser/*.css",
+]
+
+[tool.setuptools_scm]
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".ipynb_checkpoints",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pyenv",
+    ".pytest_cache",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    ".vscode",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "examples",
+    "node_modules",
+    "site-packages",
+    "venv",
+]
+
+# Same as Black.
+line-length = 88
+indent-width = 4
+
+# Supported Python runtime.
+target-version = "py312"
+
+[tool.ruff.lint]
+# Enable Pyflakes (`F`) and a subset of the pycodestyle (`E`)  codes by default.
+# Also enable flake8-bugbear (`B`) for common bugs.
+select = ["E4", "E7", "E9", "F", "B", "I", "W", "N"]
+ignore = [
+    "E402", # Module level import not at top of file
+    "F403", # 'from module import *' used; unable to detect undefined names
+    "F405", # 'name' may be undefined, or defined from star imports
+    "E722", # Do not use bare `except`
+    "B028", # No explicit `stacklevel` keyword argument found
+    "B904", # Within an `except` clause, raise exceptions with `raise ... from err`
+    "F401", # Unused imports (noisy in __init__)
+    "B007", # Unused loop variables
+    "E741", # Ambiguous variable names (l, I)
+    "B018", # Useless expressions
+    "B027", # Empty method in ABC without @abstractmethod
+    "N803", # Invalid argument name (too many physics-style args like Mz, B0)
+    "N806", # Non-lowercase variable in function (too many physics variables)
+    "N999", # Invalid module name (sequence files like BSSFP.py, CSI.py)
+    "N801", # Legacy public classes use established scientific names
+    "N802", # Legacy public functions use established scientific names
+    "N805", # Existing metaclass/classmethod signatures use cls by convention
+]
+
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+# Like Black, use double quotes for strings.
+quote-style = "double"
+
+# Like Black, indent with spaces, rather than tabs.
+indent-style = "space"
+
+# Like Black, respect magic trailing commas.
+skip-magic-trailing-comma = false
+
+# Like Black, automatically detect the appropriate line ending.
+line-ending = "auto"
+
+# Black configuration is now handled by [tool.ruff.format]
+# isort configuration is now handled by [tool.ruff.lint.isort]
+
+# MyPy configuration
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = false
+warn_unused_configs = true
+disallow_untyped_defs = false
+disallow_incomplete_defs = false
+check_untyped_defs = false
+no_implicit_optional = false
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+warn_unreachable = false
+strict_equality = false
+disable_error_code = ["var-annotated", "assignment", "method-assign", "unreachable", "attr-defined", "import-not-found"]
+
+[[tool.mypy.overrides]]
+module = [
+    "brukerapi.*",
+    "twixtools.*",
+    "IPython.*",
+    "git.*",
+    "nmrglue.*",
+    "specutils.*",
+]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --verbose --tb=short"
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+markers = [
+    "unit: Unit tests (fast, use mock data)",
+    "integration: Integration tests (require real MRI data)",
+    "validation: Opt-in tests of validation scripts in tests/validation",
+    "slow: Slow tests (may take several minutes)",
+    "vendor_bruker: Tests specific to Bruker data",
+    "vendor_siemens: Tests specific to Siemens data",
+    "vendor_agilent: Tests specific to Agilent data",
+    "spectroscopy: Tests for spectroscopy functionality",
+    "anatomical: Tests for anatomical imaging functionality",
+]
+filterwarnings = [
+    # A deprecation or future warning fails the test, so the library cannot
+    # keep using an outdated call of its own or of a dependency unnoticed.
+    # Tests of compatibility paths expect their warning with pytest.warns.
+    # The entries below take precedence over these two.
+    "error::DeprecationWarning",
+    "error::FutureWarning",
+    "ignore::DeprecationWarning:nmrglue.fileio.tecmag",
+    "ignore::PendingDeprecationWarning",
+    "ignore::UserWarning:matplotlib.*",
+    "ignore::UserWarning:nmrglue.*",
+]
+
+# Coverage configuration
+[tool.coverage.run]
+source = ["src/hypermri"]
+omit = [
+    "*/tests/*",
+    "*/test_*",
+    "setup.py",
+]
+
+[tool.coverage.report]
+fail_under = 46
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+# Bandit configuration
+[tool.bandit]
+exclude_dirs = ["tests", "scripts/hooks"]
+skips = ["B101"]  # Skip assert_used test

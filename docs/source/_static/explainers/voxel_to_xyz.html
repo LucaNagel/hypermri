@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Voxel index to x/y/z</title>
+<!-- Interactive explainer of the documentation page
+     concepts/scanner_geometry. It repeats, for a small synthetic scan, the
+     calculation of hypermri.utils.coordinates.grids.get_xyz_grid_from_visu.
+     No scan data is used. -->
+<script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@4.1.1/plotly.min.js"></script>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #ffffff; --fg: #1f2328; --muted: #57606a; --line: #d0d7de;
+  --panel: #f6f8fa;
+  --read: #d1580f; --phase: #1f6feb; --slice: #1a7f37; --pick: #cf222e;
+}
+* { box-sizing: border-box; }
+body { margin: 0; padding: 14px 16px; background: var(--bg); color: var(--fg);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center;
+  padding: 8px 10px; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 6px; }
+.controls label { display: inline-flex; gap: 6px; align-items: center; }
+.controls .group { display: inline-flex; gap: 4px; align-items: center; }
+.controls .title { color: var(--muted); }
+button.seg { border: 1px solid var(--line); background: var(--bg); color: var(--fg);
+  padding: 3px 9px; border-radius: 5px; cursor: pointer; font: inherit; }
+button.seg[aria-pressed="true"] { background: var(--fg); color: var(--bg);
+  border-color: var(--fg); }
+.main { display: grid; grid-template-columns: minmax(240px, 330px) 1fr; gap: 14px;
+  margin-top: 12px; }
+@media (max-width: 720px) { .main { grid-template-columns: 1fr; } }
+.card { border: 1px solid var(--line); border-radius: 6px; padding: 10px; }
+.card h3 { margin: 0 0 6px; font-size: 13px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .04em; }
+#grid svg { width: 100%; height: auto; display: block; }
+#grid .cell { cursor: pointer; }
+#plot { width: 100%; height: 420px; }
+.formula { margin-top: 12px; font: 13px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+  overflow-x: auto; white-space: pre; }
+.r { color: var(--read); font-weight: 600; }
+.p { color: var(--phase); font-weight: 600; }
+.s { color: var(--slice); font-weight: 600; }
+.k { color: var(--pick); font-weight: 600; }
+.note { color: var(--muted); font-size: 13px; margin: 8px 0 0; }
+</style>
+</head>
+<body>
+<div class="controls">
+  <span class="group"><span class="title">Slice orientation</span>
+    <button class="seg" data-key="orient" data-val="axial">axial</button>
+    <button class="seg" data-key="orient" data-val="coronal">coronal</button>
+    <button class="seg" data-key="orient" data-val="sagittal">sagittal</button></span>
+  <span class="group"><span class="title">Acquisition</span>
+    <button class="seg" data-key="mode" data-val="2D">2D multi-slice</button>
+    <button class="seg" data-key="mode" data-val="3D">3D volume</button></span>
+  <span class="group"><span class="title">RECO_transposition</span>
+    <button class="seg" data-key="transposition" data-val="0">0</button>
+    <button class="seg" data-key="transposition" data-val="1">1</button></span>
+  <label><span class="title">Offset along slice normal</span>
+    <input id="offset" type="range" min="-12" max="12" step="1" value="0">
+    <span id="offsetText">0 mm</span></label>
+</div>
+
+<div class="main">
+  <div class="card" id="grid">
+    <h3>Stored frame (2dseq)</h3>
+    <div id="gridSvg"></div>
+    <div class="group" style="margin-top:6px">
+      <span class="title">slice_idx</span>
+      <span id="sliceButtons"></span>
+    </div>
+    <p class="note">Click a voxel. Columns run along the first in-plane
+      axis <b>u</b>, rows along the second axis <b>v</b>.</p>
+  </div>
+  <div class="card">
+    <h3>Patient coordinates x/y/z in mm (DICOM LPS)</h3>
+    <div id="plot"></div>
+  </div>
+</div>
+
+<div class="card formula" id="formula"></div>
+
+<script>
+"use strict";
+// Synthetic scan: 8 read x 6 phase voxels of 5 mm, 4 slices 4 mm apart.
+const N_READ = 8, N_PHASE = 6, N_SLICE = 4;
+const FOV_READ = 40, FOV_PHASE = 30, SLICE_STEP = 4;
+const CENTRE = [2, -5, 10];
+// VisuCoreOrientation rows: u (column direction), v (row direction), n (normal).
+const PRESETS = {
+  axial:    { u: [1, 0, 0], v: [0, 1, 0],  n: [0, 0, 1] },
+  coronal:  { u: [1, 0, 0], v: [0, 0, -1], n: [0, 1, 0] },
+  sagittal: { u: [0, 1, 0], v: [0, 0, -1], n: [-1, 0, 0] },
+};
+const state = { orient: "coronal", mode: "2D", transposition: "0",
+  offset: 0, read: 5, phase: 1, slice: 2 };
+
+const add = (a, b) => a.map((x, i) => x + b[i]);
+const mul = (a, s) => a.map((x) => x * s);
+const fmt = (x) => (Math.abs(x) < 1e-9 ? 0 : x).toFixed(1).padStart(6);
+const vec = (a) => "(" + a.map(fmt).join(",") + ")";
+
+function geometry() {
+  const o = PRESETS[state.orient];
+  const t = state.transposition === "1";
+  // VisuCoreSize / VisuCoreExtent of the stored in-plane axes.
+  const size0 = t ? N_PHASE : N_READ, size1 = t ? N_READ : N_PHASE;
+  const ext0 = t ? FOV_PHASE : FOV_READ, ext1 = t ? FOV_READ : FOV_PHASE;
+  const du = ext0 / size0, dv = ext1 / size1;
+  const centre = add(CENTRE, mul(o.n, state.offset));
+  // VisuCorePosition: centre of the first voxel of each frame.
+  const framePos = [];
+  for (let k = 0; k < N_SLICE; k++) {
+    const sc = add(centre, mul(o.n, (k - (N_SLICE - 1) / 2) * SLICE_STEP));
+    framePos.push(add(add(sc, mul(o.u, -(size0 - 1) / 2 * du)),
+                      mul(o.v, -(size1 - 1) / 2 * dv)));
+  }
+  return { o, t, size0, size1, du, dv, framePos };
+}
+
+function voxelXYZ(g, r, p, k) {
+  const col = g.t ? p : r, row = g.t ? r : p;
+  const pos = state.mode === "3D"
+    ? add(g.framePos[0], mul(g.o.n, k * SLICE_STEP)) : g.framePos[k];
+  return add(add(pos, mul(g.o.u, col * g.du)), mul(g.o.v, row * g.dv));
+}
+
+function drawGrid(g) {
+  const cell = 34, pad = 44;
+  const w = pad + g.size0 * cell + 10, h = pad + g.size1 * cell + 10;
+  const uIdx = g.t ? "phase_idx" : "read_idx", vIdx = g.t ? "read_idx" : "phase_idx";
+  const uCls = g.t ? "p" : "r", vCls = g.t ? "r" : "p";
+  const color = (c) => getComputedStyle(document.documentElement)
+    .getPropertyValue(c === "r" ? "--read" : "--phase");
+  let s = `<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Stored frame grid">`;
+  s += `<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6"
+        markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z"
+        fill="context-stroke"/></marker></defs>`;
+  s += `<line x1="${pad}" y1="16" x2="${pad + g.size0 * cell}" y2="16" stroke="${color(uCls)}"
+        stroke-width="2" marker-end="url(#ah)"/>`;
+  s += `<text x="${pad}" y="11" font-size="11" fill="${color(uCls)}">u: column → ${uIdx}</text>`;
+  s += `<line x1="18" y1="${pad}" x2="18" y2="${pad + g.size1 * cell}" stroke="${color(vCls)}"
+        stroke-width="2" marker-end="url(#ah)"/>`;
+  s += `<text font-size="11" fill="${color(vCls)}" transform="translate(26 ${pad}) rotate(90)">v: row → ${vIdx}</text>`;
+  for (let row = 0; row < g.size1; row++) {
+    for (let col = 0; col < g.size0; col++) {
+      const r = g.t ? row : col, p = g.t ? col : row;
+      const picked = r === state.read && p === state.phase;
+      const x = pad + col * cell, y = pad + row * cell;
+      s += `<g class="cell" data-r="${r}" data-p="${p}">
+        <rect x="${x}" y="${y}" width="${cell}" height="${cell}"
+          fill="${picked ? "#ffebe9" : (row + col) % 2 ? "#f6f8fa" : "#ffffff"}"
+          stroke="${picked ? "#cf222e" : "#d0d7de"}" stroke-width="${picked ? 2 : 1}"/>
+        <text x="${x + cell / 2}" y="${y + cell / 2 + 4}" font-size="10" text-anchor="middle"
+          fill="#57606a">${r},${p}</text></g>`;
+    }
+  }
+  s += `<text x="${pad}" y="${h - 1}" font-size="10" fill="#57606a">labels: read_idx,phase_idx</text>`;
+  s += "</svg>";
+  document.getElementById("gridSvg").innerHTML = s;
+  document.querySelectorAll("#gridSvg .cell").forEach((el) => {
+    el.addEventListener("click", () => {
+      state.read = +el.dataset.r; state.phase = +el.dataset.p; render();
+    });
+  });
+  const sb = document.getElementById("sliceButtons");
+  sb.innerHTML = "";
+  for (let k = 0; k < N_SLICE; k++) {
+    const b = document.createElement("button");
+    b.className = "seg"; b.textContent = k;
+    b.setAttribute("aria-pressed", String(k === state.slice));
+    b.addEventListener("click", () => { state.slice = k; render(); });
+    sb.appendChild(b);
+  }
+}
+
+function frameOutline(g, k) {
+  const c0 = add(add(voxelXYZ(g, 0, 0, k), mul(g.o.u, -g.du / 2)), mul(g.o.v, -g.dv / 2));
+  const U = mul(g.o.u, g.size0 * g.du), V = mul(g.o.v, g.size1 * g.dv);
+  const pts = [c0, add(c0, U), add(add(c0, U), V), add(c0, V), c0];
+  return pts;
+}
+
+function drawPlot(g) {
+  const css = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const traces = [];
+  for (let k = 0; k < N_SLICE; k++) {
+    const pts = frameOutline(g, k);
+    const sel = k === state.slice;
+    traces.push({ type: "scatter3d", mode: "lines", hoverinfo: "skip",
+      x: pts.map((p) => p[0]), y: pts.map((p) => p[1]), z: pts.map((p) => p[2]),
+      line: { color: sel ? css("--slice") : "#8c959f", width: sel ? 6 : 3 },
+      name: `slice_idx ${k}`, showlegend: false });
+    if (sel) {
+      traces.push({ type: "mesh3d", opacity: 0.18, color: css("--slice"), hoverinfo: "skip",
+        x: pts.slice(0, 4).map((p) => p[0]), y: pts.slice(0, 4).map((p) => p[1]),
+        z: pts.slice(0, 4).map((p) => p[2]), i: [0, 0], j: [1, 2], k: [2, 3] });
+      const cx = [], cy = [], cz = [], txt = [];
+      for (let r = 0; r < N_READ; r++) for (let p = 0; p < N_PHASE; p++) {
+        const q = voxelXYZ(g, r, p, k);
+        cx.push(q[0]); cy.push(q[1]); cz.push(q[2]);
+        txt.push(`read ${r}, phase ${p}, slice ${k}<br>x=${q[0].toFixed(1)}, y=${q[1].toFixed(1)}, z=${q[2].toFixed(1)} mm`);
+      }
+      traces.push({ type: "scatter3d", mode: "markers", x: cx, y: cy, z: cz,
+        marker: { size: 2, color: "#57606a" }, text: txt, hoverinfo: "text", showlegend: false });
+    }
+  }
+  // Arrows from the first voxel of the selected slice: read, phase and slice direction.
+  const origin = voxelXYZ(g, 0, 0, state.slice);
+  const readDir = g.t ? g.o.v : g.o.u, phaseDir = g.t ? g.o.u : g.o.v;
+  const arrow = (dir, len, color, label) => {
+    const end = add(origin, mul(dir, len));
+    traces.push({ type: "scatter3d", mode: "lines+text", hoverinfo: "skip", showlegend: false,
+      x: [origin[0], end[0]], y: [origin[1], end[1]], z: [origin[2], end[2]],
+      text: ["", label], textfont: { color, size: 13 }, textposition: "top center",
+      line: { color, width: 8 } });
+    traces.push({ type: "cone", x: [end[0]], y: [end[1]], z: [end[2]],
+      u: [dir[0]], v: [dir[1]], w: [dir[2]], sizemode: "absolute", sizeref: 3,
+      anchor: "tip", showscale: false, hoverinfo: "skip",
+      colorscale: [[0, color], [1, color]] });
+  };
+  arrow(readDir, 16, css("--read"), "read");
+  arrow(phaseDir, 14, css("--phase"), "phase");
+  arrow(g.o.n, 12, css("--slice"), "slice");
+  const q = voxelXYZ(g, state.read, state.phase, state.slice);
+  traces.push({ type: "scatter3d", mode: "markers", x: [q[0]], y: [q[1]], z: [q[2]],
+    marker: { size: 7, color: css("--pick") }, hoverinfo: "text", showlegend: false,
+    text: [`picked voxel<br>x=${q[0].toFixed(1)}, y=${q[1].toFixed(1)}, z=${q[2].toFixed(1)} mm`] });
+  const axis = (title) => ({ title: { text: title }, zeroline: false,
+    backgroundcolor: "#ffffff", gridcolor: "#eaeef2" });
+  Plotly.react("plot", traces, {
+    margin: { l: 0, r: 0, t: 0, b: 0 }, uirevision: "keep",
+    paper_bgcolor: "#ffffff",
+    scene: { aspectmode: "data",
+      xaxis: axis("x → patient left"), yaxis: axis("y → posterior"),
+      zaxis: axis("z → head"),
+      camera: { eye: { x: 1.5, y: -1.6, z: 0.9 } } },
+  }, { displaylogo: false, responsive: true });
+}
+
+function drawFormula(g) {
+  const r = state.read, p = state.phase, k = state.slice;
+  const col = g.t ? p : r, row = g.t ? r : p;
+  const colName = g.t ? `<span class="p">phase_idx</span>` : `<span class="r">read_idx</span>`;
+  const rowName = g.t ? `<span class="r">read_idx</span>` : `<span class="p">phase_idx</span>`;
+  const q = voxelXYZ(g, r, p, k);
+  const lines = [];
+  lines.push(`voxel (<span class="r">read_idx=${r}</span>, <span class="p">phase_idx=${p}</span>, <span class="s">slice_idx=${k}</span>)`);
+  lines.push(`RECO_transposition = ${state.transposition}  →  column index = ${colName} = ${col},  row index = ${rowName} = ${row}`);
+  lines.push("");
+  let posLine;
+  if (state.mode === "3D") {
+    lines.push(`VisuCorePosition has ONE entry (3D):  P = ${vec(g.framePos[0])}`);
+    posLine = `P + <span class="s">${k}</span> × ${SLICE_STEP.toFixed(1)} mm × n${vec(g.o.n)}`;
+  } else {
+    lines.push(`VisuCorePosition has one entry per slice (2D):  P[<span class="s">${k}</span>] = ${vec(g.framePos[k])}`);
+    posLine = `P[<span class="s">${k}</span>]`;
+  }
+  lines.push(`VisuCoreOrientation:  u = ${vec(g.o.u)}   v = ${vec(g.o.v)}   n = ${vec(g.o.n)}`);
+  lines.push(`spacing = VisuCoreExtent / VisuCoreSize:  Δu = ${g.du.toFixed(1)} mm,  Δv = ${g.dv.toFixed(1)} mm`);
+  lines.push("");
+  lines.push(`(x, y, z) = ${posLine}`);
+  lines.push(`          + ${col} × ${g.du.toFixed(1)} mm × u`);
+  lines.push(`          + ${row} × ${g.dv.toFixed(1)} mm × v`);
+  lines.push(`          = <span class="k">${vec(q)} mm</span>`);
+  lines.push("");
+  lines.push(`In HyperMRI:  data.x.isel(read_idx=${r}, phase_idx=${p}, slice_idx=${k})  →  ${q[0].toFixed(1)}`);
+  document.getElementById("formula").innerHTML = lines.join("\n");
+}
+
+function syncButtons() {
+  document.querySelectorAll("button.seg[data-key]").forEach((b) => {
+    b.setAttribute("aria-pressed", String(state[b.dataset.key] === b.dataset.val));
+  });
+  document.getElementById("offsetText").textContent = `${state.offset} mm`;
+}
+
+function render() {
+  const g = geometry();
+  syncButtons(); drawGrid(g); drawPlot(g); drawFormula(g);
+}
+
+document.querySelectorAll("button.seg[data-key]").forEach((b) => {
+  b.addEventListener("click", () => { state[b.dataset.key] = b.dataset.val; render(); });
+});
+document.getElementById("offset").addEventListener("input", (e) => {
+  state.offset = +e.target.value; render();
+});
+window.voxelXYZForTest = (r, p, k) => voxelXYZ(geometry(), r, p, k);
+window.explainerState = state;
+render();
+</script>
+</body>
+</html>

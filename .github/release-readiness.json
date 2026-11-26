@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "release_target": "0.1.0",
+  "distribution_name": "hypermri",
+  "license_identifier": "AGPL-3.0-only",
+  "rights_review_complete": true,
+  "contributors_attribution_complete": true,
+  "stable_bruker_raw_sequence_ids": [
+    "csi",
+    "fair_rare",
+    "flash",
+    "isis",
+    "nspect",
+    "press",
+    "rare",
+    "rarevtr",
+    "singlepulse",
+    "steam"
+  ],
+  "reference_dataset_id": "brukerapi_pv601_lego_phantom",
+  "reference_dataset_validation_complete": true,
+  "deprecation_removal_release": "0.2.0",
+  "release_approver": "Luca Nagel",
+  "public_snapshot_approved": true
+}

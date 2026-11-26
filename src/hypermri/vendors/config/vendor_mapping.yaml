@@ -1,0 +1,44 @@
+---
+# External vendor detection settings.
+# Handler types belong to hypermri.vendors._handler_types.
+
+vendors:
+  bruker:
+    priority: 100
+    detection_patterns:
+      - "file:fid"              # Has fid file
+      - "file:rawdata.job0"     # Has rawdata.job0 file
+      - "file:2dseq"            # Has 2dseq file
+      - "contains:method"       # Directory contains method file
+      - "contains:acqp"         # Directory contains acqp file
+      - "contains:visu_pars"    # Directory contains visu_pars file
+
+  bruker_topspin:
+    priority: 90
+    detection_patterns:
+      - "file:fid"              # Has fid file
+      - "contains:acqu"         # Directory contains acqu file
+
+  siemens:
+    priority: 50
+    detection_patterns:
+      - "extension:.dat"        # .dat files
+      - "extension:.twix"       # .twix files (if supported)
+      - "file:twix"             # twix files
+
+  agilent:
+    priority: 40
+    detection_patterns:
+      - "file:fid"
+      - "file:procpar"
+
+  magritek:
+    priority: 45
+    detection_patterns:
+      - "file:acqu.par"
+      - "file:proc.par"
+      - "file:data.2d"
+
+  external:
+    priority: -100              # Never auto-detect, requires explicit opt-in
+    detection_patterns: []

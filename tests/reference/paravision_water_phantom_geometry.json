@@ -1,0 +1,3725 @@
+{
+  "provenance": {
+    "source": "ParaVision DICOM exports of a water phantom in head-prone and head-supine position; local and not in Git",
+    "coordinate_system": "DICOM patient coordinates (LPS) in mm, anatomical orientation type QUADRUPED; ImagePositionPatient is the centre of the first voxel",
+    "dicom_fields": ["InstanceNumber", "ImagePositionPatient", "ImageOrientationPatient", "Rows", "Columns", "PixelSpacing", "SliceThickness", "PatientPosition", "AnatomicalOrientationType"],
+    "paravision_fields": {
+      "method": ["PVM_SpatDimEnum", "PVM_SPackArrSliceOrient", "PVM_SPackArrReadOrient", "PVM_SPackArrReadOffset", "PVM_SPackArrPhase1Offset", "PVM_SPackArrSliceOffset", "PVM_SliceOffset", "PVM_Matrix", "PVM_Fov", "PVM_SliceThick", "PVM_SPackArrSliceGap", "PVM_SPackArrNSlices", "PVM_ObjOrderList"],
+      "acqp": ["ACQ_grad_matrix", "ACQ_patient_pos"],
+      "reco": ["RECO_transposition"],
+      "visu_pars": ["VisuCorePosition", "VisuCoreOrientation", "VisuCoreSize", "VisuCoreExtent", "VisuCoreFrameThickness", "VisuCoreDiskSliceOrder"]
+    },
+    "paravision_parsing": "values as parsed by hypermri's BrukerHandler from method, acqp, scan-level visu_pars and pdata/1/reco; null marks an absent parameter",
+    "excluded": "pixel data, names, identifiers, UIDs, dates, times, device, coil and institution details, sequence and protocol names, source folder names",
+    "extraction_script": "scripts/extract_geometry_fixture.py"
+  },
+  "series": {
+    "head_prone/4": {
+      "dicom": {
+        "rows": 128,
+        "columns": 128,
+        "pixel_spacing_mm": [0.5, 0.5],
+        "slice_thickness_mm": 2.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+        "image_position_patient_mm": [
+          [-32.0, -32.0, -12.0],
+          [-32.0, -32.0, -8.0],
+          [-32.0, -32.0, -4.0],
+          [-32.0, -32.0, 0.0],
+          [-32.0, -32.0, 4.0],
+          [-32.0, -32.0, 8.0],
+          [-32.0, -32.0, 12.0],
+          [16.0, -32.0, 32.0],
+          [12.0, -32.0, 32.0],
+          [8.0, -32.0, 32.0],
+          [4.0, -32.0, 32.0],
+          [0.0, -32.0, 32.0],
+          [-4.0, -32.0, 32.0],
+          [-8.0, -32.0, 32.0],
+          [-25.66038, 12.754718, 32.0],
+          [-25.66038, 8.754718, 32.0],
+          [-25.66038, 4.754718, 32.0],
+          [-25.66038, 0.754718, 32.0],
+          [-25.66038, -3.245282, 32.0],
+          [-25.66038, -7.245282, 32.0],
+          [-25.66038, -11.245282, 32.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": ["axial", "sagittal", "coronal"],
+          "PVM_SPackArrReadOrient": ["L_R", "H_F", "H_F"],
+          "PVM_SPackArrReadOffset": [0, 0, 0],
+          "PVM_SPackArrPhase1Offset": [0.0, 0.0, -6.33962],
+          "PVM_SPackArrSliceOffset": [0.0, -4.0, -0.754718],
+          "PVM_SliceOffset": [-12.0, -8.0, -4.0, 0.0, 4.0, 8.0, 12.0, -16.0, -12.0, -8.0, -4.0, 0.0, 4.0, 8.0, -12.754718, -8.754718, -4.754718, -0.754718, 3.245282, 7.245282, 11.245282],
+          "PVM_Matrix": [128, 128],
+          "PVM_Fov": [64, 64],
+          "PVM_SliceThick": 2,
+          "PVM_SPackArrSliceGap": [2, 2, 2],
+          "PVM_SPackArrNSlices": [7, 7, 7],
+          "PVM_ObjOrderList": [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [
+            [-32.0, -32.0, -12.0],
+            [-32.0, -32.0, -8.0],
+            [-32.0, -32.0, -4.0],
+            [-32.0, -32.0, 0.0],
+            [-32.0, -32.0, 4.0],
+            [-32.0, -32.0, 8.0],
+            [-32.0, -32.0, 12.0],
+            [16.0, -32.0, 32.0],
+            [12.0, -32.0, 32.0],
+            [8.0, -32.0, 32.0],
+            [4.0, -32.0, 32.0],
+            [0.0, -32.0, 32.0],
+            [-4.0, -32.0, 32.0],
+            [-8.0, -32.0, 32.0],
+            [-25.66038, 12.754718, 32.0],
+            [-25.66038, 8.754718, 32.0],
+            [-25.66038, 4.754718, 32.0],
+            [-25.66038, 0.754718, 32.0],
+            [-25.66038, -3.245282, 32.0],
+            [-25.66038, -7.245282, 32.0],
+            [-25.66038, -11.245282, 32.0]
+          ],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [128, 128],
+          "VisuCoreExtent": [64, 64],
+          "VisuCoreFrameThickness": 2,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/10": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-24.0, -16.0, -10.0],
+          [-24.0, -16.0, -5.0],
+          [-24.0, -16.0, 0.0],
+          [-24.0, -16.0, 5.0],
+          [-24.0, -16.0, 10.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 0,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-24, -16, -10], [-24, -16, -5], [-24, -16, 0], [-24, -16, 5], [-24, -16, 10]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/11": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-28.0, -16.0, -10.0],
+          [-28.0, -16.0, -5.0],
+          [-28.0, -16.0, 0.0],
+          [-28.0, -16.0, 5.0],
+          [-28.0, -16.0, 10.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-28, -16, -10], [-28, -16, -5], [-28, -16, 0], [-28, -16, 5], [-28, -16, 10]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/12": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-28.0, -20.0, -10.0],
+          [-28.0, -20.0, -5.0],
+          [-28.0, -20.0, 0.0],
+          [-28.0, -20.0, 5.0],
+          [-28.0, -20.0, 10.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-28, -20, -10], [-28, -20, -5], [-28, -20, 0], [-28, -20, 5], [-28, -20, 10]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/13": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-28.0, -20.0, -14.0],
+          [-28.0, -20.0, -9.0],
+          [-28.0, -20.0, -4.0],
+          [-28.0, -20.0, 1.0],
+          [-28.0, -20.0, 6.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": -4,
+          "PVM_SliceOffset": [-14, -9, -4, 1, 6],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-28, -20, -14], [-28, -20, -9], [-28, -20, -4], [-28, -20, 1], [-28, -20, 6]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/14": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-16.0, -24.0, -10.0],
+          [-16.0, -24.0, -5.0],
+          [-16.0, -24.0, 0.0],
+          [-16.0, -24.0, 5.0],
+          [-16.0, -24.0, 10.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 0,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-16, -24, -10], [-16, -24, -5], [-16, -24, 0], [-16, -24, 5], [-16, -24, 10]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/15": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-16.0, -28.0, -10.0],
+          [-16.0, -28.0, -5.0],
+          [-16.0, -28.0, 0.0],
+          [-16.0, -28.0, 5.0],
+          [-16.0, -28.0, 10.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-16, -28, -10], [-16, -28, -5], [-16, -28, 0], [-16, -28, 5], [-16, -28, 10]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/16": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-20.0, -28.0, -10.0],
+          [-20.0, -28.0, -5.0],
+          [-20.0, -28.0, 0.0],
+          [-20.0, -28.0, 5.0],
+          [-20.0, -28.0, 10.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-20, -28, -10], [-20, -28, -5], [-20, -28, 0], [-20, -28, 5], [-20, -28, 10]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/17": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-20.0, -28.0, -14.0],
+          [-20.0, -28.0, -9.0],
+          [-20.0, -28.0, -4.0],
+          [-20.0, -28.0, 1.0],
+          [-20.0, -28.0, 6.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": -4,
+          "PVM_SliceOffset": [-14, -9, -4, 1, 6],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-20, -28, -14], [-20, -28, -9], [-20, -28, -4], [-20, -28, 1], [-20, -28, 6]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/18": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [10.0, -24.0, 16.0],
+          [5.0, -24.0, 16.0],
+          [0.0, -24.0, 16.0],
+          [-5.0, -24.0, 16.0],
+          [-10.0, -24.0, 16.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 0,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[10, -24, 16], [5, -24, 16], [0, -24, 16], [-5, -24, 16], [-10, -24, 16]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/19": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [10.0, -28.0, 16.0],
+          [5.0, -28.0, 16.0],
+          [0.0, -28.0, 16.0],
+          [-5.0, -28.0, 16.0],
+          [-10.0, -28.0, 16.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[10, -28, 16], [5, -28, 16], [0, -28, 16], [-5, -28, 16], [-10, -28, 16]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/20": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [10.0, -28.0, 20.0],
+          [5.0, -28.0, 20.0],
+          [0.0, -28.0, 20.0],
+          [-5.0, -28.0, 20.0],
+          [-10.0, -28.0, 20.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[10, -28, 20], [5, -28, 20], [0, -28, 20], [-5, -28, 20], [-10, -28, 20]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/21": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [14.0, -28.0, 20.0],
+          [9.0, -28.0, 20.0],
+          [4.0, -28.0, 20.0],
+          [-1.0, -28.0, 20.0],
+          [-6.0, -28.0, 20.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": -4,
+          "PVM_SliceOffset": [-14, -9, -4, 1, 6],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[14, -28, 20], [9, -28, 20], [4, -28, 20], [-1, -28, 20], [-6, -28, 20]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/22": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [10.0, -16.0, 24.0],
+          [5.0, -16.0, 24.0],
+          [0.0, -16.0, 24.0],
+          [-5.0, -16.0, 24.0],
+          [-10.0, -16.0, 24.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 0,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[10, -16, 24], [5, -16, 24], [0, -16, 24], [-5, -16, 24], [-10, -16, 24]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/23": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [10.0, -16.0, 28.0],
+          [5.0, -16.0, 28.0],
+          [0.0, -16.0, 28.0],
+          [-5.0, -16.0, 28.0],
+          [-10.0, -16.0, 28.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[10, -16, 28], [5, -16, 28], [0, -16, 28], [-5, -16, 28], [-10, -16, 28]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/24": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [10.0, -20.0, 28.0],
+          [5.0, -20.0, 28.0],
+          [0.0, -20.0, 28.0],
+          [-5.0, -20.0, 28.0],
+          [-10.0, -20.0, 28.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[10, -20, 28], [5, -20, 28], [0, -20, 28], [-5, -20, 28], [-10, -20, 28]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/25": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [14.0, -20.0, 28.0],
+          [9.0, -20.0, 28.0],
+          [4.0, -20.0, 28.0],
+          [-1.0, -20.0, 28.0],
+          [-6.0, -20.0, 28.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": -4,
+          "PVM_SliceOffset": [-14, -9, -4, 1, 6],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[14, -20, 28], [9, -20, 28], [4, -20, 28], [-1, -20, 28], [-6, -20, 28]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/26": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-16.0, 10.0, 24.0],
+          [-16.0, 5.0, 24.0],
+          [-16.0, 0.0, 24.0],
+          [-16.0, -5.0, 24.0],
+          [-16.0, -10.0, 24.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 0,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-16, 10, 24], [-16, 5, 24], [-16, 0, 24], [-16, -5, 24], [-16, -10, 24]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/27": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-16.0, 10.0, 28.0],
+          [-16.0, 5.0, 28.0],
+          [-16.0, 0.0, 28.0],
+          [-16.0, -5.0, 28.0],
+          [-16.0, -10.0, 28.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-16, 10, 28], [-16, 5, 28], [-16, 0, 28], [-16, -5, 28], [-16, -10, 28]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/28": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-20.0, 10.0, 28.0],
+          [-20.0, 5.0, 28.0],
+          [-20.0, 0.0, 28.0],
+          [-20.0, -5.0, 28.0],
+          [-20.0, -10.0, 28.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-20, 10, 28], [-20, 5, 28], [-20, 0, 28], [-20, -5, 28], [-20, -10, 28]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/29": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-20.0, 14.0, 28.0],
+          [-20.0, 9.0, 28.0],
+          [-20.0, 4.0, 28.0],
+          [-20.0, -1.0, 28.0],
+          [-20.0, -6.0, 28.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": -4,
+          "PVM_SliceOffset": [-14, -9, -4, 1, 6],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-20, 14, 28], [-20, 9, 28], [-20, 4, 28], [-20, -1, 28], [-20, -6, 28]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/30": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-24.0, 10.0, 16.0],
+          [-24.0, 5.0, 16.0],
+          [-24.0, 0.0, 16.0],
+          [-24.0, -5.0, 16.0],
+          [-24.0, -10.0, 16.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 0,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-24, 10, 16], [-24, 5, 16], [-24, 0, 16], [-24, -5, 16], [-24, -10, 16]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/31": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-28.0, 10.0, 16.0],
+          [-28.0, 5.0, 16.0],
+          [-28.0, 0.0, 16.0],
+          [-28.0, -5.0, 16.0],
+          [-28.0, -10.0, 16.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-28, 10, 16], [-28, 5, 16], [-28, 0, 16], [-28, -5, 16], [-28, -10, 16]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/32": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-28.0, 10.0, 20.0],
+          [-28.0, 5.0, 20.0],
+          [-28.0, 0.0, 20.0],
+          [-28.0, -5.0, 20.0],
+          [-28.0, -10.0, 20.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-28, 10, 20], [-28, 5, 20], [-28, 0, 20], [-28, -5, 20], [-28, -10, 20]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/33": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-28.0, 14.0, 20.0],
+          [-28.0, 9.0, 20.0],
+          [-28.0, 4.0, 20.0],
+          [-28.0, -1.0, 20.0],
+          [-28.0, -6.0, 20.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": -4,
+          "PVM_SliceOffset": [-14, -9, -4, 1, 6],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-28, 14, 20], [-28, 9, 20], [-28, 4, 20], [-28, -1, 20], [-28, -6, 20]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_prone/45": {
+      "dicom": {
+        "rows": 224,
+        "columns": 224,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFP",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5, 6, 7],
+        "image_position_patient_mm": [
+          [-28.0, -28.0, -15.0],
+          [-28.0, -28.0, -10.0],
+          [-28.0, -28.0, -5.0],
+          [-28.0, -28.0, 0.0],
+          [-28.0, -28.0, 5.0],
+          [-28.0, -28.0, 10.0],
+          [-28.0, -28.0, 15.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 0,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-15, -10, -5, 0, 5, 10, 15],
+          "PVM_Matrix": [224, 224],
+          "PVM_Fov": [56, 56],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 7,
+          "PVM_ObjOrderList": [0, 2, 4, 6, 1, 3, 5]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Prone"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [
+            [-28, -28, -15],
+            [-28, -28, -10],
+            [-28, -28, -5],
+            [-28, -28, 0],
+            [-28, -28, 5],
+            [-28, -28, 10],
+            [-28, -28, 15]
+          ],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [224, 224],
+          "VisuCoreExtent": [56, 56],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/1": {
+      "dicom": {
+        "rows": 128,
+        "columns": 128,
+        "pixel_spacing_mm": [0.5, 0.5],
+        "slice_thickness_mm": 2.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21],
+        "image_position_patient_mm": [
+          [-32.0, -32.0, -12.0],
+          [-32.0, -32.0, -8.0],
+          [-32.0, -32.0, -4.0],
+          [-32.0, -32.0, 0.0],
+          [-32.0, -32.0, 4.0],
+          [-32.0, -32.0, 8.0],
+          [-32.0, -32.0, 12.0],
+          [16.0, -32.0, 32.0],
+          [12.0, -32.0, 32.0],
+          [8.0, -32.0, 32.0],
+          [4.0, -32.0, 32.0],
+          [0.0, -32.0, 32.0],
+          [-4.0, -32.0, 32.0],
+          [-8.0, -32.0, 32.0],
+          [-25.66038, 12.754718, 32.0],
+          [-25.66038, 8.754718, 32.0],
+          [-25.66038, 4.754718, 32.0],
+          [-25.66038, 0.754718, 32.0],
+          [-25.66038, -3.245282, 32.0],
+          [-25.66038, -7.245282, 32.0],
+          [-25.66038, -11.245282, 32.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": ["axial", "sagittal", "coronal"],
+          "PVM_SPackArrReadOrient": ["L_R", "H_F", "H_F"],
+          "PVM_SPackArrReadOffset": [0, 0, 0],
+          "PVM_SPackArrPhase1Offset": [0.0, 0.0, -6.33962],
+          "PVM_SPackArrSliceOffset": [0.0, -4.0, -0.754718],
+          "PVM_SliceOffset": [-12.0, -8.0, -4.0, 0.0, 4.0, 8.0, 12.0, -16.0, -12.0, -8.0, -4.0, 0.0, 4.0, 8.0, -12.754718, -8.754718, -4.754718, -0.754718, 3.245282, 7.245282, 11.245282],
+          "PVM_Matrix": [128, 128],
+          "PVM_Fov": [64, 64],
+          "PVM_SliceThick": 2,
+          "PVM_SPackArrSliceGap": [2, 2, 2],
+          "PVM_SPackArrNSlices": [7, 7, 7],
+          "PVM_ObjOrderList": [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [
+            [-32.0, -32.0, -12.0],
+            [-32.0, -32.0, -8.0],
+            [-32.0, -32.0, -4.0],
+            [-32.0, -32.0, 0.0],
+            [-32.0, -32.0, 4.0],
+            [-32.0, -32.0, 8.0],
+            [-32.0, -32.0, 12.0],
+            [16.0, -32.0, 32.0],
+            [12.0, -32.0, 32.0],
+            [8.0, -32.0, 32.0],
+            [4.0, -32.0, 32.0],
+            [0.0, -32.0, 32.0],
+            [-4.0, -32.0, 32.0],
+            [-8.0, -32.0, 32.0],
+            [-25.66038, 12.754718, 32.0],
+            [-25.66038, 8.754718, 32.0],
+            [-25.66038, 4.754718, 32.0],
+            [-25.66038, 0.754718, 32.0],
+            [-25.66038, -3.245282, 32.0],
+            [-25.66038, -7.245282, 32.0],
+            [-25.66038, -11.245282, 32.0]
+          ],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [128, 128],
+          "VisuCoreExtent": [64, 64],
+          "VisuCoreFrameThickness": 2,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/2": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-24.0, -16.0, -10.0],
+          [-24.0, -16.0, -5.0],
+          [-24.0, -16.0, 0.0],
+          [-24.0, -16.0, 5.0],
+          [-24.0, -16.0, 10.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 0,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-24, -16, -10], [-24, -16, -5], [-24, -16, 0], [-24, -16, 5], [-24, -16, 10]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/3": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-28.0, -16.0, -10.0],
+          [-28.0, -16.0, -5.0],
+          [-28.0, -16.0, 0.0],
+          [-28.0, -16.0, 5.0],
+          [-28.0, -16.0, 10.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-28, -16, -10], [-28, -16, -5], [-28, -16, 0], [-28, -16, 5], [-28, -16, 10]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/4": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-28.0, -20.0, -10.0],
+          [-28.0, -20.0, -5.0],
+          [-28.0, -20.0, 0.0],
+          [-28.0, -20.0, 5.0],
+          [-28.0, -20.0, 10.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-28, -20, -10], [-28, -20, -5], [-28, -20, 0], [-28, -20, 5], [-28, -20, 10]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/5": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-28.0, -20.0, -14.0],
+          [-28.0, -20.0, -9.0],
+          [-28.0, -20.0, -4.0],
+          [-28.0, -20.0, 1.0],
+          [-28.0, -20.0, 6.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": -4,
+          "PVM_SliceOffset": [-14, -9, -4, 1, 6],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]],
+            [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-28, -20, -14], [-28, -20, -9], [-28, -20, -4], [-28, -20, 1], [-28, -20, 6]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/6": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-16.0, -24.0, -10.0],
+          [-16.0, -24.0, -5.0],
+          [-16.0, -24.0, 0.0],
+          [-16.0, -24.0, 5.0],
+          [-16.0, -24.0, 10.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 0,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-16, -24, -10], [-16, -24, -5], [-16, -24, 0], [-16, -24, 5], [-16, -24, 10]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/7": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-16.0, -28.0, -10.0],
+          [-16.0, -28.0, -5.0],
+          [-16.0, -28.0, 0.0],
+          [-16.0, -28.0, 5.0],
+          [-16.0, -28.0, 10.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-16, -28, -10], [-16, -28, -5], [-16, -28, 0], [-16, -28, 5], [-16, -28, 10]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/8": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-20.0, -28.0, -10.0],
+          [-20.0, -28.0, -5.0],
+          [-20.0, -28.0, 0.0],
+          [-20.0, -28.0, 5.0],
+          [-20.0, -28.0, 10.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-20, -28, -10], [-20, -28, -5], [-20, -28, 0], [-20, -28, 5], [-20, -28, 10]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/9": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-20.0, -28.0, -14.0],
+          [-20.0, -28.0, -9.0],
+          [-20.0, -28.0, -4.0],
+          [-20.0, -28.0, 1.0],
+          [-20.0, -28.0, 6.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+          [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "axial",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": -4,
+          "PVM_SliceOffset": [-14, -9, -4, 1, 6],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]],
+            [[0, 1, 0], [1, 0, 0], [0, 0, 1]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-20, -28, -14], [-20, -28, -9], [-20, -28, -4], [-20, -28, 1], [-20, -28, 6]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            [1, 0, 0, 0, 1, 0, 0, 0, 1]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/10": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [10.0, -24.0, 16.0],
+          [5.0, -24.0, 16.0],
+          [0.0, -24.0, 16.0],
+          [-5.0, -24.0, 16.0],
+          [-10.0, -24.0, 16.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 0,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[10, -24, 16], [5, -24, 16], [0, -24, 16], [-5, -24, 16], [-10, -24, 16]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/11": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [10.0, -28.0, 16.0],
+          [5.0, -28.0, 16.0],
+          [0.0, -28.0, 16.0],
+          [-5.0, -28.0, 16.0],
+          [-10.0, -28.0, 16.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[10, -28, 16], [5, -28, 16], [0, -28, 16], [-5, -28, 16], [-10, -28, 16]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/12": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [10.0, -28.0, 20.0],
+          [5.0, -28.0, 20.0],
+          [0.0, -28.0, 20.0],
+          [-5.0, -28.0, 20.0],
+          [-10.0, -28.0, 20.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[10, -28, 20], [5, -28, 20], [0, -28, 20], [-5, -28, 20], [-10, -28, 20]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/14": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [14.0, -28.0, 20.0],
+          [9.0, -28.0, 20.0],
+          [4.0, -28.0, 20.0],
+          [-1.0, -28.0, 20.0],
+          [-6.0, -28.0, 20.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "A_P",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": -4,
+          "PVM_SliceOffset": [-14, -9, -4, 1, 6],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]],
+            [[0, 1, 0], [0, 0, 1], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[14, -28, 20], [9, -28, 20], [4, -28, 20], [-1, -28, 20], [-6, -28, 20]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/15": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [10.0, -16.0, 24.0],
+          [5.0, -16.0, 24.0],
+          [0.0, -16.0, 24.0],
+          [-5.0, -16.0, 24.0],
+          [-10.0, -16.0, 24.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 0,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[10, -16, 24], [5, -16, 24], [0, -16, 24], [-5, -16, 24], [-10, -16, 24]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/16": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [10.0, -16.0, 28.0],
+          [5.0, -16.0, 28.0],
+          [0.0, -16.0, 28.0],
+          [-5.0, -16.0, 28.0],
+          [-10.0, -16.0, 28.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[10, -16, 28], [5, -16, 28], [0, -16, 28], [-5, -16, 28], [-10, -16, 28]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/17": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [10.0, -20.0, 28.0],
+          [5.0, -20.0, 28.0],
+          [0.0, -20.0, 28.0],
+          [-5.0, -20.0, 28.0],
+          [-10.0, -20.0, 28.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[10, -20, 28], [5, -20, 28], [0, -20, 28], [-5, -20, 28], [-10, -20, 28]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/18": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [14.0, -20.0, 28.0],
+          [9.0, -20.0, 28.0],
+          [4.0, -20.0, 28.0],
+          [-1.0, -20.0, 28.0],
+          [-6.0, -20.0, 28.0]
+        ],
+        "image_orientation_patient": [
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0],
+          [0.0, 1.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "sagittal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": -4,
+          "PVM_SliceOffset": [-14, -9, -4, 1, 6],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]],
+            [[0, 0, 1], [0, 1, 0], [1, 0, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[14, -20, 28], [9, -20, 28], [4, -20, 28], [-1, -20, 28], [-6, -20, 28]],
+          "VisuCoreOrientation": [
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0],
+            [0, 1, 0, 0, 0, -1, -1, 0, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/19": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-16.0, 10.0, 24.0],
+          [-16.0, 5.0, 24.0],
+          [-16.0, 0.0, 24.0],
+          [-16.0, -5.0, 24.0],
+          [-16.0, -10.0, 24.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 0,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-16, 10, 24], [-16, 5, 24], [-16, 0, 24], [-16, -5, 24], [-16, -10, 24]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/20": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-16.0, 10.0, 28.0],
+          [-16.0, 5.0, 28.0],
+          [-16.0, 0.0, 28.0],
+          [-16.0, -5.0, 28.0],
+          [-16.0, -10.0, 28.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-16, 10, 28], [-16, 5, 28], [-16, 0, 28], [-16, -5, 28], [-16, -10, 28]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/21": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-20.0, 10.0, 28.0],
+          [-20.0, 5.0, 28.0],
+          [-20.0, 0.0, 28.0],
+          [-20.0, -5.0, 28.0],
+          [-20.0, -10.0, 28.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-20, 10, 28], [-20, 5, 28], [-20, 0, 28], [-20, -5, 28], [-20, -10, 28]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/22": {
+      "dicom": {
+        "rows": 192,
+        "columns": 128,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-20.0, 14.0, 28.0],
+          [-20.0, 9.0, 28.0],
+          [-20.0, 4.0, 28.0],
+          [-20.0, -1.0, 28.0],
+          [-20.0, -6.0, 28.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "H_F",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": -4,
+          "PVM_SliceOffset": [-14, -9, -4, 1, 6],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]],
+            [[0, 0, 1], [1, 0, 0], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [1, 1, 1, 1, 1]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-20, 14, 28], [-20, 9, 28], [-20, 4, 28], [-20, -1, 28], [-20, -6, 28]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [128, 192],
+          "VisuCoreExtent": [32, 48],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/23": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-24.0, 10.0, 16.0],
+          [-24.0, 5.0, 16.0],
+          [-24.0, 0.0, 16.0],
+          [-24.0, -5.0, 16.0],
+          [-24.0, -10.0, 16.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 0,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-24, 10, 16], [-24, 5, 16], [-24, 0, 16], [-24, -5, 16], [-24, -10, 16]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/24": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-28.0, 10.0, 16.0],
+          [-28.0, 5.0, 16.0],
+          [-28.0, 0.0, 16.0],
+          [-28.0, -5.0, 16.0],
+          [-28.0, -10.0, 16.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 0,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-28, 10, 16], [-28, 5, 16], [-28, 0, 16], [-28, -5, 16], [-28, -10, 16]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/25": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-28.0, 10.0, 20.0],
+          [-28.0, 5.0, 20.0],
+          [-28.0, 0.0, 20.0],
+          [-28.0, -5.0, 20.0],
+          [-28.0, -10.0, 20.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": 0,
+          "PVM_SliceOffset": [-10, -5, 0, 5, 10],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-28, 10, 20], [-28, 5, 20], [-28, 0, 20], [-28, -5, 20], [-28, -10, 20]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    },
+    "head_supine/26": {
+      "dicom": {
+        "rows": 128,
+        "columns": 192,
+        "pixel_spacing_mm": [0.25, 0.25],
+        "slice_thickness_mm": 1.0,
+        "patient_position": "HFS",
+        "anatomical_orientation_type": "QUADRUPED",
+        "instance_numbers": [1, 2, 3, 4, 5],
+        "image_position_patient_mm": [
+          [-28.0, 14.0, 20.0],
+          [-28.0, 9.0, 20.0],
+          [-28.0, 4.0, 20.0],
+          [-28.0, -1.0, 20.0],
+          [-28.0, -6.0, 20.0]
+        ],
+        "image_orientation_patient": [
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0],
+          [1.0, 0.0, 0.0, 0.0, 0.0, -1.0]
+        ]
+      },
+      "paravision": {
+        "method": {
+          "PVM_SpatDimEnum": "<2D>",
+          "PVM_SPackArrSliceOrient": "coronal",
+          "PVM_SPackArrReadOrient": "L_R",
+          "PVM_SPackArrReadOffset": 4,
+          "PVM_SPackArrPhase1Offset": 4,
+          "PVM_SPackArrSliceOffset": -4,
+          "PVM_SliceOffset": [-14, -9, -4, 1, 6],
+          "PVM_Matrix": [192, 128],
+          "PVM_Fov": [48, 32],
+          "PVM_SliceThick": 1,
+          "PVM_SPackArrSliceGap": 4,
+          "PVM_SPackArrNSlices": 5,
+          "PVM_ObjOrderList": [0, 2, 4, 1, 3]
+        },
+        "acqp": {
+          "ACQ_grad_matrix": [
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]],
+            [[1, 0, 0], [0, 0, 1], [0, 1, 0]]
+          ],
+          "ACQ_patient_pos": "Head_Supine"
+        },
+        "reco": {
+          "RECO_transposition": [0, 0, 0, 0, 0]
+        },
+        "visu_pars": {
+          "VisuCorePosition": [[-28, 14, 20], [-28, 9, 20], [-28, 4, 20], [-28, -1, 20], [-28, -6, 20]],
+          "VisuCoreOrientation": [
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0],
+            [1, 0, 0, 0, 0, -1, 0, 1, 0]
+          ],
+          "VisuCoreSize": [192, 128],
+          "VisuCoreExtent": [48, 32],
+          "VisuCoreFrameThickness": 1,
+          "VisuCoreDiskSliceOrder": null
+        }
+      }
+    }
+  }
+}

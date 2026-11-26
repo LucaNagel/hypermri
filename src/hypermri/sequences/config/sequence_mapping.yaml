@@ -1,0 +1,324 @@
+---
+# External sequence categories, scanner aliases and vendor scopes.
+# Maintained sequence types belong to sequences/_sequence_types.py.
+#
+# This is the canonical sequence-identification configuration used by Study,
+# create_experiment, and reconstruction alias resolution. Add exact raw method
+# aliases here when a custom scanner method should load as an existing sequence.
+
+sequences:
+  # Anatomical sequences
+  flash:
+    category: anatomical
+    method_patterns:
+      - "exact:flash"
+      - "exact:<Bruker:FLASH>"
+      - "exact:<User:sliceprofile_FLASH>"
+      - "exact:<User:slicprof_inv_mk1>"
+      - "exact:<User:sliceprofile_FLASHv3>"
+      - "exact:<User:sliceprof_SP_FLASH>"
+      - "exact:<User:wgslic_prof_PRESS>"
+      - "exact:<User:wgslicprof_sLASER>"
+      - "exact:<User:wgslic_prof_PRESS3D>"
+      - "exact:<User:sliceprofSP_selFLASH>"
+      - "exact:<User:stock_FLASH>"
+      - "exact:<User:wgslicprof_sLASER_2>"
+      - "exact:<User:lucaFLASH_1D>"
+      - "exact:<User:low_matrixsize_FLASH>"
+      - "exact:<User:lowresFLASH>"
+      - "exact:<User:measure_3D_sliceprof>"
+      - "exact:<User:flash_no_slice_grad>"
+      - "contains:flash"
+
+  bssfp:
+    category: anatomical
+    method_patterns:
+      - "exact:bssfp"
+      - "exact:<Bruker:FISP>"
+      - "exact:<User:fisp_grad_1metab_CS>"
+      - "exact:<User:fisp_grad_1metab_CS2>"
+      - "exact:<User:fisp_gr_1_met_CS_me>"
+      - "exact:<User:jakob_fisp_me>"
+      - "exact:<User:fisp_me_backup>"
+      - "exact:<User:altPowRx_G_FISP>"
+      - "exact:<User:altPow_jgs_alt_FISP>"
+      - "exact:<User:altPowRx_G_FISP_luca>"
+      - "exact:<User:me_bssfp_jakob>"
+      - "contains:bssfp"
+      - "contains:fisp"
+
+  b1calibration:
+    category: anatomical
+    method_patterns:
+      - "exact:b1calibration"
+      - "exact:<User:max_B1shapelist_4>"
+      - "exact:<User:lucaB1shapelist_1>"
+      - "contains:b1calibration"
+      - "contains:b1shapelist"
+
+  dtiepi:
+    category: anatomical
+    method_patterns:
+      - "exact:dtiepi"
+      - "exact:<Bruker:DtiEpi>"
+      - "contains:dtiepi"
+      - "contains:dti_epi"
+
+  epi:
+    category: anatomical
+    method_patterns:
+      - "exact:epi"
+      - "exact:spspepi"
+      - "exact:<Bruker:EPI>"
+      - "exact:<User:lucaEPI>"
+      - "exact:<User:lucaEPIspiral>"
+      - "exact:<User:lucaEPIspiralTraj>"
+      - "exact:<User:spsp_EPI>"
+      - "contains:spspepi"
+      - "contains:epi"
+
+  fair_rare:
+    category: anatomical
+    method_patterns:
+      - "exact:fair_rare"
+      - "exact:<Bruker:FAIR_RARE>"
+      - "contains:fair_rare"
+      - "contains:fair-rare"
+      - "contains:fair"
+
+  fexi:
+    category: diffusion
+    method_patterns:
+      - "exact:fexi"
+      - "exact:<Bruker:FEXI>"
+      - "contains:fexi"
+
+  fieldmap:
+    category: anatomical
+    method_patterns:
+      - "exact:fieldmap"
+      - "exact:<Bruker:FieldMap>"
+      - "contains:fieldmap"
+
+  mge:
+    category: anatomical
+    method_patterns:
+      - "exact:mge"
+      - "exact:epsi"
+      - "exact:<Bruker:MGE>"
+      - "exact:<Bruker:EPSI>"
+      - "exact:<User:multislice_EPSI>"
+      - "contains:mge"
+      - "contains:epsi"
+
+  rarevtr:
+    category: anatomical
+    method_patterns:
+      - "exact:rarevtr"
+      - "exact:<Bruker:RAREVTR>"
+      - "contains:rarevtr"
+
+  rare:
+    category: anatomical
+    method_patterns:
+      - "exact:rare"
+      - "exact:<Bruker:RARE>"
+      - "contains:rare"
+
+  spin_echo:
+    category: anatomical
+    method_patterns:
+      - "exact:se"
+      - "exact:se2d1"
+
+  # Spectroscopy sequences
+  csi:
+    category: spectroscopy
+    method_patterns:
+      - "exact:csi"
+      - "exact:<Bruker:CSI>"
+      - "exact:<User:lucaCSI>"
+      - "exact:<User:lucaCSI2>"
+      - "exact:<User:lucaCSI3>"
+      - "exact:<User:lucaCSI4>"
+      - "exact:<User:geoffCSI>"
+      - "exact:<User:csi_fix>"
+      - "exact:<User:ssfpCSI>"
+      - "contains:csi"
+
+  press:
+    category: spectroscopy
+    method_patterns:
+      - "exact:press"
+      - "exact:svs_se"
+      - "exact:<Bruker:PRESS>"
+      - "exact:<User:wg_multi_voxel_PRESS>"
+      - "exact:<User:wg_mv_press_reps>"
+      - "exact:<User:wg_mv_press_mk4>"
+      - "contains:press"
+
+  steam:
+    category: spectroscopy
+    method_patterns:
+      - "exact:steam"
+      - "contains:steam"
+
+  singlepulse:
+    category: spectroscopy
+    method_patterns:
+      - "exact:singlepulse"
+      - "exact:single_pulse"
+      - "exact:polarizationmonitoring13c"
+      - "exact:<Bruker:SINGLEPULSE>"
+      - "exact:<User:spsp_SinglePulse>"
+      - "exact:<User:dual_job_Singlepulse>"
+      - "exact:<User:lucaSP_inc_ref>"
+      - "exact:<User:PolarizationMonitoring13C>"
+      - "contains:polarizationmonitoring13c"
+      - "contains:singlepulse"
+      - "contains:single_pulse"
+      - "contains:single"
+
+  gnspect_ms:
+    category: spectroscopy
+    method_patterns:
+      - "exact:gnspect_ms"
+      - "exact:gnspect-ms"
+      - "exact:<User:gNSPECT_MS>"
+      - "exact:<User:jNSPECT_custom_sat>"
+      - "contains:gnspect_ms"
+      - "contains:gnspect-ms"
+      - "contains:jnspect_custom_sat"
+
+  nspect:
+    category: spectroscopy
+    method_patterns:
+      - "exact:nspect"
+      - "exact:agilent_spectroscopy"
+      - "exact:<Bruker:NSPECT>"
+      - "exact:<User:gNSPECT>"
+      - "contains:nspect"
+
+  geoffslcspec:
+    category: spectroscopy
+    method_patterns:
+      - "exact:geoffslcspec"
+      - "exact:geoff_slc_spec"
+      - "exact:<User:geoffSlcSpec_12>"
+      - "contains:geoffslcspec"
+      - "contains:geoff_slc_spec"
+      - "contains:geoff"
+
+  ivrecovery:
+    category: spectroscopy
+    method_patterns:
+      - "exact:ivrecovery"
+      - "exact:iv_recovery"
+      - "exact:<User:wg_IV_Recovery>"
+      - "exact:<User:wg_IVRecov_1IVT>"
+      - "contains:ivrecovery"
+      - "contains:iv_recovery"
+      - "contains:inversion"
+
+  semilaser:
+    category: spectroscopy
+    method_patterns:
+      - "exact:semilaser"
+      - "exact:semi_laser"
+      - "exact:semi-laser"
+      - "exact:<User:wg_sLASER>"
+      - "exact:<User:wg_mv_sLASER>"
+      - "exact:<User:wg_press_adiab_mk3>"
+      - "exact:<User:wg_press_adiab_mk4>"
+      - "exact:<User:wg_press_adiab_mk5>"
+      - "exact:<User:wg_press_adiab_mk6>"
+      - "exact:<User:wg_press_adiab_mk7>"
+      - "exact:<User:wg_mvslaser_self>"
+      - "contains:semilaser"
+      - "contains:semi_laser"
+      - "contains:semi-laser"
+      - "contains:slaser"
+      - "contains:laser"
+
+  # Relaxometry sequences
+  cpmg:
+    category: spectroscopy
+    method_patterns:
+      - "exact:cpmg"
+      - "exact:<Bruker:CPMG>"
+      - "exact:<User:more_echoes_CPMG>"
+      - "contains:cpmg"
+
+  # Multi slice - multi echo
+  msme:
+    category: anatomical
+    method_patterns:
+      - "exact:msme"
+      - "exact:<Bruker:MSME>"
+      - "contains:msme"
+
+  # Modified Driven Equilibrium Fourier Transform (MDEFT)
+  mdeft:
+    category: anatomical
+    method_patterns:
+      - "exact:mdeft"
+      - "exact:<Bruker:MDEFT>"
+      - "contains:mdeft"
+
+  # Flowmap
+  flowmap:
+    category: anatomical
+    method_patterns:
+      - "exact:flowmap"
+      - "exact:<Bruker:FLOWMAP>"
+      - "contains:flowmap"
+
+  # dti_standard
+  dti:
+    category: anatomical
+    method_patterns:
+      - "exact:dti"
+      - "exact:<Bruker:DtiStandard>"
+
+  # Spiral
+  spiral:
+    category: anatomical
+    method_patterns:
+      - "exact:spiral"
+      - "exact:<Bruker:SPIRAL>"
+
+  # dti_spiral
+  dtispiral:
+    category: anatomical
+    method_patterns:
+      - "exact:dtispiral"
+      - "exact:<Bruker:DtiSpiral>"
+
+  # ute
+  ute:
+    category: anatomical
+    method_patterns:
+      - "exact:ute"
+      - "exact:<Bruker:UTE>"
+      - "exact:<Bruker:UTE3D>"
+
+  # rfprofile
+  rfprofile:
+    category: anatomical # or spectroscopic?
+    method_patterns:
+      - "exact:rfprofile"
+      - "exact:<Bruker:RfProfile>"
+
+  # isis
+  isis:
+    category: spectroscopy
+    method_patterns:
+      - "exact:isis"
+      - "exact:<Bruker:ISIS>"
+
+  # zte
+  zte:
+    category: anatomical
+    method_patterns:
+      - "exact:ZTE"
+      - "exact:<Bruker:ZTE>"

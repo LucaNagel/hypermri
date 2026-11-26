@@ -1,0 +1,624 @@
+/* Look of the browser viewer (hypermri.visualization.scan_view.ScanView).
+   Which panels and control groups appear, and where, is set in layout.py.
+   Colours come from the notebook theme where it defines them, with
+   neutral fallbacks that read in light and dark themes. */
+
+.hm-csi {
+  --hm-border: var(--jp-border-color2, rgba(128, 128, 128, 0.3));
+  --hm-input-border: rgba(128, 128, 128, 0.45);
+  --hm-surface: rgba(128, 128, 128, 0.07);
+  --hm-accent: var(--jp-brand-color1, #1f77b4);
+  --hm-plot-height: 400px;
+  font-family: var(--jp-ui-font-family, system-ui, sans-serif);
+  font-size: 12px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  /* Header, plots and footer; inside a grid of views (plot_side_by_side)
+     they take the rows of that grid, so the plots of all views line up. */
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: span 3;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+}
+
+.hm-csi:focus-visible {
+  box-shadow: 0 0 0 2px var(--hm-accent);
+}
+
+/* ---- inputs ---- */
+
+.hm-csi input[type="number"],
+.hm-csi input[type="text"],
+.hm-csi select {
+  font: inherit;
+  padding: 1px 4px;
+  border: 1px solid var(--hm-input-border);
+  border-radius: 4px;
+  min-height: 20px;
+  box-sizing: border-box;
+}
+
+.hm-csi input[type="number"] {
+  width: 5em;
+}
+
+.hm-csi input[type="checkbox"] {
+  margin: 0;
+  accent-color: var(--hm-accent);
+}
+
+.hm-csi input[type="range"] {
+  accent-color: var(--hm-accent);
+}
+
+.hm-csi-button {
+  font: inherit;
+  padding: 2px 10px;
+  border: 1px solid var(--hm-input-border);
+  border-radius: 4px;
+  background: var(--hm-surface);
+  color: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.hm-csi-button:hover:not(:disabled) {
+  border-color: var(--hm-accent);
+}
+
+.hm-csi-button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.hm-csi-button.hm-csi-primary {
+  background: var(--hm-accent);
+  border-color: var(--hm-accent);
+  color: white;
+}
+
+.hm-csi-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.hm-csi-control-label {
+  opacity: 0.7;
+}
+
+.hm-csi-value {
+  min-width: 2ch;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- rows of controls ---- */
+
+.hm-csi-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+}
+
+/* A control group only names its inputs; they flow inside the row. */
+.hm-csi-group {
+  display: contents;
+}
+
+/* A tool that is not chosen in the "tool" menu, or an empty section. */
+.hm-csi-group[hidden],
+.hm-csi-section[hidden],
+.hm-csi-options[hidden],
+.hm-csi-button[hidden] {
+  display: none !important;
+}
+
+/* ---- header: top bar and plot options ---- */
+
+.hm-csi-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 0;
+  min-width: 0;
+}
+
+.hm-csi-top {
+  min-height: 24px;
+}
+
+.hm-csi-options-toggle {
+  margin-left: auto;
+}
+
+.hm-csi-options-toggle::before {
+  content: "▸ ";
+}
+
+.hm-csi-options-toggle[aria-expanded="true"]::before {
+  content: "▾ ";
+}
+
+.hm-csi-options-toggle[aria-expanded="true"] {
+  border-color: var(--hm-accent);
+}
+
+/* Plot options: a table like the fit settings (.hm-csi-fit-settings), one
+   row per section with a coloured title. */
+.hm-csi-options th {
+  width: 7.5em;
+  background: var(--hm-border);
+}
+
+.hm-csi-section-spectrum th { background: var(--hm-fit-freq); }
+.hm-csi-section-map th { background: var(--hm-fit-run); }
+.hm-csi-section-anatomy th { background: var(--hm-fit-new); }
+.hm-csi-section-overlay th { background: var(--hm-fit-options); }
+.hm-csi-section-time-course th { background: var(--hm-fit-detect); }
+
+/* Colour range slider with its value. */
+.hm-csi-range-slider {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.hm-csi-range-slider input[type="range"] {
+  width: 9em;
+}
+
+/* Two handles on one track (doubleRangeSlider); only the handles take the
+   mouse, so both stay reachable where they overlap the other slider. */
+.hm-csi-double-range {
+  position: relative;
+  display: inline-block;
+  width: 12em;
+  height: 18px;
+}
+
+.hm-csi-double-range::before,
+.hm-csi-double-range-fill {
+  content: "";
+  position: absolute;
+  top: 7px;
+  height: 4px;
+  border-radius: 2px;
+}
+
+.hm-csi-double-range::before {
+  left: 0;
+  right: 0;
+  background: var(--hm-input-border);
+}
+
+.hm-csi-double-range-fill {
+  background: var(--hm-accent);
+}
+
+.hm-csi-double-range input[type="range"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  margin: 0;
+  background: none;
+  pointer-events: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.hm-csi-double-range input[type="range"]::-webkit-slider-runnable-track {
+  background: none;
+}
+
+.hm-csi-double-range input[type="range"]::-webkit-slider-thumb {
+  pointer-events: auto;
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  margin-top: 3px;
+  border-radius: 50%;
+  background: var(--hm-accent);
+  border: 1px solid white;
+  cursor: pointer;
+}
+
+.hm-csi-double-range input[type="range"]::-moz-range-thumb {
+  pointer-events: auto;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--hm-accent);
+  border: 1px solid white;
+  cursor: pointer;
+}
+
+/* Two choices as one split button (toggle in helpers.js). */
+.hm-csi-toggle {
+  display: inline-flex;
+}
+
+.hm-csi-toggle-part {
+  font: inherit;
+  padding: 1px 8px;
+  border: 1px solid var(--hm-input-border);
+  background: var(--hm-surface);
+  color: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.hm-csi-toggle-part:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.hm-csi-toggle-part:last-child {
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+}
+
+.hm-csi-toggle-part.hm-csi-toggle-on {
+  background: var(--hm-accent);
+  border-color: var(--hm-accent);
+  color: white;
+}
+
+.hm-csi-toggle-part:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.hm-csi-range-value {
+  min-width: 5.5em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Name of the shown scan, right above its plots. Its length does not widen
+   a grid column that fits its content (plot_side_by_side); it wraps. */
+.hm-csi-name {
+  font-size: 13px;
+  font-weight: 600;
+  contain: inline-size;
+  overflow-wrap: anywhere;
+}
+
+.hm-csi-name[hidden] {
+  display: none;
+}
+
+/* ---- plots ---- */
+
+/* One row: the map keeps the width at which it fills the plot height as
+   long as the curves keep at least their minimum width; below that, all
+   panels give up width in proportion to their flex basis. The panels sit
+   on the bottom of the row, so that maps and curves of views side by side
+   (plot_side_by_side) share one baseline. */
+.hm-csi-plots {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  gap: 4px;
+  min-width: 0;
+}
+
+/* sizeImagePanel lowers all panels (--hm-panel-height) when the map does
+   not get the width to fill the plot height. */
+.hm-csi-map,
+.hm-csi-spectrum,
+.hm-csi-time {
+  height: var(--hm-panel-height, var(--hm-plot-height));
+  min-width: 0;
+}
+
+/* sizeImagePanel sets the width at which the map fills the height. */
+.hm-csi-map {
+  flex: 0 1 360px;
+}
+
+/* The flex basis plus the gap is SIDE_BY_SIDE_CURVE_WIDTH_PX in
+   scan_view/entry.py. In a narrow view the curve keeps at least 40 % of the
+   plots row and the map is lowered instead (sizeImagePanel). */
+.hm-csi-spectrum,
+.hm-csi-time {
+  flex: 1 1 300px;
+  min-width: max(200px, 40%);
+}
+
+/* ---- footer: tools and status ---- */
+
+/* Tools and status wrap within the width of the plots instead of widening
+   a grid column that fits its content. */
+.hm-csi-footer {
+  contain: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px 0 6px;
+  min-width: 0;
+}
+
+.hm-csi-below {
+  border-top: 1px solid var(--hm-border);
+  padding-top: 8px;
+}
+
+/* A control group of an HTML snapshot that needs Python to change. */
+.hm-csi-needs-python {
+  opacity: 0.45;
+}
+
+.hm-csi-status {
+  font-size: 11px;
+  opacity: 0.55;
+  font-variant-numeric: tabular-nums;
+}
+
+/* A titled line of a tool, on its own row below the "tool" menu. */
+.hm-csi-tool-row {
+  flex-basis: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+}
+
+.hm-csi-tool-row-title {
+  font-weight: 600;
+  min-width: 6.5em;
+  opacity: 0.8;
+}
+
+.hm-csi-group-masks input[type="color"] {
+  width: 2.2em;
+  height: 1.6em;
+  padding: 0;
+  border: none;
+  background: none;
+}
+
+.hm-csi-group-masks input[type="range"] {
+  width: 6em;
+}
+
+/* The peak table of the fit tool takes a line of its own. */
+.hm-csi-fit-table-scroll {
+  flex-basis: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--hm-border);
+  border-radius: 6px;
+}
+
+.hm-csi-fit-table {
+  border-collapse: collapse;
+  font-size: 0.95em;
+}
+
+.hm-csi-fit-table th {
+  font-weight: 600;
+  opacity: 0.7;
+  text-align: left;
+  padding: 4px 4px 2px;
+  white-space: nowrap;
+  background: var(--hm-surface);
+}
+
+.hm-csi-fit-table td {
+  padding: 2px 4px;
+}
+
+.hm-csi-fit-table tr + tr td {
+  border-top: 1px solid var(--hm-border);
+}
+
+/* Fit tool: settings as a table with a coloured title per group, and the
+   peak table with tinted column groups. Translucent tints suit light and
+   dark notebooks alike. */
+.hm-csi {
+  --hm-fit-new: rgba(44, 160, 44, 0.16);
+  --hm-fit-detect: rgba(255, 127, 14, 0.16);
+  --hm-fit-options: rgba(148, 103, 189, 0.16);
+  --hm-fit-run: rgba(31, 119, 180, 0.16);
+  --hm-fit-freq: rgba(23, 190, 207, 0.1);
+  --hm-fit-t2: rgba(255, 127, 14, 0.1);
+  --hm-fit-seed: rgba(44, 160, 44, 0.1);
+  --hm-fit-coupling: rgba(148, 103, 189, 0.1);
+}
+
+.hm-csi-fit-settings {
+  flex-basis: 100%;
+  border-collapse: separate;
+  border-spacing: 0 3px;
+}
+
+.hm-csi-fit-settings th {
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  padding: 3px 10px;
+  border-radius: 6px 0 0 6px;
+  width: 6.5em;
+}
+
+.hm-csi-fit-settings td {
+  padding: 3px 8px;
+  border-radius: 0 6px 6px 0;
+  background: var(--hm-surface);
+}
+
+.hm-csi-fit-settings-items {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+}
+
+/* Sections with many short inputs place them in equal columns, so the
+   inputs of successive lines sit under one another. The number of columns
+   follows the width; an input wider than one column spans as many as it
+   needs (spanWideItems in viewer.js). */
+.hm-csi-fit-settings-items.hm-csi-grid-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 11em), 1fr));
+  justify-items: start;
+}
+
+/* Inputs that take numbers line up behind the other inputs of a section
+   (numberEntry in controls_processing.js). */
+.hm-csi-fit-settings-items .hm-csi-number-entry {
+  order: 1;
+}
+
+.hm-csi-fit-kind-new th { background: var(--hm-fit-new); }
+.hm-csi-fit-kind-detect th { background: var(--hm-fit-detect); }
+.hm-csi-fit-kind-options th { background: var(--hm-fit-options); }
+.hm-csi-fit-kind-run th { background: var(--hm-fit-run); }
+
+.hm-csi-fit-table .hm-csi-fit-col-freq { background: var(--hm-fit-freq); }
+.hm-csi-fit-table .hm-csi-fit-col-t2 { background: var(--hm-fit-t2); }
+.hm-csi-fit-table .hm-csi-fit-col-seed { background: var(--hm-fit-seed); }
+.hm-csi-fit-table .hm-csi-fit-col-coupling { background: var(--hm-fit-coupling); }
+
+.hm-csi-fit-groups th {
+  text-align: center;
+  opacity: 0.85;
+}
+
+.hm-csi-fit-swatch {
+  width: 6px;
+  padding: 0 !important;
+}
+
+.hm-csi-fit-off td {
+  opacity: 0.5;
+}
+
+/* Result table of the selected voxel: numbers right-aligned in tabular
+   digits; a value is tinted by its bound status. */
+.hm-csi-fit-results-holder {
+  flex-basis: 100%;
+}
+
+.hm-csi-fit-results-box {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hm-csi-fit-results td,
+.hm-csi-fit-results th {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  padding: 2px 8px;
+}
+
+.hm-csi-fit-results td:nth-child(2),
+.hm-csi-fit-results th:nth-child(2) {
+  text-align: left;
+}
+
+.hm-csi-mask-statistics td:nth-child(3),
+.hm-csi-mask-statistics th:nth-child(3) {
+  text-align: left;
+}
+
+.hm-csi-fit-results-gauss,
+.hm-csi-fit-results-legend {
+  font-size: 0.9em;
+}
+
+.hm-csi-fit-results-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  opacity: 0.85;
+}
+
+.hm-csi-fit-results-legend span,
+.hm-csi-fit-results-gauss span {
+  padding: 0 5px;
+  border-radius: 4px;
+}
+
+.hm-csi-fit-status-estimated { background: rgba(44, 160, 44, 0.22); }
+.hm-csi-fit-status-at_lower_bound { background: rgba(255, 127, 14, 0.32); }
+.hm-csi-fit-status-at_upper_bound { background: rgba(214, 39, 40, 0.3); }
+.hm-csi-fit-status-fixed,
+.hm-csi-fit-status-not_fitted,
+.hm-csi-fit-status-neighbour_median { background: rgba(127, 127, 127, 0.18); }
+
+.hm-csi-mask-info {
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}
+
+.hm-csi-mask-error {
+  color: var(--jp-error-color1, #d62728);
+}
+
+/* Measurement parameters below the plots. */
+.hm-csi-parameter-scroll {
+  flex-basis: 100%;
+  max-height: 320px;
+  overflow: auto;
+  border: 1px solid var(--hm-border);
+  border-radius: 6px;
+}
+
+.hm-csi-parameter-table {
+  border-collapse: collapse;
+  font-size: 0.95em;
+  width: 100%;
+}
+
+.hm-csi-parameter-table td {
+  padding: 2px 8px;
+  vertical-align: top;
+  font-variant-numeric: tabular-nums;
+}
+
+.hm-csi-parameter-name {
+  opacity: 0.8;
+}
+
+.hm-csi-parameter-name > span {
+  white-space: nowrap;
+}
+
+.hm-csi-parameter-head {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+
+/* The label's own display would otherwise override the hidden attribute. */
+.hm-csi-parameter-head [hidden] {
+  display: none;
+}
+
+/* Scanner name of a parameter after the canonical name. */
+.hm-csi-parameter-source {
+  font-family: var(--jp-code-font-family, monospace);
+  font-size: 0.9em;
+  opacity: 0.7;
+}
+
+.hm-csi-parameter-group th {
+  position: sticky;
+  top: 0;
+  text-align: left;
+  font-weight: 600;
+  padding: 4px 8px 2px;
+  background: var(--hm-fit-run);
+  backdrop-filter: blur(4px);
+}
+
+/* Decay curves of the signal-decay tool, below its inputs. */
+.hm-csi-decay-plot {
+  flex-basis: 100%;
+  min-width: 320px;
+  max-width: 720px;
+}

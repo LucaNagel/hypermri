@@ -1,0 +1,61 @@
+name: Bug report
+description: Report a reproducible problem without sharing sensitive data.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for reporting a problem. HyperMRI is maintained on a
+        best-effort basis. Do not upload patient data, identifying metadata,
+        credentials, or confidential research data.
+  - type: input
+    id: version
+    attributes:
+      label: HyperMRI version
+      description: Provide the release version or commit hash.
+      placeholder: "0.1.0rc1 or commit abc1234"
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Include Python version and operating system.
+      placeholder: "Python 3.12, Ubuntu 24.04"
+    validations:
+      required: true
+  - type: input
+    id: acquisition
+    attributes:
+      label: Scanner, format, and sequence
+      description: Use generic descriptions and remove identifying metadata.
+      placeholder: "Bruker ParaVision, CSI"
+  - type: textarea
+    id: steps
+    attributes:
+      label: Minimal reproduction
+      description: List the smallest synthetic or anonymized steps that reproduce the bug.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behaviour and traceback
+      description: Redact usernames, local paths, tokens, and research identifiers.
+    validations:
+      required: true
+  - type: checkboxes
+    id: data_safety
+    attributes:
+      label: Data-safety confirmation
+      options:
+        - label: I have not included patient data, identifying metadata, credentials, or confidential research data.
+          required: true

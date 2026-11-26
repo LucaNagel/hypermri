@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anatomy under a CSI map</title>
+<!-- Interactive explainer of the documentation page
+     concepts/scanner_geometry. It repeats, for a synthetic sphere phantom,
+     the steps the viewer takes to put an anatomy slice under a CSI plane
+     (hypermri.visualization.geometry). No scan data is used. -->
+<style>
+:root {
+  color-scheme: light;
+  --bg: #ffffff; --fg: #1f2328; --muted: #57606a; --line: #d0d7de;
+  --panel: #f6f8fa; --csi: #d1580f; --anat: #1a7f37; --warn: #cf222e;
+}
+* { box-sizing: border-box; }
+body { margin: 0; padding: 14px 16px; background: var(--bg); color: var(--fg);
+  font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.controls { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center;
+  padding: 8px 10px; background: var(--panel); border: 1px solid var(--line);
+  border-radius: 6px; }
+.controls label, .group { display: inline-flex; gap: 6px; align-items: center; }
+.title { color: var(--muted); }
+button.seg { border: 1px solid var(--line); background: var(--bg); color: var(--fg);
+  padding: 3px 9px; border-radius: 5px; cursor: pointer; font: inherit; }
+button.seg[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.main { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 12px; }
+@media (max-width: 720px) { .main { grid-template-columns: 1fr; } }
+.card { border: 1px solid var(--line); border-radius: 6px; padding: 10px; }
+.card h3 { margin: 0 0 6px; font-size: 13px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .04em; }
+svg { width: 100%; height: auto; display: block; }
+ol.steps { margin: 12px 0 0; padding-left: 22px; }
+ol.steps li { margin: 3px 0; }
+code { font: 12.5px ui-monospace, SFMono-Regular, Menlo, monospace;
+  background: var(--panel); padding: 1px 4px; border-radius: 4px; }
+.csi { color: var(--csi); font-weight: 600; }
+.anat { color: var(--anat); font-weight: 600; }
+.warn { color: var(--warn); font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="controls">
+  <span class="group"><span class="title">Anatomy</span>
+    <button class="seg" data-val="stack">coronal 2D stack</button>
+    <button class="seg" data-val="volume">axial 3D volume</button></span>
+  <label><span class="title">CSI slice position y</span>
+    <input id="ypos" type="range" min="-22" max="22" step="0.5" value="3">
+    <span id="yText"></span></label>
+  <label><span class="title">CSI offset x</span>
+    <input id="xpos" type="range" min="-8" max="8" step="1" value="2">
+    <span id="xText"></span></label>
+</div>
+
+<div class="main">
+  <div class="card">
+    <h3>Side view (y–z): which anatomy slice?</h3>
+    <div id="side"></div>
+  </div>
+  <div class="card">
+    <h3>Displayed plane (x–z, mm): anatomy + CSI</h3>
+    <div id="front"></div>
+  </div>
+</div>
+<ol class="steps" id="steps"></ol>
+
+<script>
+"use strict";
+// Synthetic phantom: a sphere of radius 14 mm with a bright 5 mm inclusion.
+const BODY = { c: [0, 0, 0], r: 14 }, SPOT = { c: [7, 4, 5], r: 5 };
+// Coronal CSI: 8 x 8 voxels of 4 mm, 8 mm thick, normal along y.
+const CSI_N = 8, CSI_D = 4, CSI_THICK = 8;
+// Anatomy coronal stack: 15 slices, 2 mm apart, y = -14 ... 14, 1.5 mm pixels.
+// Anatomy axial volume: read x, phase y (1.5 mm), slice z; y from -18 to 18.
+const ANAT_FOV = 48, ANAT_PIX = 1.5;
+const state = { anatomy: "stack", y: 3, x: 2 };
+
+function intensity(x, y, z) {
+  const d = (p, s) => Math.hypot(p[0] - s.c[0], p[1] - s.c[1], p[2] - s.c[2]);
+  const q = [x, y, z];
+  if (d(q, SPOT) <= SPOT.r) return 1.0;
+  if (d(q, BODY) <= BODY.r) return 0.45;
+  return 0.05;
+}
+
+function anatomySlicePositions() {
+  if (state.anatomy === "stack") {
+    return { dim: "slice_idx", step: 2,
+      ys: Array.from({ length: 15 }, (_, k) => -14 + 2 * k) };
+  }
+  return { dim: "phase_idx", step: ANAT_PIX,
+    ys: Array.from({ length: 25 }, (_, k) => -18 + ANAT_PIX * k) };
+}
+
+function nearest(ys, y) {
+  let best = 0;
+  ys.forEach((v, i) => { if (Math.abs(v - y) < Math.abs(ys[best] - y)) best = i; });
+  return best;
+}
+
+function outside(ys, y, step) {
+  return y < ys[0] - step / 2 || y > ys[ys.length - 1] + step / 2;
+}
+
+// Map mm to SVG pixels: horizontal range [-30, 30], vertical range [-30, 30].
+const W = 360, H = 360, R = 30;
+const sx = (v) => ((v + R) / (2 * R)) * W;
+const sy = (v) => H - ((v + R) / (2 * R)) * H;
+
+function axes(hLabel, vLabel) {
+  let s = "";
+  for (let t = -30; t <= 30; t += 10) {
+    s += `<line x1="${sx(t)}" y1="0" x2="${sx(t)}" y2="${H}" stroke="#eaeef2"/>`;
+    s += `<line x1="0" y1="${sy(t)}" x2="${W}" y2="${sy(t)}" stroke="#eaeef2"/>`;
+    s += `<text x="${sx(t) + 2}" y="${H - 3}" font-size="9" fill="#8c959f">${t}</text>`;
+    if (t !== -30) s += `<text x="2" y="${sy(t) - 2}" font-size="9" fill="#8c959f">${t}</text>`;
+  }
+  s += `<text x="${W - 4}" y="${H - 14}" font-size="11" text-anchor="end" fill="#57606a">${hLabel} (mm)</text>`;
+  s += `<text x="6" y="14" font-size="11" fill="#57606a">${vLabel} (mm)</text>`;
+  return s;
+}
+
+function drawSide(a, k, out) {
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Side view">` + axes("y", "z");
+  s += `<circle cx="${sx(0)}" cy="${sy(0)}" r="${(14 / (2 * R)) * W}" fill="#f6f8fa" stroke="#afb8c1"/>`;
+  s += `<circle cx="${sx(SPOT.c[1])}" cy="${sy(SPOT.c[2])}" r="${(5 / (2 * R)) * W}" fill="#d0d7de" stroke="#afb8c1"/>`;
+  a.ys.forEach((y, i) => {
+    const sel = i === k && !out;
+    s += `<line x1="${sx(y)}" y1="${sy(24)}" x2="${sx(y)}" y2="${sy(-24)}"
+      stroke="${sel ? "var(--anat)" : "#8c959f"}" stroke-width="${sel ? 3 : 0.8}"
+      opacity="${sel ? 1 : 0.7}"/>`;
+  });
+  const y0 = state.y - CSI_THICK / 2, y1 = state.y + CSI_THICK / 2;
+  s += `<rect x="${sx(y0)}" y="${sy(16)}" width="${sx(y1) - sx(y0)}" height="${sy(-16) - sy(16)}"
+    fill="var(--csi)" opacity="0.18" stroke="var(--csi)"/>`;
+  s += `<line x1="${sx(state.y)}" y1="${sy(18)}" x2="${sx(state.y)}" y2="${sy(-18)}"
+    stroke="var(--csi)" stroke-width="2" stroke-dasharray="5 3"/>`;
+  s += `<text x="${sx(state.y)}" y="${sy(19)}" font-size="11" text-anchor="middle"
+    fill="var(--csi)">CSI y = ${state.y.toFixed(1)}</text>`;
+  if (!out) {
+    s += `<text x="${sx(a.ys[k])}" y="${sy(-25.5)}" font-size="11" text-anchor="middle"
+      fill="var(--anat)">${a.dim} ${k}</text>`;
+  }
+  return s + "</svg>";
+}
+
+function heat(v) {
+  const t = Math.max(0, Math.min(1, v));
+  const r = Math.round(255 * Math.min(1, 0.2 + 1.6 * t));
+  const g = Math.round(255 * Math.max(0, Math.min(1, 1.8 * t - 0.6)));
+  return `rgb(${r},${g},40)`;
+}
+
+function drawFront(a, k, out) {
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Displayed plane">` + axes("x", "z");
+  if (!out) {
+    const y = a.ys[k], n = Math.round(ANAT_FOV / ANAT_PIX), h0 = -ANAT_FOV / 2;
+    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
+      const x = h0 + (i + 0.5) * ANAT_PIX, z = h0 + (j + 0.5) * ANAT_PIX;
+      const g = Math.round(255 * (0.08 + 0.85 * intensity(x, y, z)));
+      s += `<rect x="${sx(x - ANAT_PIX / 2)}" y="${sy(z + ANAT_PIX / 2)}"
+        width="${sx(ANAT_PIX) - sx(0) + 0.4}" height="${sx(ANAT_PIX) - sx(0) + 0.4}"
+        fill="rgb(${g},${g},${g})"/>`;
+    }
+    s += `<rect x="${sx(h0)}" y="${sy(-h0)}" width="${sx(-h0) - sx(h0)}" height="${sx(-h0) - sx(h0)}"
+      fill="none" stroke="var(--anat)" stroke-width="2"/>`;
+  } else {
+    s += `<text x="${W / 2}" y="${H / 2}" font-size="13" text-anchor="middle"
+      fill="var(--warn)">CSI plane outside the anatomy: no background</text>`;
+  }
+  const half = (CSI_N * CSI_D) / 2;
+  for (let i = 0; i < CSI_N; i++) for (let j = 0; j < CSI_N; j++) {
+    const x0 = state.x - half + i * CSI_D, z0 = -half + j * CSI_D;
+    let acc = 0, cnt = 0;
+    for (let a1 = 0.5; a1 < 4; a1++) for (let b1 = 0.5; b1 < 4; b1++)
+      for (let c1 = 0.5; c1 < 4; c1++) {
+        const v = intensity(x0 + a1, state.y - CSI_THICK / 2 + 2 * c1, z0 + b1);
+        acc += v > 0.9 ? 1 : 0; cnt++;
+      }
+    const v = acc / cnt;
+    s += `<rect x="${sx(x0)}" y="${sy(z0 + CSI_D)}" width="${sx(CSI_D) - sx(0)}"
+      height="${sx(CSI_D) - sx(0)}" fill="${heat(v)}" opacity="${v > 0.02 ? 0.55 : 0}"
+      stroke="var(--csi)" stroke-width="0.6"/>`;
+  }
+  s += `<rect x="${sx(state.x - half)}" y="${sy(half)}" width="${sx(2 * half) - sx(0)}"
+    height="${sx(2 * half) - sx(0)}" fill="none" stroke="var(--csi)" stroke-width="2"/>`;
+  return s + "</svg>";
+}
+
+function render() {
+  const a = anatomySlicePositions();
+  const k = nearest(a.ys, state.y);
+  const out = outside(a.ys, state.y, a.step);
+  document.querySelectorAll("button.seg").forEach((b) =>
+    b.setAttribute("aria-pressed", String(b.dataset.val === state.anatomy)));
+  document.getElementById("yText").textContent = `${state.y.toFixed(1)} mm`;
+  document.getElementById("xText").textContent = `${state.x} mm`;
+  document.getElementById("side").innerHTML = drawSide(a, k, out);
+  document.getElementById("front").innerHTML = drawFront(a, k, out);
+  const half = (CSI_N * CSI_D) / 2;
+  const steps = [
+    `The displayed <span class="csi">CSI plane</span> spans x and z, while all its voxel centres share <code>y = ${state.y.toFixed(1)} mm</code>. The coordinate with the smallest spread, here <code>y</code>, is the plane normal; its median is the plane position.`,
+    `In the <span class="anat">anatomy</span>, the dimension along which <code>y</code> changes is <code>${a.dim}</code>${a.dim === "phase_idx" ? " (the axial volume is cut across its phase axis, a reformatted view)" : ""}.`,
+    out
+      ? `<span class="warn">The CSI position lies outside the anatomy slices (${a.ys[0]} … ${a.ys[a.ys.length - 1]} mm plus half a slice step), so the viewer warns and can hide the background.</span>`
+      : `The nearest anatomy slice is <code>${a.dim} = ${k}</code> at <code>y = ${a.ys[k].toFixed(1)} mm</code>, ${Math.abs(a.ys[k] - state.y).toFixed(1)} mm away. No interpolation between slices.`,
+    `Both images are drawn on the same mm axes: anatomy from x ${-ANAT_FOV / 2} … ${ANAT_FOV / 2}, z ${-ANAT_FOV / 2} … ${ANAT_FOV / 2}; CSI from x ${(state.x - half).toFixed(0)} … ${(state.x + half).toFixed(0)}, z ${-half} … ${half}. Each range is the outer edge of the voxels, centre ± half a voxel.`,
+  ];
+  document.getElementById("steps").innerHTML = steps.map((t) => `<li>${t}</li>`).join("");
+}
+
+document.querySelectorAll("button.seg").forEach((b) =>
+  b.addEventListener("click", () => { state.anatomy = b.dataset.val; render(); }));
+document.getElementById("ypos").addEventListener("input", (e) => { state.y = +e.target.value; render(); });
+document.getElementById("xpos").addEventListener("input", (e) => { state.x = +e.target.value; render(); });
+render();
+</script>
+</body>
+</html>

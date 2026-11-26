@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "bruker": {
+    "stable_raw_reconstruction_sequence_ids": [
+      "csi",
+      "fair_rare",
+      "flash",
+      "isis",
+      "nspect",
+      "press",
+      "rare",
+      "rarevtr",
+      "singlepulse",
+      "steam"
+    ]
+  }
+}

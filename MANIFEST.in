@@ -1,0 +1,46 @@
+# Source release: runtime source/configuration plus public release policies.
+prune docs
+prune tests
+prune scripts
+prune examples
+prune experiments
+prune binder
+prune notebooks
+prune downloads
+prune reports
+prune plans
+prune guides
+prune introduction_presentation
+prune llm_orchestrator
+prune .github
+prune .pre-commit
+prune .vscode
+prune .codex
+prune .agents
+
+include LICENSE
+include NOTICE
+include LICENSES/brukerMRI-Apache-2.0.txt
+include LICENSES/brukerapi-MIT.txt
+include README.md
+include CONTRIBUTING.md
+include CONTRIBUTORS.md
+include MAINTAINERS.md
+include SECURITY.md
+include SUPPORT.md
+include pyproject.toml
+include docs/source/development/release.rst
+recursive-include src/hypermri *.py *.yaml *.json *.html
+exclude AGENTS.md
+exclude .pre-commit-config.yaml
+exclude .gitignore
+exclude .gitattributes
+exclude tox.ini
+
+global-exclude __pycache__
+global-exclude *.py[cod]
+global-exclude .DS_Store
+exclude .gitmodules
+exclude .lfsconfig
+exclude .readthedocs.yaml
+exclude src/__init__.py

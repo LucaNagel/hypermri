@@ -1,0 +1,53 @@
+HyperMRI third-party notices
+===========================
+
+BrukerMRI parameter parser
+--------------------------
+
+The ParaVision parameter parsing in src/hypermri/vendors/_jcamp.py includes
+operations adapted from ReadParamFile, ParseArray and ParseSingleValue in
+BrukerMRI.py from jdoepfert/brukerMRI:
+https://github.com/jdoepfert/brukerMRI
+
+Copyright 2014 Joerg Doepfert
+
+The upstream source is licensed under the Apache License, Version 2.0.
+Its complete licence and attribution are retained in
+LICENSES/brukerMRI-Apache-2.0.txt.
+
+The pinned source and licence snapshot used to verify these notices is
+1b9a58170ec5ca616d6063bac268b687cf459dbf:
+https://github.com/jdoepfert/brukerMRI/tree/1b9a58170ec5ca616d6063bac268b687cf459dbf
+The exact upstream revision originally adapted by HyperMRI is not recorded;
+the relevant parser bodies match across the three retained 2014 revisions.
+
+HyperMRI contributors modified these operations, including path and missing-file
+handling, tuple and timestamp parsing, wrapped string/struct parsing, record
+boundary handling, and extraction into shared ParaVision/TopSpin primitives.
+src/hypermri/vendors/bruker.py retains delegating parser methods.
+
+These notices identify retained third-party material and do not modify its
+licence terms. HyperMRI's project licence is provided in LICENSE.
+
+Bruker FID block-storage alignment and padding trim
+--------------------------------------------------
+
+The block-size alignment and acquisition-padding trim used by the Bruker raw
+reader are adapted from the FID storage configuration and ``SchemaFid``
+``_acquisition_trim`` implementation in brukerapi 0.4.6:
+https://pypi.org/project/brukerapi/0.4.6/
+
+Copyright (c) 2020 isi-nmr. The upstream software is distributed under the
+MIT License, reproduced in ``LICENSES/brukerapi-MIT.txt``. The PyPI source
+distribution used for this comparison has SHA-256
+``24616ea608169cdc7b67f935da403cfd5475824d8637b7f8625350c25887fd52``.
+The relevant upstream files are
+``brukerapi/config/properties_fid_core.json`` (``block_size``) and
+``brukerapi/schemas.py`` (``SchemaFid._acquisition_trim``).
+
+HyperMRI applies the storage trim to already decoded, complex samples arranged
+in acquisition-row order. It retains HyperMRI's sample dtype, array layout,
+validation, and error behavior; it does not use or reproduce the complete
+Dataset file-reading and FID decoding path.
+
+These notices identify adapted material and do not modify its licence terms.

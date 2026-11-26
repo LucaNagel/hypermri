@@ -1,0 +1,55 @@
+/* Customizations to approximate the NumPy documentation look & feel */
+:root {
+    --pst-color-primary: #0072cf;
+    --pst-color-primary-highlight: #005da2;
+    --pst-color-link: var(--pst-color-primary);
+    --pst-color-link-hover: var(--pst-color-primary-highlight);
+    --pst-font-weight-heading: 700;
+}
+
+/* Navbar tweaks */
+.bd-header {
+    border-bottom: 1px solid #d1d5db;
+    box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.bd-header .navbar-brand img {
+    max-height: 32px;
+}
+
+.bd-header .navbar-title {
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+/* Table of contents sidebar spacing */
+.bd-sidebar .toc-section {
+    margin-bottom: 1.5rem;
+}
+
+/* Callout blocks closer to NumPy styling */
+.admonition {
+    border-radius: 0.5rem;
+    padding: 1rem;
+}
+
+.admonition-title {
+    font-weight: 600;
+}
+
+/* Fewer borders in content area */
+.bd-content article p {
+    line-height: 1.7;
+}
+
+/* Footer mimic */
+.bd-footer {
+    border-top: 1px solid #d1d5db;
+    background: #f9fafb;
+    color: #1f2937;
+}
+
+.bd-footer a {
+    color: var(--pst-color-primary);
+}
