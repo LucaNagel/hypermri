@@ -43,6 +43,7 @@ def test_missing_inversion_count_names_the_parameter_and_scan(
             {"InversionTime": "( 2 )\n10 250"},
         )
 
-    message = str(error.value)
+    # KeyError.__str__ quotes its argument and doubles Windows backslashes.
+    message = error.value.args[0]
     assert "'NoIT'" in message
     assert str(synthetic_flash_scan) in message

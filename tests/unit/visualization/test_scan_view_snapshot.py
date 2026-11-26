@@ -17,7 +17,9 @@ import pytest
 pytest.importorskip("anywidget")
 from plotly.offline import get_plotlyjs_version  # noqa: E402
 
-from tests.unit.visualization.test_scan_view import _view  # noqa: E402
+# Pytest puts this test directory on sys.path (rootdir-less "prepend" import
+# mode), so the sibling module imports by its basename even under python -I.
+from test_scan_view import _view  # noqa: E402
 
 _STATE = re.compile(
     r'<script id="hypermri-state" type="application/json">(.*?)</script>', re.S

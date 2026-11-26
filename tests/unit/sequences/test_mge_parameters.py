@@ -55,6 +55,7 @@ def test_missing_echo_times_name_the_parameter_and_scan(
     with pytest.raises(KeyError) as error:
         _mge(synthetic_flash_scan, write_paravision_parameters, {})
 
-    message = str(error.value)
+    # KeyError.__str__ quotes its argument and doubles Windows backslashes.
+    message = error.value.args[0]
     assert "'EffectiveTE'" in message
     assert str(synthetic_flash_scan) in message

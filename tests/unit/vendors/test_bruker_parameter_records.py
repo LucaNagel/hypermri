@@ -11,7 +11,7 @@ from hypermri.vendors.bruker import BrukerHandler
 
 def _read_parameters(tmp_path, content):
     path = tmp_path / "method"
-    path.write_text(content, encoding="utf-8")
+    path.write_bytes(content.encode("utf-8"))
     handler = object.__new__(BrukerHandler)
     handler.path = tmp_path
     return handler._read_param_file("method")
@@ -86,3 +86,21 @@ def test_incomplete_numeric_array_does_not_consume_next_parameter():
     with pytest.raises(ValueError):
         BrukerHandler._parse_array(stream, "( 3 )\n")
     assert stream.readline() == "##$Next=99\n"
+
+
+@pytest.mark.parametrize(
+    ("encoding", "newline"),
+    [("utf-8", "\n"), ("utf-8", "\r\n"), ("latin-1", "\n"), ("latin-1", "\r\n")],
+)
+def test_parameter_text_decoding_ignores_the_platform_locale(
+    tmp_path, encoding, newline
+):
+    """UTF-8 and Latin-1 labels decode the same way on every platform."""
+    path = tmp_path / "method"
+    text = "##$Label=( 64 )\n<Gewebe µ Nähe>\n##$Sentinel=17\n##END=\n"
+    path.write_bytes(text.replace("\n", newline).encode(encoding))
+    handler = object.__new__(BrukerHandler)
+    handler.path = tmp_path
+    result = handler._read_param_file("method")
+    assert result["Label"] == "<Gewebe µ Nähe>"
+    assert result["Sentinel"] == 17

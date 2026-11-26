@@ -27,6 +27,7 @@ def test_missing_phase_steps_name_the_parameter_and_scan(
     with pytest.raises(KeyError) as error:
         BrukerCsiRecoStrategy().get_phase_encoding_order(handler)
 
-    message = str(error.value)
+    # KeyError.__str__ quotes its argument and doubles Windows backslashes.
+    message = error.value.args[0]
     assert "'PVM_EncSteps1'" in message
     assert str(synthetic_flash_scan) in message

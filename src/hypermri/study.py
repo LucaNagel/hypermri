@@ -21,6 +21,7 @@ from hypermri.sequences._map_fitting import (
     _validate_options,
 )
 from hypermri.sequences.base_anatomy import BaseAnatomy
+from hypermri.vendors._jcamp import _open_jcamp_text
 
 from .mixins import StandardizedPathMixin
 from .utils.system.logging import LOG_MODES as LOG_MODES
@@ -1011,7 +1012,7 @@ class Study(Mapping, StandardizedPathMixin):
         """Retrieve the SubjectName of our bruker directory."""
         subject_fname = self.path / "subject"
         if subject_fname.is_file():
-            with open(subject_fname, "r") as f:
+            with _open_jcamp_text(subject_fname) as f:
                 for line in f:
                     if line.startswith("##$SUBJECT_name_string"):
                         # Read the next line
@@ -1023,7 +1024,7 @@ class Study(Mapping, StandardizedPathMixin):
         """Retrieve the Subject's date of birth our bruker directory."""
         subject_fname = self.path / "subject"
         if subject_fname.is_file():
-            with open(subject_fname, "r") as f:
+            with _open_jcamp_text(subject_fname) as f:
                 for line in f:
                     if line.startswith("##$SUBJECT_dbirth"):
                         # Read the next line
@@ -1035,7 +1036,7 @@ class Study(Mapping, StandardizedPathMixin):
         """Retrieve the Subject's weight of our bruker directory."""
         subject_fname = self.path / "subject"
         if subject_fname.is_file():
-            with open(subject_fname, "r") as f:
+            with _open_jcamp_text(subject_fname) as f:
                 for line in f:
                     if line.startswith("##$SUBJECT_weight"):
                         # Read the next line
@@ -1049,7 +1050,7 @@ class Study(Mapping, StandardizedPathMixin):
         """Retrieve the SubjectDate of our bruker directory."""
         subject_fname = self.path / "subject"
         if subject_fname.is_file():
-            with open(subject_fname, "r") as f:
+            with _open_jcamp_text(subject_fname) as f:
                 for line in f:
                     if line.startswith("##$SUBJECT_date"):
                         date = line.split("=")[1].strip()
@@ -1060,7 +1061,7 @@ class Study(Mapping, StandardizedPathMixin):
         """Retrieve the Subject's date of birth of our bruker directory."""
         subject_fname = self.path / "subject"
         if subject_fname.is_file():
-            with open(subject_fname, "r") as f:
+            with _open_jcamp_text(subject_fname) as f:
                 for line in f:
                     if line.startswith("##$SUBJECT_type"):
                         # Read the next line

@@ -27,6 +27,7 @@ def test_missing_bandwidth_names_the_parameter_and_scan(
     with pytest.raises(KeyError) as error:
         solver.correct_chemical_shift()
 
-    message = str(error.value)
+    # KeyError.__str__ quotes its argument and doubles Windows backslashes.
+    message = error.value.args[0]
     assert "'PVM_EffSWh'" in message
     assert str(synthetic_flash_scan) in message

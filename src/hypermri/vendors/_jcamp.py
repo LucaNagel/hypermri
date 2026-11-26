@@ -14,12 +14,39 @@ LICENSES/brukerMRI-Apache-2.0.txt in the source distribution or the installed
 distribution's dist-info/licenses directory for the attribution and licence.
 """
 
+import io
 import os
 import re
 from datetime import datetime
 from pathlib import Path
 
 import numpy as np
+
+
+def _open_jcamp_text(file_path: Path) -> io.StringIO:
+    """Decode a JCAMP parameter file independently of the platform locale.
+
+    ParaVision and TopSpin write ASCII records; labels and comments may carry
+    UTF-8 or Latin-1 characters. UTF-8 is tried first because it rejects
+    invalid byte sequences; Latin-1 decodes every byte and serves as the
+    fallback. Lines end in ``\\n`` after reading whatever the file used.
+
+    Parameters
+    ----------
+    file_path : pathlib.Path
+        Parameter file to read. The file is not modified.
+
+    Returns
+    -------
+    io.StringIO
+        Decoded text with universal newline translation.
+    """
+    raw = file_path.read_bytes()
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        text = raw.decode("latin-1")
+    return io.StringIO(text, newline=None)
 
 
 def _parse_scalar(val: str):
@@ -159,7 +186,7 @@ def _read_paravision_parameters(file_path: Path) -> dict:
     if not file_path.exists() or os.path.getsize(file_path) == 0:
         return param_dict
 
-    with open(file_path) as f:
+    with _open_jcamp_text(file_path) as f:
         while True:
             line = f.readline()
             if not line:
@@ -251,7 +278,7 @@ def _read_topspin_parameters(file_path: Path) -> dict:
         return {}
 
     params: dict = {}
-    with open(file_path) as fh:
+    with _open_jcamp_text(file_path) as fh:
         while True:
             line = fh.readline()
             if not line:

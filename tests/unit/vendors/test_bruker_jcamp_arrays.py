@@ -11,7 +11,7 @@ from hypermri.vendors.bruker import BrukerHandler
 
 def _read(tmp_path, text):
     path = tmp_path / "visu_pars"
-    path.write_text(text, encoding="utf-8")
+    path.write_bytes(text.encode("utf-8"))
     handler = BrukerHandler.__new__(BrukerHandler)
     handler.path = tmp_path
     result = handler._read_param_file("visu_pars")

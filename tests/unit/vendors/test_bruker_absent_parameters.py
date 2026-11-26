@@ -146,7 +146,8 @@ def test_method_parameter_names_parameter_and_scan_when_missing(
     with pytest.raises(KeyError) as error:
         handler.method_parameter("NEchoes")
 
-    message = str(error.value)
+    # KeyError.__str__ quotes its argument and doubles Windows backslashes.
+    message = error.value.args[0]
     assert "'NEchoes'" in message
     assert str(handler.expnum) in message
     assert str(synthetic_flash_scan) in message

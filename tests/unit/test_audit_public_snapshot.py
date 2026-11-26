@@ -276,7 +276,7 @@ def test_git_listing_includes_tracked_and_unignored_new_files(monkeypatch):
             [
                 "git",
                 "-C",
-                "/repository",
+                str(Path("/repository")),
                 "ls-files",
                 "--cached",
                 "--others",

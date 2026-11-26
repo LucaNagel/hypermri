@@ -22,6 +22,7 @@ def test_missing_power_range_names_the_parameter_and_scan(
     with pytest.raises(KeyError) as error:
         b1_calibration(handler, plot=False, db=False)
 
-    message = str(error.value)
+    # KeyError.__str__ quotes its argument and doubles Windows backslashes.
+    message = error.value.args[0]
     assert "'PulseVectorEnd'" in message
     assert str(synthetic_flash_scan) in message
