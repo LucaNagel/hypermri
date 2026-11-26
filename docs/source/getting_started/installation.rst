@@ -1,13 +1,10 @@
 Installation
 ============
 
-Follow these steps to install HyperMRI into an isolated environment. The
-`hypermri project on PyPI <https://pypi.org/project/hypermri/>`_ is the approved
-distribution name, but version ``0.1.0`` is not published yet. The version
-currently returned by ``pip install hypermri`` is the historical ``0.0.3``
-package from 2022, with legacy metadata and code. It is **not** the development
-version described by this repository. Install the current version from a source
-checkout until the ``0.1.0`` release is announced.
+Follow these steps to install HyperMRI into an isolated environment.
+HyperMRI is published on `PyPI <https://pypi.org/project/hypermri/>`_ as
+``hypermri``. Install the released package with ``pip``, or install from a
+source checkout to edit the package or build the documentation.
 
 Prerequisites
 -------------
@@ -16,7 +13,7 @@ Prerequisites
 * Anaconda/Miniconda or a Python 3.12 interpreter with ``venv`` available
 * ``ipykernel >=7.4,<8``, installed by the ``notebook`` extra
 * The test suite and synthetic notebook-kernel test run on Python 3.12
-* Git tooling for a source checkout
+* Git tooling for a source checkout only
 * JupyterLab or VS Code for the interactive viewer
 
 Create an environment
@@ -28,6 +25,15 @@ Conda environment:
 
    conda create -n hypermri python=3.12
    conda activate hypermri
+
+Install from PyPI
+-----------------
+
+.. code-block:: bash
+
+   pip install "hypermri[notebook]"
+
+For loading and numerical analysis alone, use ``pip install hypermri``.
 
 Install from source
 -------------------
@@ -59,8 +65,9 @@ Quoting extras works reliably in shells such as ``zsh``.
 Installation extras
 -------------------
 
-``pip install -e .`` installs loading, reconstruction and numerical analysis.
-Choose optional features explicitly:
+``pip install hypermri`` (or ``pip install -e .`` in a source checkout)
+installs loading, reconstruction and numerical analysis. Choose optional
+features explicitly; the extras are the same for both installation paths:
 
 * ``pip install -e ".[visualization]"`` installs the browser viewer (Plotly and anywidget).
 * ``pip install -e ".[notebook]"`` adds the viewer, Jupyter and the supported kernel.
