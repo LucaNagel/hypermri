@@ -593,13 +593,12 @@ also offer a "Tutorial" box; ticked, it lists the steps of the tool above
 its inputs.
 
 The "fit" tool is offered for spectra (not for fit results or images). It
-holds a table of spectral lines. The row "Find lines" offers three ways to
-fill it: "Detect lines" replaces the table with the lines found by
-``detect_csi_peaks`` using the row "Detection" (smallest peak height in
-multiples of the noise, and how many of the strongest lines to keep; 0 keeps
-all), "Add at cursor" adds a line at the spectral position chosen in the
-spectrum, and "Use lines of earlier fit" is described below. Detected and
-added lines start with the search range and T2* bounds of the row "Defaults
+holds a table of spectral lines. The row "Find lines" offers two ways to
+fill it: "Add at cursor" adds a line at the spectral position chosen in the
+spectrum, and "Use lines of earlier fit" is described below. Automatic line
+detection is not offered in the tool;
+:func:`~hypermri.visualization.fit_tool.detect_peaks` still fills the table
+from Python. Added lines start with the search range and T2* bounds of the row "Defaults
 for new lines". Each row of the table sets the start frequency and its full search width
 in Hz, the T2* start value and bounds in ms, whether frequency or T2* stay
 fixed and whether the line is fitted at all. "Run fit" fits every voxel of
@@ -611,12 +610,7 @@ fit parameters and a copy of the fitted data), where the review of
 ``interactive_fit`` finds it. Python owns the table
 (``hypermri.visualization.fit_tool``); the browser only sends edits.
 
-"Advanced" shows the remaining settings of the notebook peak selector.
-Detection (added to the row "Detection"): peak prominence in noise units, peaks taken per voxel, smallest
-peak distance in one spectrum, B0 tolerance (how far a line may shift
-between voxels), line separation (weaker neighbouring lines are dropped; 0
-keeps them) and the fit SNR factor (amplitude threshold in multiples of
-the FID tail noise; 0 is off). Fit: smallest distance of fitted line
+"Advanced" shows the remaining fit settings: smallest distance of fitted line
 frequencies, repeats and grid points of the start-value search (0 chooses
 them from the widest search window), fitted FID points (0 fits all), the
 phase-band delay tau in ms (0 derives it from the scan timing with
@@ -652,7 +646,8 @@ search range is drawn as a band of that colour in the spectrum. "fit" and
 residual with a dashed zero line, as in ``plot``
 (``ScanView.show_fit_curves``).
 
-"result table" in the row "Review" (on by default) shows below the tool the fitted values of
+"result table" in the row "Review" (on by default) shows at the top of the tool, above the
+settings, the fitted values of
 the selected voxel, one row per line: amplitude (``|fit_amps|``), phase in
 degrees, frequency in Hz (and ppm) and T2* in ms, plus the shared Gaussian
 FWHM of a Voigt fit
@@ -677,7 +672,7 @@ scanner's own name after each parameter, for example ``PVM_Matrix`` after
 
    view = plot_scan(scan)
    view.tool = "fit"        # or choose "fit" in the tool menu
-   # Detect lines, edit the table, Run fit; then
+   # Add at cursor, edit the table, Run fit; then
    scan.fit_results_review  # the fit of all voxels
 
 The tool "curve_fit" fits along the curve axis instead: ADC for b-values

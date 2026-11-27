@@ -35,12 +35,11 @@ const TOOL_TUTORIALS = {
   ],
   fit: [
     "Click a voxel with strong signal on the map.",
-    'Click "Detect lines": peaks higher than "min height (SNR)" times the noise become lines ("max lines": keep only the strongest, 0 keeps all).',
-    'To add a line by hand, click its peak in the spectrum and then "Add at cursor".',
+    'Click a peak in the spectrum, then "Add at cursor" to add it as a line. Repeat for every peak.',
     'Check the line table: rename lines, correct the start frequencies, remove wrong lines with "×".',
     'New lines start with the "Defaults for new lines" (search range, T2* limits).',
     'Choose the lineshape and click "Run fit" to fit all voxels.',
-    'Look at the fitted curve in the spectrum; "result table" shows the values of the selected voxel.',
+    'Look at the fitted curve in the spectrum; the result table at the top shows the values of the selected voxel.',
   ],
 };
 

@@ -321,7 +321,7 @@ def test_plot_options_and_fit_number_rows_place_inputs_in_columns():
     assert '"hm-csi-fit-settings-items hm-csi-grid-items"' in _function_body(
         script, "buildPage"
     )
-    assert re.search(r'FIT_GRID_KINDS = \["detect", "defaults", "options"\]', script)
+    assert re.search(r'FIT_GRID_KINDS = \["defaults", "options"\]', script)
     assert "FIT_GRID_KINDS.includes(kind)" in _function_body(script, "settingsTable")
     # Every rebuild measures the inputs again; the observer is detached at
     # cleanup.
@@ -396,18 +396,25 @@ def test_a_clicked_polygon_is_stored_before_the_slice_changes():
     assert "v.pending = [];" in _function_body(script, "onNewBlock")
 
 
-def test_fit_rows_separate_finding_detection_and_new_line_defaults():
+def test_fit_rows_offer_no_detection_and_keep_new_line_defaults():
+    # Automatic line detection is not reliable enough yet; the tool offers
+    # only lines added at the cursor or taken from an earlier fit.
     script = browser_script()
     rows = _function_body(script, "fitLineRows")
     titles = re.findall(r'\["([A-Z][^"]+)", "(new|detect|defaults)"', rows)
-    assert titles == [
-        ("Find lines", "new"),
-        ("Detection", "detect"),
-        ("Defaults for new lines", "defaults"),
-    ]
+    assert titles == [("Find lines", "new"), ("Defaults for new lines", "defaults")]
     assert 'add.classList.add("hm-csi-add")' in rows
-    assert '"peak_height_snr", "min height (SNR)"' in script
+    assert '"Detect lines"' not in script
+    assert 'sendFit(v, "detect")' not in script
+    assert "FIT_DETECTION" not in script
     assert '"New lines"' not in script
+
+
+def test_fit_result_table_comes_before_the_settings():
+    body = _function_body(browser_script(), "fitControls")
+    returned = body[body.rindex("return [") :]
+    assert returned.index("v.fitResultHolder") < returned.index("settingsTable(")
+    assert returned.count("v.fitResultHolder") == 1
 
 
 def _viewer_css():
