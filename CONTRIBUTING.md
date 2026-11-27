@@ -68,7 +68,9 @@ The scientific evidence for the spectroscopy fitter is recorded in
 
 ## Review and acceptance
 
-Pull requests target `main`. They must pass the required automated checks and
+Pull requests target `develop`, the integration branch. `main` holds the
+released state and receives `develop` only when a release is prepared.
+Pull requests must pass the required automated checks and
 be approved by the maintainer named in `MAINTAINERS.md` before they are merged.
 Registry presence alone does not promote an implementation to the stable public
 API; support-level changes must also update the public API and support matrix.
