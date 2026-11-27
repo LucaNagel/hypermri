@@ -32,8 +32,8 @@ from hypermri.visualization.view_dimensions import (
     view_plane_choices,
 )
 
-_import_optional("anywidget", "visualization")
-_import_optional("cmap", "visualization")
+_import_optional("anywidget")
+_import_optional("cmap")
 
 from hypermri.visualization.scan_view.options import (  # noqa: E402
     _SPATIAL_FILTER_WIDTHS,

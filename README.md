@@ -44,83 +44,142 @@ The documentation is hosted on Read the Docs:
 * [hypermri.readthedocs.io/en/latest](https://hypermri.readthedocs.io/en/latest/)
   follows the `develop` branch.
 
-To build it locally from a source checkout, run
-
-```bash
-pip install -e ".[docs]"
-sphinx-build -b html docs/source docs/_build/html
-```
-
-and open `docs/_build/html/index.html`. It contains:
-
-*   **Getting started**: installation and a first look at a study.
-*   **Tutorials**: loading, reconstruction, spectroscopy fitting and the viewer.
-*   **Concepts**: data model, coordinates, reconstruction and architecture.
-*   **Development**: setup, testing, tutorials and releases.
 
 ## Installation
 
-HyperMRI is published on [PyPI](https://pypi.org/project/hypermri/) as
-`hypermri`. Install the released package with `pip`, or install from a source
-checkout to edit the package or build the documentation.
+```bash
+pip install hypermri
+```
 
-**Prerequisites:**
+The steps below start from a computer without Python, conda or Git. HyperMRI
+needs **Python 3.12**; conda installs it for you, so you do not need to
+install Python separately.
 
-* **Python 3.12.x** in an isolated environment. Other Python minor versions
-  are excluded by the package metadata. The test suite runs on Python 3.12.
-  [Anaconda](https://anaconda.org/) or Miniconda is recommended.
-* **Git** for a source checkout only. [Install Git](https://git-scm.com/downloads).
+### 1. Install conda
 
-**1. Create an environment**
+We recommend [Miniforge](https://conda-forge.org/download/), a free conda
+installer that uses the community package channel conda-forge. Download the
+installer for your computer:
 
-Create an environment named `hypermri` to keep package versions such as `numpy` and `matplotlib` consistent.
+| System | Installer |
+| --- | --- |
+| Windows | [Miniforge3-Windows-x86_64.exe](https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Windows-x86_64.exe) |
+| macOS, Apple chip (M1 or newer) | [Miniforge3-MacOSX-arm64.sh](https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-arm64.sh) |
+| macOS, Intel chip | [Miniforge3-MacOSX-x86_64.sh](https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh) |
+| Linux, x86-64 PC | [Miniforge3-Linux-x86_64.sh](https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh) |
+| Linux, ARM | [Miniforge3-Linux-aarch64.sh](https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-aarch64.sh) |
+
+On a Mac, the Apple menu > *About This Mac* shows whether the computer has
+an Apple chip or an Intel processor.
+
+* **Windows:** run the downloaded `.exe` file, choose *Just Me* and keep the
+  default options.
+* **macOS and Linux:** open a terminal and run the downloaded file, for
+  example on a Mac with an Apple chip:
+
+  ```bash
+  bash ~/Downloads/Miniforge3-MacOSX-arm64.sh
+  ```
+
+  Accept the licence and answer `yes` when the installer asks whether to
+  initialize conda. Then close the terminal and open a new one.
+
+If you prefer the graphical
+[Anaconda Navigator](https://www.anaconda.com/docs/tools/anaconda-navigator/main)
+to the terminal, install the
+[Anaconda Distribution](https://www.anaconda.com/download/success) instead and
+follow [Installation with Anaconda Navigator](#installation-with-anaconda-navigator)
+below. Check the
+[Anaconda terms of service](https://www.anaconda.com/legal/terms/terms-of-service)
+first: organizations with more than 200 employees may need a paid licence.
+
+### 2. Open a terminal
+
+All commands below are the same on every system. Type them into:
+
+* **Windows:** *Miniforge Prompt* from the Start menu,
+* **macOS:** *Terminal* (press Cmd+Space and type `Terminal`),
+* **Linux:** the terminal of your desktop, often Ctrl+Alt+T.
+
+The line in the terminal starts with `(base)` when conda is ready.
+
+### 3. Create an environment and install HyperMRI
+
+An environment keeps HyperMRI and its dependencies separate from other
+Python projects. Create one named `hypermri`, activate it and install the
+package:
 
 ```bash
 conda create -n hypermri python=3.12
+```
+
+```bash
 conda activate hypermri
 ```
 
-**2. Install from PyPI**
-
 ```bash
-pip install "hypermri[notebook]"
+pip install hypermri
 ```
 
-For loading and numerical analysis alone, use `pip install hypermri`.
+This installs everything for loading, reconstruction, fitting, the
+interactive viewer, Jupyter and Siemens TWIX files. Optional: SimpleITK
+motion correction needs `pip install "hypermri[motion]"`.
 
-**3. Install from source (optional)**
+### 4. Start Jupyter
 
-Choose this path to edit the package or build the documentation.
+```bash
+jupyter notebook
+```
+
+Jupyter opens in your web browser. In VS Code, select the `hypermri`
+environment as the notebook kernel instead.
+
+Each new terminal starts in the `(base)` environment. Run
+`conda activate hypermri` again before you start Jupyter or Python.
+
+### Alternative: Installation with Anaconda Navigator (Graphical User Interface)
+
+1. Open [Anaconda Navigator](https://www.anaconda.com/download) and go to *Environments*.
+2. Click *Create*, enter the name `hypermri`, select Python 3.12 and click
+   *Create*.
+3. Click the ▶ button next to `hypermri` and choose *Open Terminal*.
+4. In this terminal, run `pip install hypermri` and then `jupyter notebook`.
+
+Next time, open the terminal of the `hypermri` environment the same way and
+run `jupyter notebook`.
+
+### Install from source (developers)
+
+To edit the code or build the documentation, install Git into the
+environment and clone the repository:
+
+```bash
+conda activate hypermri
+```
 
 ```bash
 conda install git
-git clone https://github.com/LucaNagel/hypermri.git
-cd hypermri
-pip install -e ".[notebook]"
 ```
-
-For loading and numerical analysis alone, use `pip install -e .`. The
-`visualization` extra adds the viewer; `notebook` also adds Jupyter. Optional
-Siemens TWIX loading uses `.[siemens]`, and motion correction uses `.[motion]`.
-
-To build the documentation, install its additional dependencies with
-`pip install -e ".[docs]"`. Quoting extras works reliably in shells such as
-`zsh`.
-
-The notebook extra requires `ipykernel >=7.4,<8`, which excludes the older
-kernel affected by queued notebook cells. In VS Code, select the `hypermri`
-environment as the notebook kernel and restart an already running kernel
-after updating. Check the installed dependencies with `python -m pip check`.
-
-**4. Build HTML (optional, source checkout only)**:
 
 ```bash
-cd docs
-make html
+git clone https://github.com/LucaNagel/hypermri.git
 ```
 
-After building, open `docs/_build/html/index.html` in your web browser.
+```bash
+cd hypermri
+```
 
+```bash
+pip install -e ".[dev,docs]"
+```
+
+To contribute changes, first
+[fork the repository](https://github.com/LucaNagel/hypermri/fork) on GitHub
+and clone your fork instead; see
+[CONTRIBUTING.md](https://github.com/LucaNagel/hypermri/blob/main/CONTRIBUTING.md).
+
+The [installation guide](https://hypermri.readthedocs.io/en/stable/getting_started/installation.html)
+covers troubleshooting and building the documentation locally.
 
 ## Usage
 
@@ -155,6 +214,32 @@ complete, and scanner-reconstructed `2dseq` data is not cut again. See the
 for the exact reconstruction contract.
 
 The tutorials in the documentation show more examples.
+
+## Citation
+
+If you use HyperMRI in your research, please cite it. The *Cite this
+repository* button on the GitHub page gives APA and BibTeX entries from
+[CITATION.cff](https://github.com/LucaNagel/hypermri/blob/main/CITATION.cff):
+
+```bibtex
+@software{hypermri,
+  author  = {Nagel, Luca and {HyperMRI contributors}},
+  title   = {{HyperMRI}: Python research tools for loading, reconstructing,
+             and visualizing {MRI} data},
+  url     = {https://github.com/LucaNagel/hypermri},
+  license = {AGPL-3.0-only},
+  version = {0.1.0}
+}
+```
+
+Replace `version` with the release you used. This command prints it:
+
+```bash
+python -c "import hypermri; print(hypermri.__version__)"
+```
+
+If you use an example dataset, please also cite the dataset and its article
+as given in [Usage](#usage) and the documentation.
 
 ## Contributing
 

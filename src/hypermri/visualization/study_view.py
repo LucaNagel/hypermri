@@ -23,7 +23,7 @@ from hypermri._optional import _import_optional
 from hypermri.visualization.scan_view import ScanView, plot_scan, plot_side_by_side
 from hypermri.visualization.scan_view.side_by_side import views_over
 
-_import_optional("ipywidgets", "visualization")
+_import_optional("ipywidgets")
 
 import ipywidgets  # noqa: E402
 

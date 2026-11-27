@@ -1317,8 +1317,8 @@ class IDEAL_Solver:
         """
         from hypermri._optional import _import_optional
 
-        widgets = _import_optional("ipywidgets", "notebook")
-        display = _import_optional("IPython.display", "notebook").display
+        widgets = _import_optional("ipywidgets")
+        display = _import_optional("IPython.display").display
 
         # integrate csi values for given intervalls
         if (
@@ -1753,8 +1753,8 @@ class IDEAL_Solver:
         """
         from hypermri._optional import _import_optional
 
-        widgets = _import_optional("ipywidgets", "notebook")
-        display = _import_optional("IPython.display", "notebook").display
+        widgets = _import_optional("ipywidgets")
+        display = _import_optional("IPython.display").display
 
         if optional_data is not None:
             self.solution_matrix = optional_data
@@ -2462,8 +2462,8 @@ def calc_NSA(
     """
     from hypermri._optional import _import_optional
 
-    widgets = _import_optional("ipywidgets", "notebook")
-    display = _import_optional("IPython.display", "notebook").display
+    widgets = _import_optional("ipywidgets")
+    display = _import_optional("IPython.display").display
 
     echo_shifts = np.arange(
         (echo_shift_start + step_size) / 1000, (echo_shift_end) / 1000, step_size / 1000

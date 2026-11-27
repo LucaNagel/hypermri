@@ -1,86 +1,121 @@
 Installation
 ============
 
-Follow these steps to install HyperMRI into an isolated environment.
 HyperMRI is published on `PyPI <https://pypi.org/project/hypermri/>`_ as
-``hypermri``. Install the released package with ``pip``, or install from a
-source checkout to edit the package or build the documentation.
-
-Prerequisites
--------------
-
-* Python 3.12.x in an isolated environment; other Python minor versions are excluded
-* Anaconda/Miniconda or a Python 3.12 interpreter with ``venv`` available
-* ``ipykernel >=7.4,<8``, installed by the ``notebook`` extra
-* The test suite and synthetic notebook-kernel test run on Python 3.12
-* Git tooling for a source checkout only
-* JupyterLab or VS Code for the interactive viewer
-
-Create an environment
----------------------
-
-Conda environment:
-
-.. code-block:: bash
-
-   conda create -n hypermri python=3.12
-   conda activate hypermri
+``hypermri`` and needs Python 3.12. Other Python minor versions are excluded
+by the package metadata.
 
 Install from PyPI
 -----------------
 
-.. code-block:: bash
+These steps start from a computer without Python, conda or Git. Conda
+installs Python 3.12 into the environment, so Python does not need to be
+installed separately.
 
-   pip install "hypermri[notebook]"
+1. **Install conda.** `Miniforge <https://conda-forge.org/download/>`_ is a
+   free conda installer that uses the conda-forge channel. Download the
+   installer for your computer:
 
-For loading and numerical analysis alone, use ``pip install hypermri``.
+   * Windows: `Miniforge3-Windows-x86_64.exe
+     <https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Windows-x86_64.exe>`_
+   * macOS with an Apple chip (M1 or newer): `Miniforge3-MacOSX-arm64.sh
+     <https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-arm64.sh>`_
+   * macOS with an Intel chip: `Miniforge3-MacOSX-x86_64.sh
+     <https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh>`_
+   * Linux on an x86-64 PC: `Miniforge3-Linux-x86_64.sh
+     <https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh>`_
+   * Linux on ARM: `Miniforge3-Linux-aarch64.sh
+     <https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-aarch64.sh>`_
+
+   On Windows, run the ``.exe`` file, choose *Just Me* and keep the default
+   options. On macOS and Linux, run the downloaded file in a terminal, for
+   example ``bash ~/Downloads/Miniforge3-MacOSX-arm64.sh``, accept the licence
+   and answer ``yes`` when the installer asks whether to initialize conda.
+   Then close the terminal and open a new one.
+
+2. **Open a terminal.** On Windows, open *Miniforge Prompt* from the Start
+   menu; on macOS, *Terminal*; on Linux, the terminal of your desktop. The
+   commands below are the same on every system. The line starts with
+   ``(base)`` when conda is ready.
+
+3. **Create an environment and install HyperMRI:**
+
+   .. code-block:: bash
+
+      conda create -n hypermri python=3.12
+      conda activate hypermri
+      pip install hypermri
+
+4. **Start Jupyter** with ``jupyter notebook``, or select the ``hypermri``
+   environment as the notebook kernel in VS Code. Each new terminal starts in
+   the ``(base)`` environment; run ``conda activate hypermri`` again first.
+
+``pip install hypermri`` installs loading, reconstruction, numerical
+analysis, the interactive Plotly viewer, Jupyter Notebook with the supported
+kernel and the Siemens TWIX reader. A ``venv`` environment based on a
+Python 3.12 interpreter works as well.
+
+Install with Anaconda Navigator
+-------------------------------
+
+`Anaconda Navigator <https://www.anaconda.com/docs/tools/anaconda-navigator/main>`_
+is a graphical alternative to the terminal and is part of the
+`Anaconda Distribution <https://www.anaconda.com/download/success>`_. Check
+the `Anaconda terms of service
+<https://www.anaconda.com/legal/terms/terms-of-service>`_ first:
+organizations with more than 200 employees may need a paid licence.
+
+1. Open Anaconda Navigator and go to *Environments*.
+2. Click *Create*, enter the name ``hypermri``, select Python 3.12 and click
+   *Create*.
+3. Click the ▶ button next to ``hypermri`` and choose *Open Terminal*.
+4. In this terminal, run ``pip install hypermri`` and then
+   ``jupyter notebook``.
+
+Next time, open the terminal of the ``hypermri`` environment the same way and
+run ``jupyter notebook``.
+
+Optional features
+-----------------
+
+* ``pip install "hypermri[motion]"`` adds SimpleITK motion correction.
+
+Loading and numerical analysis do not import widgets or plotting packages;
+the viewer and notebook packages are imported when a plot or styled display
+is requested. If one of them is missing from a damaged environment, the
+error names the package and asks to reinstall HyperMRI.
 
 Install from source
 -------------------
 
-Choose this path to edit the package or build the documentation.
-
-GitHub Desktop workflow:
-
-1. Click **Clone** on the repository page and copy the HTTPS URL.
-2. In GitHub Desktop choose **Clone a repository from the Internet** and paste the URL.
-
-Command-line workflow:
+Choose this path to edit the package or build the documentation. Install Git
+into the active environment and clone the repository:
 
 .. code-block:: bash
 
+   conda activate hypermri
    conda install git
    git clone https://github.com/LucaNagel/hypermri.git
    cd hypermri
-   pip install -e ".[notebook]"
+   pip install -e ".[dev,docs]"
 
-Install the documentation dependencies only when you need them:
+To contribute changes, first `fork the repository
+<https://github.com/LucaNagel/hypermri/fork>`_ on GitHub and clone your fork
+instead.
+
+Git is also available from
+`git-scm.com <https://git-scm.com/downloads>`_, and GitHub Desktop can clone
+the repository instead. The ``test`` extra adds the test tools, ``dev`` adds
+linting and packaging tools, and ``docs`` adds the documentation build.
+Quoting extras works reliably in shells such as ``zsh``. Build the HTML
+documentation with:
 
 .. code-block:: bash
 
-   pip install -e ".[docs]"
+   cd docs
+   make html
 
-Quoting extras works reliably in shells such as ``zsh``.
-
-Installation extras
--------------------
-
-``pip install hypermri`` (or ``pip install -e .`` in a source checkout)
-installs loading, reconstruction and numerical analysis. Choose optional
-features explicitly; the extras are the same for both installation paths:
-
-* ``pip install -e ".[visualization]"`` installs the browser viewer (Plotly and anywidget).
-* ``pip install -e ".[notebook]"`` adds the viewer, Jupyter and the supported kernel.
-* ``pip install -e ".[siemens]"`` adds the experimental Siemens TWIX reader.
-* ``pip install -e ".[motion]"`` adds SimpleITK motion correction.
-* ``pip install -e ".[test]"`` includes notebook/Siemens dependencies for the tests.
-* ``pip install -e ".[dev,docs]"`` provides development, tests and documentation.
-
-Missing optional features fail when requested, with the extra to install.
-Numerical loading does not initialize notebook widgets. Matplotlib remains a
-core dependency because existing analysis and sequence modules use its static
-plotting helpers. GitPython and the unused SymPy dependency have been removed;
-provenance uses the optional Git executable and retains an explicit missing label.
+and open ``docs/_build/html/index.html``.
 
 Notebook kernel
 ---------------
@@ -98,7 +133,7 @@ Check the installed dependencies after installation or an environment update:
    python -m pip check
 
 The version requirements are defined in ``pyproject.toml`` and also apply to
-the test, development, documentation, and Binder installations. Automated
+the development, documentation, and Binder installations. Automated
 tests check synthetic scientific workflows, widgets, and queued kernel
 requests; VS Code frontend rendering remains a manual check.
 

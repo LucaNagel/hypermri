@@ -107,7 +107,7 @@ class NSPECT(BaseSpectroscopy):
         Raises
         ------
         ImportError
-            If ``hypermri[notebook]`` is not installed.
+            If ipywidgets is missing from the environment.
         IndexError
             If the requested repetition is outside the acquired FID array.
         """
@@ -115,7 +115,7 @@ class NSPECT(BaseSpectroscopy):
 
         from hypermri._optional import _import_optional
 
-        widgets = _import_optional("ipywidgets", "notebook")
+        widgets = _import_optional("ipywidgets")
         fid = self.handler.fid[number, :]
         spec_complex = spectral_fft(fid, axis=-1)
         # perform a baseline correction

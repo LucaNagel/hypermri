@@ -1,18 +1,23 @@
-"""Report missing optional feature dependencies at their point of use."""
+"""Import viewer, notebook and vendor dependencies at their point of use.
+
+These packages are regular HyperMRI dependencies, but importing them lazily
+keeps loading and numerical analysis free of widget and plotting start-up.
+"""
 
 from importlib import import_module
 
 
-def _import_optional(module: str, extra: str):
-    """Import a feature dependency without hiding unrelated import failures."""
+def _import_optional(module: str):
+    """Import a lazily used dependency without hiding unrelated import failures."""
     try:
         return import_module(module)
     except ModuleNotFoundError as exc:
         if exc.name != module.split(".")[0] and exc.name != module:
             raise
         raise ImportError(
-            f"This operation requires {module}; install it with "
-            f"`pip install 'hypermri[{extra}]'`."
+            f"This operation requires {module}, a HyperMRI dependency that is "
+            "missing from this environment; reinstall HyperMRI with "
+            "`pip install hypermri`."
         ) from exc
 
 
@@ -35,10 +40,10 @@ def _notebook_alias(name: str):
     AttributeError
         If the requested name is not a retained notebook alias.
     ImportError
-        If ``hypermri[notebook]`` is unavailable.
+        If ipywidgets or IPython is missing from the environment.
     """
     if name == "widgets":
-        return _import_optional("ipywidgets", "notebook")
+        return _import_optional("ipywidgets")
     if name == "display":
-        return _import_optional("IPython.display", "notebook").display
+        return _import_optional("IPython.display").display
     raise AttributeError(f"Unknown notebook alias {name!r}")

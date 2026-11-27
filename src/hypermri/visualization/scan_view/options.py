@@ -9,8 +9,8 @@ import numpy as np
 
 from hypermri._optional import _import_optional
 
-_import_optional("anywidget", "visualization")
-_import_optional("cmap", "visualization")
+_import_optional("anywidget")
+_import_optional("cmap")
 
 
 SPECTRAL_DIM = "acquisition_idx"
