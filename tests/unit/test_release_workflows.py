@@ -67,7 +67,7 @@ def test_all_external_workflow_actions_are_pinned_to_full_commit_shas():
     ), external_uses
 
 
-def test_dependabot_updates_only_github_actions_weekly_in_one_group():
+def test_dependabot_updates_github_actions_weekly_in_one_group_on_develop():
     config_path = WORKFLOW_DIR.parent / "dependabot.yml"
     config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
 
@@ -76,6 +76,7 @@ def test_dependabot_updates_only_github_actions_weekly_in_one_group():
         {
             "package-ecosystem": "github-actions",
             "directory": "/",
+            "target-branch": "develop",
             "schedule": {"interval": "weekly"},
             "groups": {"github-actions": {"patterns": ["*"]}},
         }

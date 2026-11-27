@@ -11,6 +11,22 @@ publication.
    ``main`` branch or an old tag. The first GitHub commit must be created in a
    separate, history-free directory by following the procedure below.
 
+Branches
+--------
+
+Day-to-day changes go to ``develop``, either as direct pushes of small
+changes or through pull requests from short-lived feature branches. ``main``
+holds the released state, which the GitHub front page and the PyPI release
+share. Continuous integration runs on pushes to both branches and on every
+pull request; the ``latest`` documentation on Read the Docs follows
+``develop`` and ``stable`` follows the newest release tag.
+
+To prepare a release, open a pull request from ``develop`` into ``main`` and
+merge it with a merge commit, not a squash merge. A squash merge gives
+``main`` a commit that ``develop`` lacks, so the next release pull request
+would conflict on changes that were already released. Create release tags on
+``main`` after that merge.
+
 Release prerequisites
 ---------------------
 

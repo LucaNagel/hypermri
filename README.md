@@ -42,7 +42,7 @@ The documentation is hosted on Read the Docs:
 * [hypermri.readthedocs.io/en/stable](https://hypermri.readthedocs.io/en/stable/)
   describes the latest release on PyPI.
 * [hypermri.readthedocs.io/en/latest](https://hypermri.readthedocs.io/en/latest/)
-  follows the `main` branch.
+  follows the `develop` branch.
 
 To build it locally from a source checkout, run
 
