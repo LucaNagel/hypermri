@@ -199,7 +199,9 @@ The example session is hyperpolarized [1-¹³C]pyruvate CSI of a mouse abdomen
 (Zenodo, [doi:10.5281/zenodo.20429962](https://doi.org/10.5281/zenodo.20429962),
 CC BY 4.0). Please cite Gottwald et al., npj Imaging 3, 19 (2025),
 [doi:10.1038/s44303-025-00081-3](https://doi.org/10.1038/s44303-025-00081-3),
-when you use it.
+when you use it. If its files on Zenodo are restricted, request access on the
+record page and set `HYPERMRI_ZENODO_TOKEN` to the token of the share link you
+receive.
 
 The separate optional real-data integration suite uses Tomáš Pšorn's public
 [BrukerAPI ParaVision 6.0.1 Lego-phantom corpus](https://doi.org/10.5281/zenodo.4048253)

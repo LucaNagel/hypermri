@@ -13,4 +13,6 @@ lists the released datasets from a shell.
 
 .. autofunction:: hypermri.datasets.get_dataset_info
 
+.. autofunction:: hypermri.datasets.is_dataset_cached
+
 .. autoexception:: hypermri.datasets.DatasetError

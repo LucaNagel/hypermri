@@ -27,8 +27,12 @@ jobs:
           pip install -e ".[docs]"
 
       - name: Build HTML documentation
+        env:
+          HYPERMRI_ZENODO_TOKEN: ${{ secrets.HYPERMRI_ZENODO_TOKEN }}
         run: sphinx-build -b html docs/source docs/_build/html -W --keep-going
 
       - name: Build linkcheck (optional)
+        env:
+          HYPERMRI_ZENODO_TOKEN: ${{ secrets.HYPERMRI_ZENODO_TOKEN }}
         run: sphinx-build -b linkcheck docs/source docs/_build/linkcheck
         continue-on-error: true

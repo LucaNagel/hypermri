@@ -19,6 +19,7 @@
       "archive_name": "hp_pyruvate_csi_mouse.zip",
       "archive_size_bytes": 29025981,
       "checksum": "sha256:e78098b8176f07e32d1bf2774a146c4542da94f9ca926c13a8c30022e4007578",
+      "access_token_env": "HYPERMRI_ZENODO_TOKEN",
       "relative_path": "HP 13C Pyr static CSI in mouse",
       "required_paths": [
         "subject",

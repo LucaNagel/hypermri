@@ -31,7 +31,10 @@ after the end of the injection on a 7 T Bruker small-animal scanner
 {func}`~hypermri.datasets.fetch_example_data` downloads the archive once,
 checks its SHA-256 checksum, unpacks it into a local cache and returns the
 session folder. Later calls only return the folder. The environment variable
-`HYPERMRI_DATA` chooses another cache folder.
+`HYPERMRI_DATA` chooses another cache folder. If the files on Zenodo are
+restricted, request access on the record page; with a share link from the
+owner, set the environment variable `HYPERMRI_ZENODO_TOKEN` to the value after
+`token=` in that link before the download.
 
 ```{code-cell} ipython3
 from hypermri.datasets import fetch_example_data

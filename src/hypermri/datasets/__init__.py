@@ -6,6 +6,7 @@ from .fetch import (
     fetch_example_data,
     get_data_home,
     get_dataset_info,
+    is_dataset_cached,
     list_datasets,
     load_registry,
 )
@@ -16,6 +17,7 @@ __all__ = [
     "fetch_example_data",
     "get_data_home",
     "get_dataset_info",
+    "is_dataset_cached",
     "list_datasets",
     "load_registry",
 ]
