@@ -27,9 +27,9 @@ Before exporting or publishing a release:
    documentation, and that Luca Nagel still has release access to the PyPI
    project.
 4. Confirm that the PyPI project owners and maintainers are correct.
-5. Confirm that every public URL in ``pyproject.toml`` resolves. In particular,
-   connect the public repository to Read the Docs before publishing ``0.1.0``,
-   or replace the planned documentation URL with the currently hosted docs.
+5. Confirm that every public URL in ``pyproject.toml`` resolves, including the
+   Read the Docs documentation. After the release tag is pushed, check that the
+   ``stable`` documentation version shows the new release.
 6. Confirm that the license in ``pyproject.toml``, ``LICENSE``, GitHub, and
    PyPI matches the completed rights review.
 7. Review the historical roster in ``CONTRIBUTORS.md`` for completeness and
