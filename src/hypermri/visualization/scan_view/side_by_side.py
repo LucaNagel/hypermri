@@ -33,10 +33,16 @@ _ARRANGEMENT_HINTS = (
     "One view per row, each with the full width",
 )
 
-#: Width (px) that a view with a curve panel asks for its curves when a row
-#: is shared between views; the curve panel's flex basis in
+#: Least width (px) that a view with a curve panel asks for its curves when
+#: a row is shared between views; the curve panel's flex basis in
 #: ``browser/viewer.css`` plus the gap before it.
 SIDE_BY_SIDE_CURVE_WIDTH_PX = 304
+
+#: Width of a curve panel per plot height that a view asks for when a row is
+#: shared between views, as for a landscape plot of 3:2. With only the least
+#: width a single plane next to spectra or time courses took more than its
+#: share of the row.
+SIDE_BY_SIDE_CURVE_ASPECT = 1.5
 
 # Value of a menu "under" for no view underneath (a Dropdown treats None as
 # no selection at all).
@@ -287,6 +293,9 @@ class SideBySideView(ipywidgets.VBox):
             if overlays.get(upper, ((), ()))[1] is not views:
                 for view in views:
                     view.close()
+        for upper, (_, views) in overlays.items():
+            for view in views:
+                view.show_timings = self._given[upper].show_timings
         for view in built:
             self._observe_width(view)
         self._under_of = wanted
@@ -532,8 +541,8 @@ def _side_by_side_columns(views: list[ScanView]) -> str:
     """Return the CSS grid columns of one row of views.
 
     Each column gets a share of the width in proportion to what its view
-    needs to show its image at the full plot height (plus
-    :data:`SIDE_BY_SIDE_CURVE_WIDTH_PX` for a curve). When the row is too
+    needs to show its image at the full plot height, plus room for a curve
+    (see :func:`_side_by_side_width`). When the row is too
     narrow, every image is then lowered by about the same factor, so that the
     images keep one height.
     """
@@ -553,7 +562,9 @@ def _side_by_side_width(view: ScanView) -> int:
     The image keeps equal scales on both axes, so its width is the plot
     height times the ratio of its horizontal to its vertical extent (from the
     axis ranges of the shown plane, or of the anatomy under a single voxel).
-    Axis margins are left out; the value only sets the share of a column.
+    A curve panel adds :data:`SIDE_BY_SIDE_CURVE_ASPECT` times the plot
+    height, but at least :data:`SIDE_BY_SIDE_CURVE_WIDTH_PX`. Axis margins
+    are left out; the value only sets the share of a column.
     """
     shown = view._view
     ranges = shown.get("outline") if shown.get("single_voxel") else shown
@@ -564,5 +575,8 @@ def _side_by_side_width(view: ScanView) -> int:
         if span_x > 0 and span_y > 0:
             width = view.plot_height * span_x / span_y
     if _shows_curve(view):
-        width += SIDE_BY_SIDE_CURVE_WIDTH_PX
+        width += max(
+            SIDE_BY_SIDE_CURVE_WIDTH_PX,
+            SIDE_BY_SIDE_CURVE_ASPECT * view.plot_height,
+        )
     return max(round(width), 1)

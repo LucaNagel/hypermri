@@ -124,9 +124,8 @@ plane), "Min/Max" (shown as "full range of the data": limits in signal units
 that return to the full plane range when the complex part or line broadening
 changes) and "Absolute" (shown as "fixed values": limits that are kept). One
 slider "range" with two handles sets the minimum and the maximum. A new view
-without a given or saved state starts at 0-80 % of the shown map (maximum at
-80 %, so that weaker
-signal stays visible) and at the voxel of the shown plane
+without a given or saved state starts at 0-80 % of the shown map and of the
+anatomy under it (maximum at 80 %, so that weaker signal stays visible) and at the voxel of the shown plane
 with the strongest signal (largest magnitude along its curve). The menu, the
 sliders and :meth:`~hypermri.visualization.scan_view.ScanView.set_map_range`
 only redraw the map; a minimum that is not below the maximum is rejected.
@@ -486,6 +485,11 @@ the masks over the map; they are kept and still count for the ROI mean.
    overlaid.set_anatomy_opacity(0.5)
 
 ``view.unlink()`` removes a view from all slice, pointer and mask links.
+
+The status line below the plots shows the hints for the mouse and keys. How
+long the browser took to redraw and how long Python took for the last data
+block appear only with ``plot_scan(..., show_timings=True)``,
+``plot_side_by_side(..., show_timings=True)`` or ``view.show_timings = True``.
 
 To choose the scans of a study in the viewer, ``plot_study`` shows the scan
 list of a :class:`~hypermri.Study` in a collapsible section ("Scans") above

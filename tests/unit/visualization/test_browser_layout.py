@@ -352,3 +352,16 @@ def test_result_table_is_shown_and_residual_range_proposed_after_a_fit():
     assert proposal
     # Typed values are kept: only an empty range is replaced.
     assert "!v.fitResidualRange.some(Number.isFinite)" in script
+
+
+def test_plot_options_table_does_not_cover_the_header_buttons():
+    # With the header's flex basis of 100 % the table took the whole header
+    # height and lay over the wrapped top bar, so clicks on the plot-options
+    # toggle reached the denoise button underneath.
+    css = (
+        resource_files("hypermri.visualization")
+        .joinpath("browser/viewer.css")
+        .read_text(encoding="utf-8")
+    )
+    rule = re.search(r"\.hm-csi-header > \.hm-csi-options \{(.*?)\}", css, re.S)
+    assert "flex: none" in rule.group(1)

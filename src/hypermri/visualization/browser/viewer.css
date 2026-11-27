@@ -148,7 +148,13 @@
 }
 
 /* Plot options: a table like the fit settings (.hm-csi-fit-settings), one
-   row per section with a coloured title. */
+   row per section with a coloured title. Its flex basis of 100 % is meant
+   for a row; in the header column it would ask for the whole height and
+   squeeze the wrapped top bar under the table. */
+.hm-csi-header > .hm-csi-options {
+  flex: none;
+}
+
 .hm-csi-options th {
   width: 7.5em;
   background: var(--hm-border);
@@ -319,7 +325,7 @@
 }
 
 /* The flex basis plus the gap is SIDE_BY_SIDE_CURVE_WIDTH_PX in
-   scan_view/entry.py. In a narrow view the curve keeps at least 40 % of the
+   scan_view/side_by_side.py. In a narrow view the curve keeps at least 40 % of the
    plots row and the map is lowered instead (sizeImagePanel). */
 .hm-csi-spectrum,
 .hm-csi-time {

@@ -239,6 +239,11 @@ class ScanView(
         the browser; default 400. Values below 160 raise
         ``traitlets.TraitError``. Changing it resizes the plots without
         new data from Python.
+    show_timings : bool
+        Show in the status line below the plots how long the browser took
+        to redraw (ms) and how long Python took for the last data block
+        (ms, size in MB); synchronised with the browser. Default False:
+        the status line shows only the hints for the mouse and keys.
     state : PlotState
         Display state; ``state.spatial.slice_indices`` holds the source index
         of the selected voxel for every dimension.
@@ -312,6 +317,7 @@ class ScanView(
     tool = Unicode("").tag(sync=True)
     name = Unicode("").tag(sync=True)
     plot_height = Int(400).tag(sync=True)
+    show_timings = Bool(False).tag(sync=True)
     # Version of the Plotly.js bundled with the plotly package; the browser
     # fetches this version from the web when no kernel sends its copy.
     _plotly_version = Unicode(_plotly_js_version()).tag(sync=True)

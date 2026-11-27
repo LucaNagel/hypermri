@@ -38,6 +38,7 @@ from hypermri.visualization.scan_view import (  # noqa: E402
     plot_side_by_side,
 )
 from hypermri.visualization.scan_view.side_by_side import (  # noqa: E402
+    SIDE_BY_SIDE_CURVE_ASPECT,
     SIDE_BY_SIDE_CURVE_WIDTH_PX,
     _side_by_side_width,
 )
@@ -1087,6 +1088,19 @@ def test_anatomy_range_is_kept_in_state_and_sent_in_percent():
         with pytest.raises(ValueError, match="anatomy range"):
             view.set_anatomy_range(*invalid)
     assert (anatomy.vmin, anatomy.vmax) == (5.0, 95.0)
+
+
+def test_new_view_starts_map_and_anatomy_at_0_to_80_percent():
+    data = _with_scanner_coordinates(_csi())
+    scan = SimpleNamespace(primary_data=data, is_spectroscopic=True)
+    view = plot_scan(scan, anatomy=_anatomy_scan())
+    for layer in (view.state.spatial, view.state.anatomy):
+        assert (layer.range_mode, layer.vmin, layer.vmax) == (
+            "Percentage",
+            0.0,
+            80.0,
+        )
+    assert view._anatomy_range == [0.0, 80.0]
 
 
 def test_plot_scan_coordinate_mode_choice():
@@ -2714,6 +2728,20 @@ def test_side_by_side_shares_the_width_by_what_each_view_needs():
     assert _side_by_side_width(csi) > SIDE_BY_SIDE_CURVE_WIDTH_PX
 
 
+def test_side_by_side_curve_asks_for_width_in_proportion_to_plot_height():
+    # A spectrum asks for a 3:2 landscape at the plot height (at least its
+    # least width), so that one plane does not take the width of a row from
+    # views that also show spectra or time courses.
+    csi = plot_scan(_csi())
+    shown = csi._view
+    span = abs(np.subtract(*shown["x_range"])) / abs(np.subtract(*shown["y_range"]))
+    curve = max(
+        SIDE_BY_SIDE_CURVE_WIDTH_PX, SIDE_BY_SIDE_CURVE_ASPECT * csi.plot_height
+    )
+
+    assert _side_by_side_width(csi) == round(csi.plot_height * span + curve)
+
+
 def test_side_by_side_puts_views_with_curves_in_rows_of_their_own():
     # Image-only views share the first row; each view with a spectrum gets
     # the width of a row below, in the given order.
@@ -2782,6 +2810,26 @@ def test_side_by_side_switches_between_rows_side_by_side_and_stacked():
     assert started.rows == ((axial,), (coronal,))
     with pytest.raises(ValueError, match="arrangement: 'grid' is unknown"):
         plot_side_by_side(axial, coronal, arrangement="grid")
+
+
+def test_timings_are_shown_only_when_asked_for():
+    # The status line shows redraw and block times only with show_timings;
+    # plot_side_by_side sets them for every view, and a view made by the
+    # menu "under" takes the setting of its upper view.
+    assert plot_scan(_coronal_scan()).show_timings is False
+    assert plot_scan(_coronal_scan(), show_timings=True).show_timings is True
+
+    upper, axial = plot_scan(_stacked_anatomy_scan()), plot_scan(_coronal_scan())
+    kept = plot_side_by_side(upper, axial, show_slices=False, share_masks=False)
+    assert [view.show_timings for view in kept.views] == [False, False]
+
+    box = plot_side_by_side(
+        _stacked_anatomy_scan(), _stacked_anatomy_scan(), show_timings=True
+    )
+    assert [view.show_timings for view in box.views] == [True, True]
+    box.set_underlays({1: 0})
+    (over,) = box.views
+    assert over not in box.given_views and over.show_timings is True
 
 
 def test_side_by_side_lays_a_view_under_another():
