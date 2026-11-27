@@ -1,5 +1,10 @@
 # HyperMRI 🧲
 
+[![PyPI](https://img.shields.io/pypi/v/hypermri)](https://pypi.org/project/hypermri/)
+[![Documentation](https://readthedocs.org/projects/hypermri/badge/?version=stable)](https://hypermri.readthedocs.io/en/stable/)
+[![Tests](https://github.com/LucaNagel/hypermri/actions/workflows/test.yml/badge.svg)](https://github.com/LucaNagel/hypermri/actions/workflows/test.yml)
+[![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue)](https://github.com/LucaNagel/hypermri/blob/main/LICENSE)
+
 **Python research tools for loading, reconstructing, and visualizing MRI data.**
 
 ## Research-use notice
@@ -20,7 +25,7 @@ data in GitHub issues, discussions, or examples.
   Bruker ParaVision data, with automatic vendor and sequence detection.
   Siemens support is Beta; Agilent/Varian, Magritek, and Bruker TopSpin
   support is Experimental. See the
-  [support matrix](https://github.com/LucaNagel/hypermri/blob/main/docs/source/support.rst)
+  [support matrix](https://hypermri.readthedocs.io/en/stable/support.html)
   before relying on a workflow.
 * **[xarray](https://docs.xarray.dev/en/stable/) data model**: MRI data is
   represented as labelled `xarray.DataArray` and `xarray.Dataset` objects with
@@ -32,8 +37,14 @@ data in GitHub issues, discussions, or examples.
 
 ## Documentation
 
-The documentation is built from `docs/source`. Public hosting on Read the
-Docs is planned but not live yet; build it locally with
+The documentation is hosted on Read the Docs:
+
+* [hypermri.readthedocs.io/en/stable](https://hypermri.readthedocs.io/en/stable/)
+  describes the latest release on PyPI.
+* [hypermri.readthedocs.io/en/latest](https://hypermri.readthedocs.io/en/latest/)
+  follows the `main` branch.
+
+To build it locally from a source checkout, run
 
 ```bash
 pip install -e ".[docs]"
@@ -140,7 +151,7 @@ For stock Bruker CSI, `raw-reco` removes the first 70
 digital-filter/transient samples once per FID and rebuilds the time and
 frequency axes for the remaining samples. The original handler FID remains
 complete, and scanner-reconstructed `2dseq` data is not cut again. See the
-[support matrix](https://github.com/LucaNagel/hypermri/blob/main/docs/source/support.rst)
+[support matrix](https://hypermri.readthedocs.io/en/stable/support.html)
 for the exact reconstruction contract.
 
 The tutorials in the documentation show more examples.
