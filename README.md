@@ -49,19 +49,16 @@ and open `docs/_build/html/index.html`. It contains:
 
 ## Installation
 
-The [`hypermri` project on PyPI](https://pypi.org/project/hypermri/) is the
-approved distribution name. Version `0.1.0` is not published yet. The version
-currently returned by `pip install hypermri` is the historical `0.0.3` package
-from 2022, with legacy metadata and code; it is **not** the development version
-described by this repository. Install the current development version from a
-source checkout until the `0.1.0` release is announced.
+HyperMRI is published on [PyPI](https://pypi.org/project/hypermri/) as
+`hypermri`. Install the released package with `pip`, or install from a source
+checkout to edit the package or build the documentation.
 
 **Prerequisites:**
 
 * **Python 3.12.x** in an isolated environment. Other Python minor versions
   are excluded by the package metadata. The test suite runs on Python 3.12.
   [Anaconda](https://anaconda.org/) or Miniconda is recommended.
-* **Git** for a source checkout. [Install Git](https://git-scm.com/downloads).
+* **Git** for a source checkout only. [Install Git](https://git-scm.com/downloads).
 
 **1. Create an environment**
 
@@ -72,7 +69,15 @@ conda create -n hypermri python=3.12
 conda activate hypermri
 ```
 
-**2. Install from source**
+**2. Install from PyPI**
+
+```bash
+pip install "hypermri[notebook]"
+```
+
+For loading and numerical analysis alone, use `pip install hypermri`.
+
+**3. Install from source (optional)**
 
 Choose this path to edit the package or build the documentation.
 
@@ -96,7 +101,7 @@ kernel affected by queued notebook cells. In VS Code, select the `hypermri`
 environment as the notebook kernel and restart an already running kernel
 after updating. Check the installed dependencies with `python -m pip check`.
 
-**3. Build HTML (optional, source checkout only)**:
+**4. Build HTML (optional, source checkout only)**:
 
 ```bash
 cd docs
