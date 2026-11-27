@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: >-
+  If you use HyperMRI in your research, please cite it as below. When you use
+  an example dataset, please also cite the dataset and its article as given in
+  the documentation.
+type: software
+title: "HyperMRI: Python research tools for loading, reconstructing, and visualizing MRI data"
+abstract: >-
+  HyperMRI loads Bruker ParaVision and other MRI data, reconstructs it into
+  labelled xarray objects with physical coordinates, and provides spectroscopy
+  fitting, analysis and an interactive Plotly viewer for hyperpolarized and
+  conventional MRI research.
+authors:
+  - family-names: Nagel
+    given-names: Luca
+    orcid: "https://orcid.org/0000-0002-5530-6264"
+  - name: HyperMRI contributors
+    website: "https://github.com/LucaNagel/hypermri/blob/main/CONTRIBUTORS.md"
+version: 0.1.0
+date-released: "2026-11-27"
+license: AGPL-3.0-only
+repository-code: "https://github.com/LucaNagel/hypermri"
+url: "https://hypermri.readthedocs.io/en/stable/"
+keywords:
+  - MRI
+  - hyperpolarized MRI
+  - Bruker
+  - magnetic resonance spectroscopy
+  - xarray
+  - medical imaging
