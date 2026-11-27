@@ -19,7 +19,7 @@ import xarray as xr
 
 from hypermri._optional import _import_optional
 
-_import_optional("anywidget", "visualization")
+_import_optional("anywidget")
 
 
 class _SecondarySlices:

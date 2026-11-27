@@ -53,8 +53,8 @@ from hypermri.visualization.volume_outline import (
     OutlineSource,
 )
 
-_import_optional("anywidget", "visualization")
-_import_optional("cmap", "visualization")
+_import_optional("anywidget")
+_import_optional("cmap")
 
 import anywidget  # noqa: E402
 from traitlets import (  # noqa: E402

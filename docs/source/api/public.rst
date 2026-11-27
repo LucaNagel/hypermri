@@ -25,12 +25,12 @@ the three ``Standardized*Mixin`` classes from ``hypermri.mixins``; ``version``
 and ``PackageNotFoundError`` come from ``importlib.metadata`` and
 ``install_matplotlib_usetex_fallback`` from ``hypermri.utils.plot``.
 
-``PlotOptions`` and numerical spectroscopy operations can be imported without
-notebook packages. Calling ``plot`` requires ``hypermri[visualization]``; styled
-``Study.display`` and legacy notebook controls require ``hypermri[notebook]``.
-Core-only study loading uses ``Study(path, verbose=False)``; the existing
-``verbose=True`` default requests notebook styling. See
-:doc:`../getting_started/installation` for all extras. The previous automatic
+``PlotOptions`` and numerical spectroscopy operations import no notebook or
+plotting packages. ``plot``, styled ``Study.display`` and legacy notebook
+controls import the viewer and notebook packages, which ``pip install
+hypermri`` provides, when they are called. ``Study(path, verbose=False)``
+loads a study without notebook styling; the existing ``verbose=True`` default
+requests it. See :doc:`../getting_started/installation`. The previous automatic
 global Matplotlib TeX retry hook is now opt-in::
 
     from hypermri.utils.plot import install_matplotlib_usetex_fallback

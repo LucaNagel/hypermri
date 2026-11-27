@@ -22,6 +22,16 @@ dependencies = [
     "imageio",
     "pillow",
     "PyYAML",
+    "ipywidgets >= 8.0.4",
+    "IPython",
+    "anywidget",
+    "traitlets",
+    "cmap",
+    "plotly >= 5.0",
+    "notebook >= 7",
+    "ipykernel >= 7.4, < 8",
+    "ipympl >= 0.9.3",
+    "twixtools>=0.24",
 ]
 
 readme = "README.md"
@@ -56,26 +66,7 @@ Issues = "https://github.com/LucaNagel/hypermri/issues"
 hypermri-download-example-data = "hypermri.datasets.fetch:main"
 
 [project.optional-dependencies]
-visualization = [
-  "ipywidgets >= 8.0.4",
-  "IPython",
-  "anywidget",
-  "traitlets",
-  "cmap",
-  "plotly >= 5.0",
-]
-notebook = [
-  "hypermri[visualization]",
-  "nbclassic >= 0.5.3",
-  "notebook >= 6.5.0",
-  "ipykernel >= 7.4, < 8",
-  "ipympl >= 0.9.3",
-]
-siemens = [
-  "twixtools>=0.24",
-]
 test = [
-  "hypermri[notebook,siemens]",
   "pytest >= 8.0",
   "pytest-cov >= 4.0.0",
   "dask[array] >= 2024.3.0",
@@ -93,7 +84,6 @@ dev = [
   "ruff == 0.15.1",
 ]
 docs = [
-  "hypermri[notebook]",
   "sphinx>=7.2",
   "pydata-sphinx-theme",
   "sphinx-autodoc-typehints",

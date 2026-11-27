@@ -36,7 +36,7 @@ _MISSING = object()
 def _import_twixtools():
     from hypermri._optional import _import_optional
 
-    return _import_optional("twixtools", "siemens")
+    return _import_optional("twixtools")
 
 
 class _TwixtoolsHeaderSection(Mapping):

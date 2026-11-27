@@ -21,8 +21,8 @@ from hypermri.visualization.state_persistence import (
     save_plot_state,
 )
 
-_import_optional("anywidget", "visualization")
-_import_optional("cmap", "visualization")
+_import_optional("anywidget")
+_import_optional("cmap")
 
 from hypermri.visualization.scan_view.options import (  # noqa: E402
     _DISPLAY_SWITCHES,
