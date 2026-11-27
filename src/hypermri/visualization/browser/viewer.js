@@ -142,11 +142,13 @@ function buildMaskControls(v) {
 }
 
 function updateStatus(v) {
+  // Timings only when show_timings is set; the snapshot note always.
   const parts = [];
-  if (v.lastDrawMs !== null) parts.push(`browser redraw ${v.lastDrawMs.toFixed(1)} ms`);
+  const timings = Boolean(v.model.get("show_timings"));
+  if (timings && v.lastDrawMs !== null) parts.push(`browser redraw ${v.lastDrawMs.toFixed(1)} ms`);
   if (v.isSnapshot) {
     parts.push(`HTML snapshot without Python (${v.view.shape.join(" x ")})`);
-  } else {
+  } else if (timings) {
     parts.push(
       `last Python block ${v.view.compute_ms} ms (${v.view.block_megabytes} MB, ` +
         `${v.view.shape.join(" x ")})`,
@@ -214,6 +216,9 @@ function sendControls(v, update) {
     v.status.textContent = "This snapshot has no Python behind it; open the notebook to change this.";
     return;
   }
+  // The new block clears the clicked corners: store the polygon first, on
+  // the plane it was clicked on (Python handles the messages in order).
+  if (v.tool === "polygon" && v.pending.length > 2) finishPolygon(v);
   const controls = structuredClone(v.model.get("_controls"));
   Object.assign(controls, update);
   v.requestSentAt = performance.now();
@@ -258,7 +263,7 @@ function onKey(v, event) {
   if (event.target.closest("input, select, button")) return;
   if (v.tool === "polygon" && v.pending.length) {
     const edits = {
-      Enter: () => closeOutline(v),
+      Enter: () => finishRoi(v),
       Escape: () => (v.pending = []),
       Backspace: () => v.pending.pop(),
     };
@@ -402,6 +407,7 @@ function render({ model, el }) {
     maskMessage: "",
     fitAdvanced: false,
     fitShowResults: true,
+    showTutorial: false,
     maskShowStatistics: true,
   };
   showPlotHeight(v);
@@ -437,6 +443,7 @@ function render({ model, el }) {
     "change:tool": onTool,
     "change:name": showName,
     "change:plot_height": showPlotHeight,
+    "change:show_timings": updateStatus,
     "change:_time_course": onTimeCourse,
     "change:_time_block": onTimeCourse,
     "msg:custom": onCustomMessage,

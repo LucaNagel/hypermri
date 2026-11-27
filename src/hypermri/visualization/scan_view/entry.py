@@ -75,6 +75,7 @@ def plot_scan(
     name: str = "",
     image_only: bool = False,
     slice_indices: Mapping[str, int] | None = None,
+    show_timings: bool = False,
 ) -> ScanView:
     """Show a CSI scan or an image as an interactive map with one voxel's curve.
 
@@ -183,8 +184,9 @@ def plot_scan(
         none are saved. The object is completed in place and kept by the
         widget. Without a given or saved state the view starts at the voxel
         of the shown plane with the strongest signal (largest magnitude along
-        its curve) and with map colours over 0-80 % of the shown map, so
-        that values above 80 % of the maximum share the top colour.
+        its curve) and with the colours of the map and of the anatomy over
+        0-80 % of their own values, so that values above 80 % of the
+        maximum share the top colour.
     settings_context : str or None, optional
         Key of the saved settings on the scan. None uses ``"plot_scan"``,
         separate from the settings of ``plot``. Views opened with the same
@@ -203,6 +205,10 @@ def plot_scan(
         ``acquisition_idx``; values are positions, not coordinate values.
         Given positions override saved ones, and the view then does not move
         to the strongest voxel. None keeps the saved or automatic start.
+    show_timings : bool, optional
+        Show the redraw time of the browser and the time and size of the
+        last data block from Python in the status line below the plots; see
+        :attr:`ScanView.show_timings`.
 
     Returns
     -------
@@ -352,11 +358,13 @@ def plot_scan(
             **_checked_slice_indices(data, slice_indices),
         }
     if not state_given and not getattr(state, "_loaded_from_persistence", False):
-        # The map starts at 0-80 % of its own values, so that weaker signal
-        # is visible next to the strongest voxel, also for spectroscopic data
-        # whose sequence default (Min/Max over the plane) suits plot.
-        state.spatial.range_mode = "Percentage"
-        state.spatial.vmin, state.spatial.vmax = 0.0, 80.0
+        # The map and the anatomy under it start at 0-80 % of their own
+        # values, so that weaker signal is visible next to the strongest
+        # voxel, also for spectroscopic data whose sequence default (Min/Max
+        # over the plane) suits plot.
+        for layer in (state.spatial, state.anatomy):
+            layer.range_mode = "Percentage"
+            layer.vmin, layer.vmax = 0.0, 80.0
     state.spectral.secondary_dim = _chosen_curve_dim(
         data, state, curve_dim, explicit=curve_dim is not None
     )
@@ -393,6 +401,7 @@ def plot_scan(
     ):
         view._select_strongest_voxel()
     view.name = name
+    view.show_timings = show_timings
     return view
 
 
@@ -424,6 +433,7 @@ def plot_side_by_side(
     share_masks: bool = True,
     arrangement: str = "rows",
     under_menus: bool = True,
+    show_timings: bool | None = None,
 ) -> SideBySideView:
     """Show several images in rows, each with the others' slices.
 
@@ -476,6 +486,12 @@ def plot_side_by_side(
         slices, and the lower view is hidden until "none" is chosen again.
         The opacity slider of the upper view fades between both. See
         :meth:`SideBySideView.set_underlays`.
+    show_timings : bool or None, optional
+        Show the redraw and data block times in the status line of every
+        view (:attr:`ScanView.show_timings`); a view made by the menu
+        "under" takes the setting of its upper view. None (the default)
+        keeps the setting of each view, which is off for images given as
+        scans or DataArrays.
 
     Returns
     -------
@@ -527,6 +543,9 @@ def plot_side_by_side(
         raise ValueError(
             f"plot_side_by_side needs at least two images; got {len(views)}."
         )
+    if show_timings is not None:
+        for view in views:
+            view.show_timings = show_timings
     return SideBySideView(
         views,
         None if given_rows is None else rows,

@@ -20,6 +20,29 @@ function availableTools(v) {
   return v.layout.tools.filter((name) => offered[name] ?? true);
 }
 
+// Step-by-step instructions of a tool, shown above its inputs while the
+// "Tutorial" box is ticked. Tools without an entry offer no tutorial.
+const TOOL_TUTORIALS = {
+  masks: [
+    'Type a name and pick a colour under "new", then click "Add".',
+    'Choose "polygon" or "freehand" under "draw".',
+    'Polygon: click the corners on the map. Backspace removes the last corner, Esc starts again.',
+    "Freehand: hold the mouse button and draw the outline; it is stored when you let go.",
+    'To remove part of the mask, switch "mode" to "erase" and draw over it. Switch back to "add" to add.',
+    "Change the slice and draw on the next one. An unfinished polygon is stored first.",
+    'Click "Finish ROI" (or press Enter) to store the polygon and stop drawing.',
+    'Tick "ROI mean" to show the mean spectrum inside the mask.',
+  ],
+  fit: [
+    "Click a voxel with strong signal on the map.",
+    'Click a peak in the spectrum, then "Add at cursor" to add it as a line. Repeat for every peak.',
+    'Check the line table: rename lines, correct the start frequencies, remove wrong lines with "×".',
+    'New lines start with the "Defaults for new lines" (search range, T2* limits).',
+    'Choose the lineshape and click "Run fit" to fit all voxels.',
+    'Look at the fitted curve in the spectrum; the result table at the top shows the values of the selected voxel.',
+  ],
+};
+
 function toolControls(v) {
   const tools = availableTools(v);
   if (!tools.length) return [];
@@ -30,12 +53,30 @@ function toolControls(v) {
     v.model.set("tool", choice.value);
     v.model.save_changes();
   });
-  return [labelled("tool", choice)];
+  const steps = tools.includes(chosen) ? TOOL_TUTORIALS[chosen] : undefined;
+  if (!steps) return [labelled("tool", choice)];
+  const box = element("input");
+  box.type = "checkbox";
+  box.checked = v.showTutorial;
+  box.title = "Show step by step how to use this tool";
+  const tutorial = element("ol", "hm-csi-tutorial");
+  for (const step of steps) tutorial.append(element("li", "", step));
+  tutorial.hidden = !box.checked;
+  box.addEventListener("change", () => {
+    v.showTutorial = box.checked;
+    tutorial.hidden = !box.checked;
+  });
+  const label = labelled("Tutorial", box);
+  label.classList.add("hm-csi-tutorial-toggle");
+  return [labelled("tool", choice), label, tutorial];
 }
 
 // Show only the chosen tool's inputs. Leaving the masks stops drawing.
+// While a tool is open, the controls after it (show parameters) start a new
+// line below its inputs.
 function showChosenTool(v) {
   const chosen = v.model.get("tool");
+  v.groups.tool?.parentElement?.classList.toggle("hm-csi-tool-open", Boolean(chosen));
   for (const name of v.layout.tools) {
     if (v.groups[name]) v.groups[name].hidden = name !== chosen;
   }

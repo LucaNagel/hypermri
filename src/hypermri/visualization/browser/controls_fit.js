@@ -1,7 +1,8 @@
-// Control group "fit": find spectral lines or add them at the spectral
-// cursor, edit them in a table, fit all voxels and, after a fit, align the
-// voxel spectra to the weighted mean fitted frequency (or undo that).
-// "Advanced" shows the remaining detection and fit settings and the coupling
+// Control group "fit": add spectral lines at the spectral cursor, edit them
+// in a table, fit all voxels and, after a fit, align the voxel spectra to
+// the weighted mean fitted frequency (or undo that). Automatic line
+// detection is not offered here (hypermri.visualization.fit_tool.detect_peaks
+// remains). "Advanced" shows the remaining fit settings and the coupling
 // columns of the table (T2* leader and ratio, phase band); whether it is open
 // is kept in the browser only. "Lines from fit" fills the table from an
 // earlier fit (stored on the scan or run here); the "start from earlier fit"
@@ -10,7 +11,7 @@
 // problem voxel (a line at a bound first, then the worst fit) and searches
 // the selected voxel's residual for one more line in a range typed in Hz
 // (kept in the browser only). "result table" shows the fitted values of the
-// selected voxel, coloured by their bound status. Settings
+// selected voxel above the settings, coloured by their bound status. Settings
 // and table are tables with coloured groups; each line has a colour, also
 // used for its frequency search range drawn in the spectrum.
 //
@@ -58,15 +59,14 @@ function fitOptionCheckbox(v, settings, name, label, title) {
   return labelled(label, box);
 }
 
-// Advanced settings: [setting, label, title, width].
-const FIT_DETECTION_OPTIONS = [
-  ["prominence_snr", "prominence SNR", "Smallest peak prominence in noise units"],
-  ["max_peaks_per_spectrum", "peaks/voxel", "Most peaks taken from one voxel spectrum", 3],
-  ["min_peak_distance_hz", "peak dist Hz", "Smallest distance of two peaks in one spectrum"],
-  ["b0_shift_tolerance_hz", "B0 tol Hz", "Largest shift in Hz of a peak from its line centre between voxels"],
-  ["cluster_min_separation_hz", "line sep Hz", "Drop weaker lines closer than this to a stronger one; 0 keeps all"],
-  ["snr_threshold_factor", "fit SNR factor", "Fit amplitude threshold in multiples of the FID tail noise; 0 is off"],
+// Settings: [setting, label, title, width]. The defaults apply to lines
+// added at the cursor.
+const FIT_NEW_LINE_OPTIONS = [
+  ["freq_search_range_hz", "search range Hz", "Width in Hz of the frequency search range of a new line"],
+  ["min_t2_ms", "T2* min ms", "Smallest T2* in ms of a new line"],
+  ["max_t2_ms", "T2* max ms", "Largest T2* in ms of a new line"],
 ];
+// Shown under "Advanced" only.
 const FIT_FIT_OPTIONS = [
   ["min_peak_separation_hz", "fit sep Hz", "Smallest distance in Hz of fitted line frequencies"],
   ["rep_fitting", "repeats", "Repetitions of the start-value search; 0 chooses automatically", 3],
@@ -116,7 +116,7 @@ const RESIDUAL_HALF_WIDTH_HZ = 10;
 
 // Rows of short number inputs only; their inputs sit in equal columns
 // (hm-csi-grid-items in viewer.css). Rows with buttons and notes flow freely.
-const FIT_GRID_KINDS = ["detect", "options"];
+const FIT_GRID_KINDS = ["defaults", "options"];
 
 // The settings of the tool as a table: one row per titled group, its title
 // in a coloured first cell (`kind` chooses the colour, see viewer.css).
@@ -136,10 +136,47 @@ function settingsTable(rows) {
   return table;
 }
 
+function fitOptions(v, settings, list) {
+  return list.map(([name, label, help, width]) => fitOption(v, settings, name, label, help, width));
+}
+
+// How lines get into the table: "Add at cursor" or the lines of an earlier
+// fit. Added lines start with the defaults of the second row.
+function fitLineRows(v, settings) {
+  const add = button("Add at cursor", "Add a line at the spectral cursor (click the spectrum)");
+  add.classList.add("hm-csi-add");
+  add.addEventListener("click", () => sendFit(v, "add_at_cursor"));
+  const earlier = settings.earlier_fit || "";
+  const fromFit = button(
+    "Use lines of earlier fit",
+    earlier
+      ? `Replace the table by the lines of the earlier fit (${earlier}); every voxel starts ` +
+          "from its own fitted frequency and T2*"
+      : "Needs an earlier fit: a fit stored on the scan or a fit run here",
+  );
+  fromFit.disabled = !earlier;
+  fromFit.addEventListener("click", () => sendFit(v, "lines_from_fit"));
+  const earlierInfo = element(
+    "span",
+    "hm-csi-mask-info",
+    earlier ? `earlier fit: ${earlier}` : "no earlier fit yet",
+  );
+  const advanced = button(
+    v.fitAdvanced ? "Advanced ▾" : "Advanced ▸",
+    "Show or hide the remaining fit settings and the coupling columns",
+  );
+  advanced.addEventListener("click", () => {
+    v.fitAdvanced = !v.fitAdvanced;
+    buildGroups(v, ["fit"]);
+  });
+  return [
+    ["Find lines", "new", [add, fromFit, earlierInfo, advanced]],
+    ["Defaults for new lines", "defaults", fitOptions(v, settings, FIT_NEW_LINE_OPTIONS)],
+  ];
+}
+
 function fitAdvancedRows(v, settings) {
-  const options = (list) =>
-    list.map(([name, label, help, width]) => fitOption(v, settings, name, label, help, width));
-  const fitItems = options(FIT_FIT_OPTIONS);
+  const fitItems = fitOptions(v, settings, FIT_FIT_OPTIONS);
   fitItems.push(
     fitOptionCheckbox(
       v,
@@ -149,10 +186,7 @@ function fitAdvancedRows(v, settings) {
       "Move T2* starts of coupled lines into their ratio band instead of failing",
     ),
   );
-  return [
-    ["Detection", "detect", options(FIT_DETECTION_OPTIONS)],
-    ["Fit options", "options", fitItems],
-  ];
+  return [["Fit options", "options", fitItems]];
 }
 
 // Columns of the peak table: [heading, column, kind, title, group, width].
@@ -349,19 +383,6 @@ function fitControls(v) {
   if (!settings.offered) return [];
   const peaks = settings.peaks || [];
 
-  const detect = button("Detect lines", "Find lines automatically; replaces the table");
-  detect.addEventListener("click", () => sendFit(v, "detect"));
-  const add = button("Add at cursor", "Add a line at the spectral cursor (click the spectrum)");
-  add.addEventListener("click", () => sendFit(v, "add_at_cursor"));
-  const advanced = button(
-    v.fitAdvanced ? "Advanced ▾" : "Advanced ▸",
-    "Show or hide the remaining detection and fit settings and the coupling columns",
-  );
-  advanced.addEventListener("click", () => {
-    v.fitAdvanced = !v.fitAdvanced;
-    buildGroups(v, ["fit"]);
-  });
-
   const lineshape = select(
     [
       ["Lorentz", "lorentz"],
@@ -459,7 +480,7 @@ function fitControls(v) {
 
   const showResults = fitCheckbox(
     v.fitShowResults,
-    "Show amplitude, phase, frequency and T2* of the selected voxel below the tool",
+    "Show amplitude, phase, frequency and T2* of the selected voxel above the settings",
     (checked) => {
       v.fitShowResults = checked;
       buildGroups(v, ["fit"]);
@@ -468,40 +489,12 @@ function fitControls(v) {
   v.fitResultHolder = element("div", "hm-csi-fit-results-holder");
   v.fitResultHolder.append(fitResultTable(v));
 
-  const earlier = settings.earlier_fit || "";
-  const fromFit = button(
-    "Use lines of earlier fit",
-    earlier
-      ? `Replace the table by the lines of the earlier fit (${earlier}); every voxel starts ` +
-          "from its own fitted frequency and T2*"
-      : "Needs an earlier fit: a fit stored on the scan or a fit run here",
-  );
-  fromFit.disabled = !earlier;
-  fromFit.addEventListener("click", () => sendFit(v, "lines_from_fit"));
-  const earlierInfo = element(
-    "span",
-    "hm-csi-mask-info",
-    earlier ? `earlier fit: ${earlier}` : "no earlier fit yet",
-  );
-
+  // The result table comes first, so clicking through voxels shows their
+  // fitted values without scrolling past the settings.
   return [
+    ...(v.fitShowResults ? [v.fitResultHolder] : []),
     settingsTable([
-      [
-        "New lines",
-        "new",
-        [
-          fitOption(v, settings, "peak_height_snr", "height SNR", "Smallest peak height in noise units"),
-          fitOption(v, settings, "max_peaks", "max lines", "Keep the strongest lines; 0 keeps all", 3),
-          fitOption(v, settings, "freq_search_range_hz", "range Hz", "Smallest frequency search width in Hz"),
-          fitOption(v, settings, "min_t2_ms", "T2* min ms", "Smallest T2* in ms of new lines"),
-          fitOption(v, settings, "max_t2_ms", "max ms", "Largest T2* in ms of new lines"),
-          detect,
-          add,
-          fromFit,
-          earlierInfo,
-          advanced,
-        ],
-      ],
+      ...fitLineRows(v, settings),
       ...(v.fitAdvanced ? fitAdvancedRows(v, settings) : []),
     ]),
     ...(peaks.length ? [fitTable(v, peaks, v.fitAdvanced)] : []),
@@ -522,7 +515,6 @@ function fitControls(v) {
       ["Save", "run", saveFitItems(v, "fit", settings.fitted)],
     ]),
     messageRow,
-    ...(v.fitShowResults ? [v.fitResultHolder] : []),
   ];
 }
 

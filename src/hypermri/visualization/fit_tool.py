@@ -400,7 +400,7 @@ def detect_peaks(tool: FitToolState, data: xr.DataArray) -> None:
     )
     if not peaks:
         raise ValueError(
-            "Detect peaks found no line; lower the height SNR or add lines "
+            "Detect peaks found no line; lower the min height (SNR) or add lines "
             "at the spectral cursor."
         )
     tool.peaks = peaks

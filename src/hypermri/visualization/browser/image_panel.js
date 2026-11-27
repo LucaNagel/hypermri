@@ -157,7 +157,8 @@ function maskTraces(v) {
 
 // Outlines drawn into the masks, as stored at full precision
 // (ScanView.mask_outlines); the heatmap above only shows voxel coverage.
-// Outlines of three or more points are closed; erasing outlines are dashed.
+// Python sends the boundary of the area left after erasing; outlines of three
+// or more points are closed.
 function maskOutlineTraces(v) {
   return v.maskPlanes.flatMap((mask) =>
     (mask.outlines || []).map((outline) => {
@@ -167,7 +168,7 @@ function maskOutlineTraces(v) {
         mode: "lines",
         x: closed ? [...outline.x, outline.x[0]] : outline.x,
         y: closed ? [...outline.y, outline.y[0]] : outline.y,
-        line: { color: mask.color, width: 1.5, dash: outline.erase ? "dash" : "solid" },
+        line: { color: mask.color, width: 1.5 },
         hoverinfo: "skip",
         showlegend: false,
         name: `${mask.name} outline`,

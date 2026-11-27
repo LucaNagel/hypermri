@@ -321,7 +321,7 @@ def test_plot_options_and_fit_number_rows_place_inputs_in_columns():
     assert '"hm-csi-fit-settings-items hm-csi-grid-items"' in _function_body(
         script, "buildPage"
     )
-    assert re.search(r'FIT_GRID_KINDS = \["detect", "options"\]', script)
+    assert re.search(r'FIT_GRID_KINDS = \["defaults", "options"\]', script)
     assert "FIT_GRID_KINDS.includes(kind)" in _function_body(script, "settingsTable")
     # Every rebuild measures the inputs again; the observer is detached at
     # cleanup.
@@ -352,3 +352,110 @@ def test_result_table_is_shown_and_residual_range_proposed_after_a_fit():
     assert proposal
     # Typed values are kept: only an empty range is replaced.
     assert "!v.fitResidualRange.some(Number.isFinite)" in script
+
+
+def test_plot_options_table_does_not_cover_the_header_buttons():
+    # With the header's flex basis of 100 % the table took the whole header
+    # height and lay over the wrapped top bar, so clicks on the plot-options
+    # toggle reached the denoise button underneath.
+    css = (
+        resource_files("hypermri.visualization")
+        .joinpath("browser/viewer.css")
+        .read_text(encoding="utf-8")
+    )
+    rule = re.search(r"\.hm-csi-header > \.hm-csi-options \{(.*?)\}", css, re.S)
+    assert "flex: none" in rule.group(1)
+
+
+def test_mask_tool_has_coloured_add_erase_and_no_undo():
+    script = browser_script()
+    masks = _function_body(script, "maskControls")
+    assert '"Undo"' not in masks and '"undo"' not in script
+    assert 'mode.classList.add("hm-csi-add-erase")' in masks
+    css = (
+        resource_files("hypermri.visualization")
+        .joinpath("browser/viewer.css")
+        .read_text(encoding="utf-8")
+    )
+    for value, colour in (("add", "--hm-add"), ("erase", "--hm-erase")):
+        rule = f'.hm-csi-add-erase .hm-csi-toggle-part[data-value="{value}"].hm-csi-toggle-on'
+        assert rule in css
+        assert f"background: var({colour});" in css.split(rule, 1)[1].split("}", 1)[0]
+    # Erased area is shown by the boundary Python sends, never as a dashed line.
+    assert "outline.erase" not in _function_body(script, "maskOutlineTraces")
+
+
+def test_a_clicked_polygon_is_stored_before_the_slice_changes():
+    # A new block clears the clicked corners, so sendControls (slice and every
+    # other setting) commits a polygon of three or more corners first.
+    script = browser_script()
+    body = _function_body(script, "sendControls")
+    commit = body.index("finishPolygon(v)")
+    assert 'v.tool === "polygon" && v.pending.length > 2' in body
+    assert commit < body.index("v.model.save_changes()")
+    assert "v.pending = [];" in _function_body(script, "onNewBlock")
+
+
+def test_fit_rows_offer_no_detection_and_keep_new_line_defaults():
+    # Automatic line detection is not reliable enough yet; the tool offers
+    # only lines added at the cursor or taken from an earlier fit.
+    script = browser_script()
+    rows = _function_body(script, "fitLineRows")
+    titles = re.findall(r'\["([A-Z][^"]+)", "(new|detect|defaults)"', rows)
+    assert titles == [("Find lines", "new"), ("Defaults for new lines", "defaults")]
+    assert 'add.classList.add("hm-csi-add")' in rows
+    assert '"Detect lines"' not in script
+    assert 'sendFit(v, "detect")' not in script
+    assert "FIT_DETECTION" not in script
+    assert '"New lines"' not in script
+
+
+def test_fit_result_table_comes_before_the_settings():
+    body = _function_body(browser_script(), "fitControls")
+    returned = body[body.rindex("return [") :]
+    assert returned.index("v.fitResultHolder") < returned.index("settingsTable(")
+    assert returned.count("v.fitResultHolder") == 1
+
+
+def _viewer_css():
+    return (
+        resource_files("hypermri.visualization")
+        .joinpath("browser/viewer.css")
+        .read_text(encoding="utf-8")
+    )
+
+
+def test_finish_roi_button_works_for_every_drawing_tool():
+    # The button was disabled unless polygon was chosen; with freehand it
+    # must still stop drawing, so only "off" disables it.
+    script = browser_script()
+    masks = _function_body(script, "maskControls")
+    assert '"Close outline"' not in script
+    assert 'button("Finish ROI"' in masks
+    assert 'finish.disabled = v.tool === "off";' in masks
+    assert "Enter: () => finishRoi(v)" in script
+
+
+def test_tool_tutorial_checkbox_shows_steps_for_masks_and_fit():
+    script = browser_script()
+    tools = _function_body(script, "toolControls")
+    assert "TOOL_TUTORIALS[chosen]" in tools
+    assert 'labelled("Tutorial", box)' in tools
+    assert 'classList.add("hm-csi-tutorial-toggle")' in tools
+    assert "tutorial.hidden = !box.checked;" in tools
+    for tool in ("masks", "fit"):
+        assert re.search(rf"\n  {tool}: \[\n", script), tool
+    css = _viewer_css()
+    assert "--hm-tutorial: #c2189b;" in css
+    hidden = re.search(r"\.hm-csi-tutorial\[hidden\] \{(.*?)\}", css, re.S)
+    assert "display: none" in hidden.group(1)
+
+
+def test_show_parameters_starts_a_line_below_an_open_tool():
+    script = browser_script()
+    body = _function_body(script, "showChosenTool")
+    assert 'classList.toggle("hm-csi-tool-open", Boolean(chosen))' in body
+    rule = re.search(
+        r"\.hm-csi-tool-open \.hm-csi-parameter-head \{(.*?)\}", _viewer_css(), re.S
+    )
+    assert "flex-basis: 100%" in rule.group(1)

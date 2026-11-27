@@ -8,6 +8,9 @@
   --hm-input-border: rgba(128, 128, 128, 0.45);
   --hm-surface: rgba(128, 128, 128, 0.07);
   --hm-accent: var(--jp-brand-color1, #1f77b4);
+  --hm-add: #2ca02c;
+  --hm-erase: #d62728;
+  --hm-tutorial: #c2189b;
   --hm-plot-height: 400px;
   font-family: var(--jp-ui-font-family, system-ui, sans-serif);
   font-size: 12px;
@@ -76,6 +79,13 @@
 .hm-csi-button.hm-csi-primary {
   background: var(--hm-accent);
   border-color: var(--hm-accent);
+  color: white;
+}
+
+/* Buttons that add something (a fit line at the cursor) are green. */
+.hm-csi-button.hm-csi-add {
+  background: var(--hm-add);
+  border-color: var(--hm-add);
   color: white;
 }
 
@@ -148,7 +158,13 @@
 }
 
 /* Plot options: a table like the fit settings (.hm-csi-fit-settings), one
-   row per section with a coloured title. */
+   row per section with a coloured title. Its flex basis of 100 % is meant
+   for a row; in the header column it would ask for the whole height and
+   squeeze the wrapped top bar under the table. */
+.hm-csi-header > .hm-csi-options {
+  flex: none;
+}
+
 .hm-csi-options th {
   width: 7.5em;
   background: var(--hm-border);
@@ -266,6 +282,27 @@
   color: white;
 }
 
+/* The add/erase mode of the mask tool: add green, erase red. */
+.hm-csi-add-erase .hm-csi-toggle-part[data-value="add"] {
+  color: var(--hm-add);
+}
+
+.hm-csi-add-erase .hm-csi-toggle-part[data-value="erase"] {
+  color: var(--hm-erase);
+}
+
+.hm-csi-add-erase .hm-csi-toggle-part[data-value="add"].hm-csi-toggle-on {
+  background: var(--hm-add);
+  border-color: var(--hm-add);
+  color: white;
+}
+
+.hm-csi-add-erase .hm-csi-toggle-part[data-value="erase"].hm-csi-toggle-on {
+  background: var(--hm-erase);
+  border-color: var(--hm-erase);
+  color: white;
+}
+
 .hm-csi-toggle-part:disabled {
   opacity: 0.45;
   cursor: default;
@@ -319,7 +356,7 @@
 }
 
 /* The flex basis plus the gap is SIDE_BY_SIDE_CURVE_WIDTH_PX in
-   scan_view/entry.py. In a narrow view the curve keeps at least 40 % of the
+   scan_view/side_by_side.py. In a narrow view the curve keeps at least 40 % of the
    plots row and the map is lowered instead (sizeImagePanel). */
 .hm-csi-spectrum,
 .hm-csi-time {
@@ -471,7 +508,8 @@
   order: 1;
 }
 
-.hm-csi-fit-kind-new th { background: var(--hm-fit-new); }
+.hm-csi-fit-kind-new th,
+.hm-csi-fit-kind-defaults th { background: var(--hm-fit-new); }
 .hm-csi-fit-kind-detect th { background: var(--hm-fit-detect); }
 .hm-csi-fit-kind-options th { background: var(--hm-fit-options); }
 .hm-csi-fit-kind-run th { background: var(--hm-fit-run); }
@@ -556,6 +594,36 @@
 
 .hm-csi-mask-error {
   color: var(--jp-error-color1, #d62728);
+}
+
+/* While a tool is open, "show parameters" starts a line below its inputs. */
+.hm-csi-tool-open .hm-csi-parameter-head {
+  flex-basis: 100%;
+}
+
+/* "Tutorial" of a tool and its steps, in magenta. */
+.hm-csi-tutorial-toggle,
+.hm-csi-tutorial-toggle .hm-csi-control-label {
+  color: var(--hm-tutorial);
+  font-weight: 600;
+}
+
+.hm-csi-tutorial-toggle input {
+  accent-color: var(--hm-tutorial);
+}
+
+.hm-csi-tutorial {
+  flex-basis: 100%;
+  margin: 0;
+  padding: 6px 10px 6px 28px;
+  border: 1px solid var(--hm-tutorial);
+  border-left-width: 4px;
+  border-radius: 6px;
+  line-height: 1.5;
+}
+
+.hm-csi-tutorial[hidden] {
+  display: none;
 }
 
 /* Measurement parameters below the plots. */

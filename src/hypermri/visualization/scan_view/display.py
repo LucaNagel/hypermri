@@ -268,7 +268,8 @@ class _Display:
         show_mask_outlines : bool or None, optional
             Draw the outlines drawn into each mask (:attr:`mask_outlines`)
             as lines in the mask colour, at the precision they were drawn;
-            outlines that removed area are dashed. A choice of this view,
+            where an outline erased area, the boundary of the remaining
+            drawn area is shown instead. A choice of this view,
             not stored in :attr:`state`; on by default. Only shown while
             ``show_masks`` is on.
 
