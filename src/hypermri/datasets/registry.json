@@ -2,38 +2,6 @@
   "version": 1,
   "data_root_env": "HYPERMRI_DATA",
   "datasets": {
-    "hp_pyruvate_csi_mouse": {
-      "enabled": true,
-      "release_status": "released",
-      "description": "Hyperpolarized [1-13C]pyruvate CSI of a mouse abdomen at two body temperatures (38 and 31 degC) with T2 anatomy, Bruker ParaVision 7; data of Gottwald et al., npj Imaging 3, 19 (2025), doi:10.1038/s44303-025-00081-3.",
-      "creator": "Luca Nagel",
-      "title": "HP 13C Pyr static CSI in mouse abdomen",
-      "dataset_version": "2",
-      "publisher": "Zenodo",
-      "doi": "10.5281/zenodo.20429962",
-      "source_url": "https://zenodo.org/records/20429962",
-      "license": "CC-BY-4.0",
-      "license_url": "https://creativecommons.org/licenses/by/4.0/",
-      "source": "archive",
-      "archive_url": "https://zenodo.org/records/20429962/files/HP%2013C%20Pyr%20static%20CSI%20in%20mouse.zip?download=1",
-      "archive_name": "hp_pyruvate_csi_mouse.zip",
-      "archive_size_bytes": 29025981,
-      "checksum": "sha256:e78098b8176f07e32d1bf2774a146c4542da94f9ca926c13a8c30022e4007578",
-      "relative_path": "HP 13C Pyr static CSI in mouse",
-      "required_paths": [
-        "subject",
-        "13/fid",
-        "13/method",
-        "13/acqp",
-        "19/method",
-        "19/acqp",
-        "19/pdata/1/2dseq",
-        "19/pdata/1/visu_pars",
-        "22/fid",
-        "22/method",
-        "22/acqp"
-      ]
-    },
     "tutorial": {
       "enabled": false,
       "release_status": "unreleased",

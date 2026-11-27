@@ -302,3 +302,6 @@ examples
 
 # Viewer pages written while the documentation is built
 /docs/source/_static/generated/
+
+# Tutorial card images are written into the HTML build, never the sources.
+/docs/source/_static/thumbnails/

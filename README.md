@@ -7,6 +7,13 @@
 
 **Python research tools for loading, reconstructing, and visualizing MRI data.**
 
+[![Three linked HyperMRI views in Jupyter: an anatomy with slice outlines, a CSI map with the fitted spectrum of one voxel and a dynamic map with its time course](https://raw.githubusercontent.com/LucaNagel/hypermri/main/docs/source/_static/readme_viewer.png)](https://hypermri.readthedocs.io/en/stable/)
+
+*Three linked views in Jupyter: an anatomy with the outlines of the other
+slices, a CSI map with the fitted spectrum of the selected voxel, and a
+dynamic map with its time course. Try the viewer interactively on the
+[documentation home page](https://hypermri.readthedocs.io/en/stable/).*
+
 ## Research-use notice
 
 HyperMRI is research software. It has not been validated or approved as a
@@ -148,6 +155,46 @@ Each new terminal starts in the `(base)` environment. Run
 Next time, open the terminal of the `hypermri` environment the same way and
 run `jupyter notebook`.
 
+### Alternative: Installation with uv
+
+<details>
+<summary>Show the steps for <a href="https://docs.astral.sh/uv/">uv</a>, a fast Python package manager</summary>
+
+[uv](https://docs.astral.sh/uv/getting-started/installation/) downloads
+Python 3.12 itself, so neither conda nor Python is needed. In a new project
+folder, create an environment:
+
+```bash
+uv venv --python 3.12
+```
+
+Activate it on macOS or Linux:
+
+```bash
+source .venv/bin/activate
+```
+
+or on Windows:
+
+```bash
+.venv\Scripts\activate
+```
+
+Then install HyperMRI and start Jupyter:
+
+```bash
+uv pip install hypermri
+```
+
+```bash
+jupyter notebook
+```
+
+Run the activation command again in every new terminal. In a clone of the
+repository, `uv pip install -e ".[dev,docs]"` installs it for development.
+
+</details>
+
 ### Install from source (developers)
 
 To edit the code or build the documentation, install Git into the
@@ -185,21 +232,17 @@ covers troubleshooting and building the documentation locally.
 
 ```python
 from hypermri import Study
-from hypermri.datasets import fetch_example_data
 
-# Download the released example session (29 MB, cached after the first call)
-# or point Study to a Bruker study that you are authorised to use.
-study = Study(fetch_example_data("hp_pyruvate_csi_mouse"))
+# Point Study to a Bruker study folder that you are authorised to use, for
+# example the public Lego phantom of the documentation.
+study = Study("path/to/20200612_094625_lego_phantom_3_1_2")
 
 # Show the CSI scan on its anatomical image
-study[13].plot(anatomy=study[19])
+study[30].plot(anatomy=study[8])
 ```
 
-The example session is hyperpolarized [1-¹³C]pyruvate CSI of a mouse abdomen
-(Zenodo, [doi:10.5281/zenodo.20429962](https://doi.org/10.5281/zenodo.20429962),
-CC BY 4.0). Please cite Gottwald et al., npj Imaging 3, 19 (2025),
-[doi:10.1038/s44303-025-00081-3](https://doi.org/10.1038/s44303-025-00081-3),
-when you use it.
+The [first look](https://hypermri.readthedocs.io/en/stable/getting_started/first_look.html)
+describes where to download the Lego phantom.
 
 The separate optional real-data integration suite uses Tomáš Pšorn's public
 [BrukerAPI ParaVision 6.0.1 Lego-phantom corpus](https://doi.org/10.5281/zenodo.4048253)

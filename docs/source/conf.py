@@ -206,3 +206,34 @@ def setup(app):
                 node["reftarget"] = "builtins.type"
 
     app.connect("doctree-read", _qualify_builtin_type_references)
+    app.connect("build-finished", _write_tutorial_thumbnails)
+
+
+def _write_tutorial_thumbnails(app, exception):
+    """Photograph the tutorial card images into the finished HTML build.
+
+    The images come from the built pages and are not kept in the repository.
+    Without Playwright, a browser or network access the cards show only
+    their icon and text, so a failure is reported and never stops the build.
+    """
+    import importlib.util
+    from pathlib import Path
+
+    from sphinx.util import logging
+
+    if exception is not None or app.builder.format != "html":
+        return
+    logger = logging.getLogger(__name__)
+    script = (
+        Path(__file__).resolve().parents[2] / "scripts" / "build_docs_thumbnails.py"
+    )
+    spec = importlib.util.spec_from_file_location("build_docs_thumbnails", script)
+    thumbnails = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = thumbnails  # dataclasses look up their module
+    try:
+        spec.loader.exec_module(thumbnails)
+        written = thumbnails.build_thumbnails(Path(app.outdir))
+    except Exception as error:  # noqa: BLE001 - the images are optional
+        logger.info("Tutorial card images skipped: %s", error)
+    else:
+        logger.info("Tutorial card images written: %d", len(written))

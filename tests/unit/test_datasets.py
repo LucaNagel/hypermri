@@ -21,13 +21,10 @@ from hypermri.datasets.fetch import (
 )
 
 
-def test_packaged_registry_releases_only_the_pyruvate_csi_example():
-    """Only the approved Zenodo example is released; the placeholder stays blocked."""
-    assert list_datasets() == ["hp_pyruvate_csi_mouse"]
-    assert list_datasets(include_unavailable=True) == [
-        "hp_pyruvate_csi_mouse",
-        "tutorial",
-    ]
+def test_packaged_registry_releases_no_example_yet():
+    """No example is released; the placeholder stays blocked."""
+    assert list_datasets() == []
+    assert list_datasets(include_unavailable=True) == ["tutorial"]
 
     info = get_dataset_info("tutorial")
     assert info["enabled"] is False
@@ -60,33 +57,14 @@ def test_packaged_registry_refuses_fetch_before_filesystem_or_network_access(
     assert not cache.exists()
 
 
-def test_pyruvate_csi_example_is_pinned_to_one_zenodo_version():
-    """The example fetches one fixed Zenodo file, verified by its SHA-256.
-
-    Provenance: Zenodo record 20429962 (version 2, CC-BY-4.0), the data of
-    Gottwald et al., npj Imaging 3, 19 (2025). Its MD5 as listed by Zenodo is
-    ea5ee88db62b8c9114b567a22e5c6be8; the SHA-256 below was computed from the
-    same download.
-    """
-    info = get_dataset_info("hp_pyruvate_csi_mouse")
-    assert info["doi"] == "10.5281/zenodo.20429962"
-    assert info["license"] == "CC-BY-4.0"
-    assert info["source"] == "archive"
-    assert info["archive_url"].startswith("https://zenodo.org/records/20429962/")
-    assert info["archive_size_bytes"] == 29025981
-    assert info["checksum"] == (
-        "sha256:e78098b8176f07e32d1bf2774a146c4542da94f9ca926c13a8c30022e4007578"
-    )
-    assert {"13/fid", "19/pdata/1/2dseq", "22/fid"} <= set(info["required_paths"])
-
-
-def test_dataset_cli_list_names_the_released_example(capsys):
-    """The CLI lists each released example with its description."""
+def test_dataset_cli_list_says_when_nothing_is_released(capsys):
+    """The CLI list states that no example is released instead of printing nothing."""
     from hypermri.datasets.fetch import main
 
     assert main(["--list"]) == 0
-    lines = capsys.readouterr().out.strip().splitlines()
-    assert [line.split("\t", 1)[0] for line in lines] == ["hp_pyruvate_csi_mouse"]
+    assert capsys.readouterr().out.strip() == (
+        "No public example datasets are currently released."
+    )
 
 
 def test_fetch_example_data_extracts_archive_from_registry(tmp_path: Path):
@@ -352,3 +330,188 @@ def test_dataset_registry_rejects_duplicate_json_keys(tmp_path):
     )
     with pytest.raises(DatasetError, match="duplicate key 'version'"):
         load_registry(path)
+
+
+def _write_token_registry(tmp_path: Path, archive_path: Path) -> Path:
+    """Write a registry whose archive accepts a token from TEST_DATASET_TOKEN."""
+    checksum = hashlib.sha256(archive_path.read_bytes()).hexdigest()
+    registry_path = tmp_path / "registry.json"
+    registry_path.write_text(
+        json.dumps(
+            {
+                "version": 1,
+                "data_root_env": "HYPERMRI_DATA",
+                "datasets": {
+                    "demo": {
+                        "source": "archive",
+                        "archive_url": "https://zenodo.example/files/demo.zip?download=1",
+                        "archive_name": "demo.zip",
+                        "checksum": f"sha256:{checksum}",
+                        "source_url": "https://zenodo.example/records/1",
+                        "access_token_env": "TEST_DATASET_TOKEN",
+                        "required_paths": ["payload.txt"],
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+    return registry_path
+
+
+def _demo_zip(tmp_path: Path) -> Path:
+    archive_path = tmp_path / "demo.zip"
+    with zipfile.ZipFile(archive_path, "w") as archive:
+        archive.writestr("payload.txt", "payload")
+    return archive_path
+
+
+class _FakeResponse(io.BytesIO):
+    def __init__(self, data: bytes, url: str = "https://zenodo.example/files/x"):
+        super().__init__(data)
+        self._url = url
+
+    def geturl(self):
+        return self._url
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_args):
+        self.close()
+
+
+@pytest.mark.parametrize("token", [None, "s3cret-token"])
+def test_fetch_example_data_appends_the_token_only_when_set(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, token
+):
+    """The token is added to the download URL and never written to the cache."""
+    archive_path = _demo_zip(tmp_path)
+    registry_path = _write_token_registry(tmp_path, archive_path)
+    if token is None:
+        monkeypatch.delenv("TEST_DATASET_TOKEN", raising=False)
+    else:
+        monkeypatch.setenv("TEST_DATASET_TOKEN", token)
+    requested = []
+
+    def fake_urlopen(request, timeout):
+        requested.append(request.full_url)
+        return _FakeResponse(archive_path.read_bytes())
+
+    monkeypatch.setattr("hypermri.datasets.fetch.urlopen", fake_urlopen)
+    path = fetch_example_data(
+        "demo", data_home=tmp_path / "cache", registry_path=registry_path, quiet=True
+    )
+
+    expected = "https://zenodo.example/files/demo.zip?download=1"
+    if token is not None:
+        expected += f"&token={token}"
+    assert requested == [expected]
+    assert (path / "payload.txt").read_text() == "payload"
+    marker = (path / ".hypermri_dataset.json").read_text()
+    assert "s3cret" not in marker
+
+
+@pytest.mark.parametrize(
+    ("token", "hint"),
+    [
+        (None, "set the environment variable TEST_DATASET_TOKEN"),
+        ("bad", "not accepted"),
+    ],
+)
+def test_refused_download_names_the_token_variable_without_the_token(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, token, hint
+):
+    """A 403 from a restricted record explains the token and hides the URL."""
+    from urllib.error import HTTPError
+
+    registry_path = _write_token_registry(tmp_path, _demo_zip(tmp_path))
+    if token is None:
+        monkeypatch.delenv("TEST_DATASET_TOKEN", raising=False)
+    else:
+        monkeypatch.setenv("TEST_DATASET_TOKEN", token)
+
+    def refuse(request, timeout):
+        raise HTTPError(request.full_url, 403, "FORBIDDEN", {}, None)
+
+    monkeypatch.setattr("hypermri.datasets.fetch.urlopen", refuse)
+    with pytest.raises(DatasetError, match="HTTP 403") as excinfo:
+        fetch_example_data(
+            "demo",
+            data_home=tmp_path / "cache",
+            registry_path=registry_path,
+            quiet=True,
+        )
+
+    message = str(excinfo.value)
+    assert hint in message
+    assert "token=" not in message
+    assert excinfo.value.__cause__ is None
+    assert excinfo.value.__suppress_context__
+
+
+@pytest.mark.parametrize(
+    ("entry", "match"),
+    [
+        ({"source": "archive", "archive_url": "https://x/a.zip"}, "upper case"),
+        ({"source": "zenodo", "record_id": "1"}, "only with source 'archive'"),
+    ],
+)
+def test_registry_rejects_invalid_access_token_env(tmp_path: Path, entry, match):
+    """The token variable must be an upper-case name on an archive dataset."""
+    env_name = "lower-case" if entry["source"] == "archive" else "TEST_DATASET_TOKEN"
+    registry_path = tmp_path / "registry.json"
+    registry_path.write_text(
+        json.dumps(
+            {
+                "version": 1,
+                "data_root_env": "HYPERMRI_DATA",
+                "datasets": {"demo": {**entry, "access_token_env": env_name}},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(DatasetError, match=match):
+        load_registry(registry_path)
+
+
+def test_is_dataset_cached_checks_required_files_offline(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """The cache check needs only the required files and no network."""
+    from hypermri.datasets import is_dataset_cached
+
+    registry_path = _write_token_registry(tmp_path, _demo_zip(tmp_path))
+    monkeypatch.setattr(
+        "hypermri.datasets.fetch.urlopen",
+        lambda *_args, **_kwargs: pytest.fail("no network access expected"),
+    )
+    cache = tmp_path / "cache"
+    assert not is_dataset_cached("demo", data_home=cache, registry_path=registry_path)
+    (cache / "demo").mkdir(parents=True)
+    (cache / "demo" / "payload.txt").write_text("payload")
+    assert is_dataset_cached("demo", data_home=cache, registry_path=registry_path)
+
+
+def test_redirect_to_the_zenodo_login_counts_as_refused(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+):
+    """Zenodo redirects restricted files to /login; that is no data download."""
+    registry_path = _write_token_registry(tmp_path, _demo_zip(tmp_path))
+    monkeypatch.delenv("TEST_DATASET_TOKEN", raising=False)
+    monkeypatch.setattr(
+        "hypermri.datasets.fetch.urlopen",
+        lambda request, timeout: _FakeResponse(
+            b"<html>login</html>", "https://zenodo.example/login/?next=%2Ffiles"
+        ),
+    )
+
+    with pytest.raises(DatasetError, match="HTTP 401.*TEST_DATASET_TOKEN"):
+        fetch_example_data(
+            "demo",
+            data_home=tmp_path / "cache",
+            registry_path=registry_path,
+            quiet=True,
+        )
+    assert not (tmp_path / "cache" / "demo" / ".downloads" / "demo.zip").exists()

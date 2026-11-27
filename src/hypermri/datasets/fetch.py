@@ -11,6 +11,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import stat
 import sys
@@ -20,7 +21,8 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from importlib.resources import files as resource_files
 from pathlib import Path, PurePosixPath, PureWindowsPath
-from urllib.parse import quote, urlsplit
+from urllib.error import HTTPError
+from urllib.parse import parse_qsl, quote, urlencode, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
 from hypermri.config.mappings import check_fields
@@ -29,6 +31,7 @@ from hypermri.exceptions import ConfigurationError
 REGISTRY_RESOURCE = "registry.json"
 ZENODO_API_URL = "https://zenodo.org/api/records/{record_id}"
 USER_AGENT = "hypermri-datasets (+https://github.com/LucaNagel/hypermri)"
+_ENV_NAME_PATTERN = re.compile(r"[A-Z_][A-Z0-9_]*")
 
 
 class DatasetError(RuntimeError):
@@ -127,6 +130,7 @@ _DATASET_FIELDS = (
     "license_url",
     "archive_size_bytes",
     "stable_raw_cases",
+    "access_token_env",
 )
 
 
@@ -246,6 +250,19 @@ def _validate_dataset_entry(name: str, dataset: dict, path: Path) -> None:
         ):
             raise DatasetError(
                 f"Dataset {name!r} in {path} stable_raw_cases must map names to positive scan indices."
+            )
+    if "access_token_env" in dataset:
+        env_name = dataset["access_token_env"]
+        if not isinstance(env_name, str) or not _ENV_NAME_PATTERN.fullmatch(env_name):
+            raise DatasetError(
+                f"Dataset {name!r} in {path} field 'access_token_env' must name an "
+                "environment variable in upper case, for example "
+                "'HYPERMRI_ZENODO_TOKEN'."
+            )
+        if dataset.get("source") != "archive":
+            raise DatasetError(
+                f"Dataset {name!r} in {path} sets 'access_token_env', which is "
+                "supported only with source 'archive'."
             )
     available = (
         dataset.get("enabled", True) is not False
@@ -384,6 +401,92 @@ def dataset_path(data_home: Path, dataset_name: str, dataset: dict) -> Path:
     return root / relative_path if relative_path else root
 
 
+def is_dataset_cached(
+    name: str,
+    *,
+    data_home: str | Path | None = None,
+    registry_path: str | Path | None = None,
+) -> bool:
+    """Return whether a dataset is complete in the local cache.
+
+    The check only looks for the required files of the registry entry in the
+    cache; it never downloads, verifies checksums or touches the network.
+    :func:`fetch_example_data` returns such a dataset without network access.
+
+    Parameters
+    ----------
+    name : str
+        Registry name of the dataset; :func:`list_datasets` returns the
+        released names.
+    data_home : str or pathlib.Path, optional
+        Cache root. Defaults to the environment variable ``HYPERMRI_DATA`` or,
+        without it, to the user cache folder of the operating system.
+    registry_path : str or pathlib.Path, optional
+        Registry JSON file to use instead of the packaged one.
+
+    Returns
+    -------
+    bool
+        ``True`` if every required file of the dataset exists in the cache.
+
+    Raises
+    ------
+    DatasetError
+        If the registry cannot be read or names no dataset ``name``.
+    """
+    registry = load_registry(registry_path)
+    dataset = get_dataset_info(name, registry)
+    root = get_data_home(data_home, registry)
+    return _dataset_is_present(dataset_path(root, name, dataset), dataset)
+
+
+def _read_access_token(dataset: dict) -> str | None:
+    """Return the access token named by the registry entry, if one is set."""
+    env_name = dataset.get("access_token_env")
+    if not env_name:
+        return None
+    return os.environ.get(env_name, "").strip() or None
+
+
+def _with_access_token(url: str, token: str | None) -> str:
+    """Return ``url`` with the Zenodo share-link token as query parameter."""
+    if token is None:
+        return url
+    parts = urlsplit(url)
+    query = [
+        (key, value)
+        for key, value in parse_qsl(parts.query, keep_blank_values=True)
+        if key != "token"
+    ]
+    query.append(("token", token))
+    return urlunsplit(parts._replace(query=urlencode(query)))
+
+
+def _refused_download_message(
+    name: str, dataset: dict, file_entry: DatasetFile, error: HTTPError
+) -> str:
+    """Describe a failed download without the URL, which may hold a token."""
+    message = (
+        f"{name}: download of {file_entry.key} failed with HTTP {error.code} "
+        f"{error.reason}."
+    )
+    env_name = dataset.get("access_token_env")
+    if env_name and error.code in {401, 403, 404}:
+        where = dataset.get("source_url") or "the dataset record"
+        if _read_access_token(dataset) is None:
+            message += (
+                f" The files may be restricted: set the environment variable "
+                f"{env_name} to the token of a share link from the dataset owner, "
+                f"or request access at {where}."
+            )
+        else:
+            message += (
+                f" The token in {env_name} was not accepted; check that it "
+                f"belongs to a valid share link of {where}."
+            )
+    return message
+
+
 def _request_json(url: str) -> dict:
     _validate_download_url(url)
     request = Request(url, headers={"User-Agent": USER_AGENT})
@@ -504,6 +607,7 @@ def _download_file(
     *,
     quiet: bool,
     allow_local_files: bool = False,
+    access_token: str | None = None,
 ) -> None:
     _validate_download_url(
         file_entry.url,
@@ -514,8 +618,17 @@ def _download_file(
         size = f" ({file_entry.size / 1024 / 1024:.1f} MB)" if file_entry.size else ""
         print(f"Downloading {file_entry.key}{size}")
 
-    request = Request(file_entry.url, headers={"User-Agent": USER_AGENT})
+    request = Request(
+        _with_access_token(file_entry.url, access_token),
+        headers={"User-Agent": USER_AGENT},
+    )
     with urlopen(request, timeout=120) as response:
+        # Zenodo answers a restricted file without a valid token with a
+        # redirect to its login page instead of an HTTP error.
+        if urlsplit(response.geturl()).path.startswith("/login"):
+            raise HTTPError(
+                file_entry.url, 401, "redirected to the login page", None, None
+            )
         with destination.open("wb") as stream:
             for chunk in iter(lambda: response.read(1024 * 1024), b""):
                 stream.write(chunk)
@@ -690,7 +803,11 @@ def fetch_example_data(
     """Download an approved example dataset if needed and return its local path.
 
     The packaged registry names each released dataset, its download URL and
-    the checksum of the file. The first call downloads the file into
+    the checksum of the file. A registry entry with ``access_token_env``
+    accepts a Zenodo share-link token from that environment variable; the
+    token opens restricted files and is never printed or written to the cache.
+    Without the variable the download is attempted without a token. The first
+    call downloads the file into
     ``<data_home>/.downloads``, verifies the checksum, unpacks archives safely
     and writes a marker file ``.hypermri_dataset.json`` with the source and
     the download time. Later calls find the required files and return at once
@@ -699,8 +816,7 @@ def fetch_example_data(
     Parameters
     ----------
     name : str
-        Registry name of the dataset, for example
-        ``"hp_pyruvate_csi_mouse"``. :func:`list_datasets` returns the names
+        Registry name of the dataset. :func:`list_datasets` returns the names
         that can be downloaded. The default ``"tutorial"`` is a reserved
         placeholder that is not released.
     data_home : str or pathlib.Path, optional
@@ -726,14 +842,16 @@ def fetch_example_data(
     ------
     DatasetError
         If the name is unknown or not released (checked before any file or
-        network access), if a checksum does not match, if an archive member
-        is unsafe, or if required files are missing after unpacking.
+        network access), if the server refuses the download (the message
+        names the token variable for restricted files), if a checksum does
+        not match, if an archive member is unsafe, or if required files are
+        missing after unpacking.
 
     Examples
     --------
     >>> from hypermri import Study
     >>> from hypermri.datasets import fetch_example_data
-    >>> path = fetch_example_data("hp_pyruvate_csi_mouse")  # doctest: +SKIP
+    >>> path = fetch_example_data("example_session")  # doctest: +SKIP
     >>> study = Study(path)  # doctest: +SKIP
     """
     registry = load_registry(registry_path)
@@ -748,6 +866,7 @@ def fetch_example_data(
             print(f"{name}: already available at {target_path}")
         return target_path
 
+    access_token = _read_access_token(dataset)
     target_dir.mkdir(parents=True, exist_ok=True)
     downloads_dir = target_dir / ".downloads"
     files = _resolve_dataset_files(
@@ -762,12 +881,19 @@ def fetch_example_data(
             downloads_dir.resolve(),
         )
         if force or not destination.exists():
-            _download_file(
-                file_entry,
-                destination,
-                quiet=quiet,
-                allow_local_files=allow_local_files,
-            )
+            try:
+                _download_file(
+                    file_entry,
+                    destination,
+                    quiet=quiet,
+                    allow_local_files=allow_local_files,
+                    access_token=access_token,
+                )
+            except HTTPError as exc:
+                # ``from None``: the chained error would show the URL and token.
+                raise DatasetError(
+                    _refused_download_message(name, dataset, file_entry, exc)
+                ) from None
         _verify_checksum(destination, file_entry.checksum)
 
         if _extract_if_archive(destination, target_dir):

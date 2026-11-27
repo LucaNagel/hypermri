@@ -1,7 +1,9 @@
 # Start
 
+Three steps from a fresh computer to your first scan in the viewer.
+
 ```{toctree}
-:maxdepth: 1
+:hidden:
 
 installation
 first_look
@@ -9,8 +11,36 @@ first_look
 research_use
 ```
 
-1. {doc}`installation` sets up a Python 3.12 environment with the viewer.
-2. {doc}`first_look` loads a public example study, looks at one scan as
-   labelled data and opens it in the viewer.
-3. {doc}`../support` lists which vendors, sequences and workflows are
-   supported and how far.
+::::{grid} 1 2 2 4
+:gutter: 3
+:class-container: hm-overview-cards
+
+:::{grid-item-card} {octicon}`download` 1 · Installation
+:link: installation
+:link-type: doc
+
+Set up a Python 3.12 environment with HyperMRI and the viewer.
+:::
+
+:::{grid-item-card} {octicon}`telescope` 2 · First look
+:link: first_look
+:link-type: doc
+
+Load a public example study, look at one scan as labelled data and open it
+in the viewer.
+:::
+
+:::{grid-item-card} {octicon}`checklist` 3 · Support
+:link: ../support
+:link-type: doc
+
+Which vendors, sequences and workflows are supported, and how far.
+:::
+
+:::{grid-item-card} {octicon}`alert` Research use
+:link: research_use
+:link-type: doc
+
+HyperMRI is research software and not a medical device.
+:::
+::::

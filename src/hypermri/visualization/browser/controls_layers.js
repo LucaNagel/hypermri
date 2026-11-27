@@ -16,7 +16,9 @@ function layerControls(v) {
       const slice = layerSliceSlider(anatomy.slice_count, settings.slice, anatomy.slice_index, (value) =>
         sendControls(v, { anatomy: { slice: value } }),
       );
-      for (const input of slice.querySelectorAll("input, button")) needsPython(v, input);
+      if (!v.model.get("_anatomy_slices")) {
+        for (const input of slice.querySelectorAll("input, button")) needsPython(v, input);
+      }
       items.push(labelled(`anatomy ${anatomy.slice_dim}`, slice));
     }
     const opacity = opacitySlider(

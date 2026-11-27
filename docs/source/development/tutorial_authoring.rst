@@ -60,6 +60,9 @@ of executing it in the build:
 
 inside a ``{raw} html`` block. ``scripts/build_docs_snapshots.py`` writes
 these files; add a new snapshot there and run it with the phantom folder.
+The documentation build photographs the preview images of the tutorial
+overview from these files with ``scripts/build_docs_thumbnails.py``; the
+images are not committed.
 
 Measurement data
 ----------------

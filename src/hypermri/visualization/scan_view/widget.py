@@ -706,9 +706,12 @@ class ScanView(
         selection, the colour range and the name. In any browser, without a
         kernel, a click or the arrow keys choose a voxel, hover shows values,
         and the colour range, curve axes and display switches work as in the
-        notebook. Controls that ask Python for a new block (slices,
-        processing, layers, masks) are shown switched off, and the tools are
-        left out.
+        notebook. Every slice of an anatomy drawn under the map is saved
+        too, so the anatomy slice slider and "follow map" work; the view is
+        rendered once per anatomy slice for this and then shows what it
+        showed before. Other controls that ask Python for a new block (map
+        slices, processing, overlays, masks) are shown switched off, and the
+        tools are left out.
 
         Parameters
         ----------
