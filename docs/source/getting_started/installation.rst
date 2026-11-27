@@ -75,6 +75,28 @@ organizations with more than 200 employees may need a paid licence.
 Next time, open the terminal of the ``hypermri`` environment the same way and
 run ``jupyter notebook``.
 
+Install with uv
+---------------
+
+.. dropdown:: Show the steps for uv, a fast Python package manager
+
+   `uv <https://docs.astral.sh/uv/getting-started/installation/>`_ downloads
+   Python 3.12 itself, so neither conda nor Python is needed. In a new
+   project folder, create and activate an environment, then install
+   HyperMRI and start Jupyter:
+
+   .. code-block:: bash
+
+      uv venv --python 3.12
+      source .venv/bin/activate
+      uv pip install hypermri
+      jupyter notebook
+
+   On Windows, activate the environment with ``.venv\Scripts\activate``
+   instead. Run the activation command again in every new terminal. In a
+   clone of the repository, ``uv pip install -e ".[dev,docs]"`` installs it
+   for development.
+
 Optional features
 -----------------
 

@@ -4,13 +4,17 @@ The snapshot holds the browser code of the viewer, its style, Plotly.js and
 the values the widget has sent to the browser, so it opens in any browser
 without Python. Everything the browser does on its own keeps working: voxel
 and curve-position selection, hover values, colour range, curve axes and
-the display switches. Controls that need Python to compute a new block
-(slices, processing, layers, masks and tools) are shown switched off.
+the display switches. Every slice of an anatomy drawn under a map is saved
+as well, so its slider and "follow map" also work. Other controls that need
+Python to compute a new block (map slices, processing, overlays, masks and
+tools) are shown switched off.
 """
 
 from __future__ import annotations
 
 import base64
+import copy
+import dataclasses
 import html
 import json
 from importlib.resources import files as resource_files
@@ -75,6 +79,61 @@ def _snapshot_state(view: ScanView) -> dict[str, Any]:
     return state
 
 
+def _anatomy_slice_states(
+    view: ScanView, shown: dict[str, Any]
+) -> dict[str, dict[str, Any]] | None:
+    """Return the traits that change with each anatomy slice under the map.
+
+    The view is rendered once with the anatomy following the map and once
+    per anatomy slice, as the slider in the notebook does. Its display
+    state is then put back and rendered again, so the view shows what it
+    showed before.
+
+    Parameters
+    ----------
+    view : ScanView
+        Viewer with an anatomy drawn under its map.
+    shown : dict
+        :func:`_snapshot_state` of the view as it is shown.
+
+    Returns
+    -------
+    dict or None
+        ``"follow"`` and the slice index as text (``"0"``, ``"1"``, ...)
+        mapped to the values of every trait that differs between the
+        choices, such as the anatomy plane, its range and ``_controls``.
+        None when no anatomy is drawn under a map or it has a single slice.
+    """
+    if view._anatomy_data() is None or view._outline is not None:
+        return None
+    _, count = view._anatomy_slice_axis()
+    if count < 2:
+        return None
+    saved = copy.deepcopy(view.state)
+    states = {}
+    try:
+        for choice in (None, *range(count)):
+            view.set_anatomy_slice(choice)
+            key = "follow" if choice is None else str(choice)
+            states[key] = _snapshot_state(view)
+    finally:
+        for field in dataclasses.fields(saved):
+            setattr(view.state, field.name, getattr(saved, field.name))
+        view._render()
+        view._controls = view._current_controls()
+    changed = sorted(
+        {
+            name
+            for state in states.values()
+            for name, value in state.items()
+            if value != shown[name]
+        }
+    )
+    return {
+        key: {name: state[name] for name in changed} for key, state in states.items()
+    }
+
+
 def _script_text(source: str) -> str:
     """Return JavaScript that cannot end the surrounding ``<script>`` early."""
     return source.replace("</script", "<\\/script")
@@ -89,7 +148,8 @@ def snapshot_html(
     ----------
     view : ScanView
         Viewer whose shown plane, selection, colour range, masks, layers and
-        name are saved. The view is read only, not changed.
+        name are saved. With an anatomy under the map the view is rendered
+        once per anatomy slice and then shows what it showed before.
     plotly_js : {"inline", "cdn"}, optional
         Source of Plotly.js, see :data:`PLOTLY_JS_SOURCES`. Default
         ``"inline"``.
@@ -100,6 +160,7 @@ def snapshot_html(
         Complete HTML document (UTF-8). Its size is dominated by Plotly.js
         when ``plotly_js="inline"`` and otherwise by the float32 block of
         the shown plane, stored as base64 text (4/3 of its size in bytes).
+        An anatomy under the map adds one anatomy plane per slice.
 
     Raises
     ------
@@ -122,7 +183,11 @@ def snapshot_html(
     folder = resource_files("hypermri.visualization").joinpath("browser")
     css = folder.joinpath("viewer.css").read_text(encoding="utf-8")
     start = folder.joinpath("snapshot.js").read_text(encoding="utf-8")
-    state = json.dumps(_snapshot_state(view), allow_nan=False).replace("</", "<\\/")
+    shown = _snapshot_state(view)
+    anatomy_slices = _anatomy_slice_states(view, shown)
+    if anatomy_slices is not None:
+        shown["_anatomy_slices"] = anatomy_slices
+    state = json.dumps(shown, allow_nan=False).replace("</", "<\\/")
     title = html.escape(view.name or "hypermri scan view")
     return f"""<!doctype html>
 <html lang="en">

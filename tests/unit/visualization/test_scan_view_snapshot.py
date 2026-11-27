@@ -10,6 +10,7 @@ by hand in Chrome; these tests cover the page contents.
 import base64
 import json
 import re
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -19,7 +20,14 @@ from plotly.offline import get_plotlyjs_version  # noqa: E402
 
 # Pytest puts this test directory on sys.path (rootdir-less "prepend" import
 # mode), so the sibling module imports by its basename even under python -I.
-from test_scan_view import _view  # noqa: E402
+from test_scan_view import (  # noqa: E402
+    _stacked_anatomy_scan,
+    _stacked_csi,
+    _view,
+)
+from test_scan_view import _state as _plot_state  # noqa: E402
+
+from hypermri.visualization.scan_view import plot_scan  # noqa: E402
 
 _STATE = re.compile(
     r'<script id="hypermri-state" type="application/json">(.*?)</script>', re.S
@@ -80,3 +88,50 @@ def test_snapshot_rejects_an_unknown_plotly_source():
     view, _ = _view()
     with pytest.raises(ValueError, match="plotly_js must be one of"):
         view.to_html(plotly_js="local")
+
+
+def test_snapshot_saves_every_anatomy_slice_and_keeps_the_view():
+    scan = SimpleNamespace(primary_data=_stacked_csi(), is_spectroscopic=True)
+    # Invented anatomy whose pixel value also tells its slice: x + 100 y +
+    # 1000 z (mm), so every anatomy slice is a different plane.
+    anatomy = _stacked_anatomy_scan()
+    anatomy.primary_data = anatomy.primary_data + 1000.0 * anatomy.primary_data.z
+    view = plot_scan(scan, anatomy=anatomy, state=_plot_state())
+    view.set_anatomy_slice(4)
+    before = {
+        "state": repr(view.state),
+        "controls": view._controls,
+        "block": bytes(view._block),
+        "anatomy": bytes(view._anatomy),
+        "selection": view.selection,
+    }
+    state = _state(view.to_html(plotly_js="cdn"))
+
+    slices = state["_anatomy_slices"]
+    assert sorted(slices) == ["0", "1", "2", "3", "4", "follow"]
+    # Each choice carries what the notebook slider would show: the drawn
+    # anatomy slice, the controls and, for this stacked map, the map slice
+    # nearest to it (anatomy z = -4..4 mm, map z = 0, 4, 8 mm).
+    for key, saved in slices.items():
+        assert {"_anatomy", "_controls", "_view"} <= set(saved)
+        # Following the map at z = 4 mm draws anatomy slice 4 as well.
+        expected = 4 if key == "follow" else int(key)
+        assert saved["_view"]["anatomy"]["slice_index"] == expected
+    assert slices["4"]["_controls"]["indices"]["slice_idx"] == 1
+    assert slices["follow"]["_controls"]["anatomy"] == {"slice": None}
+    assert slices["4"]["_anatomy"] == state["_anatomy"]
+    assert slices["0"]["_anatomy"] != state["_anatomy"]
+
+    after = {
+        "state": repr(view.state),
+        "controls": view._controls,
+        "block": bytes(view._block),
+        "anatomy": bytes(view._anatomy),
+        "selection": view.selection,
+    }
+    assert after == before
+
+
+def test_snapshot_without_anatomy_saves_no_slices():
+    view, _ = _view()
+    assert "_anatomy_slices" not in _state(view.to_html(plotly_js="cdn"))

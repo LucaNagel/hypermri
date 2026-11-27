@@ -4,6 +4,29 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.12"
+  # System libraries of the Chromium headless shell that photographs the
+  # tutorial card images (scripts/build_docs_thumbnails.py).
+  apt_packages:
+    - libnss3
+    - libnspr4
+    - libatk1.0-0
+    - libatk-bridge2.0-0
+    - libcups2
+    - libdrm2
+    - libxkbcommon0
+    - libxcomposite1
+    - libxdamage1
+    - libxfixes3
+    - libxrandr2
+    - libgbm1
+    - libpango-1.0-0
+    - libcairo2
+    - libasound2
+    - libatspi2.0-0
+  jobs:
+    post_install:
+      # Optional: without the browser the cards show only icon and text.
+      - pip install playwright && python -m playwright install chromium-headless-shell || true
 
 python:
   install:

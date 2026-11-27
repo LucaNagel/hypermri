@@ -75,3 +75,42 @@ iframe.hm-snapshot {
 iframe.hm-snapshot.hm-explainer {
     height: 760px;
 }
+
+/* Overview pages (Start, Tutorials, Concepts): one card per page. */
+.hm-overview-cards .sd-card,
+.hm-tutorial-cards .sd-card {
+    overflow: hidden;
+    transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.hm-overview-cards .sd-card:hover,
+.hm-tutorial-cards .sd-card:hover {
+    transform: translateY(-2px);
+}
+
+.hm-overview-cards .sd-card-title {
+    font-size: 1.05rem;
+}
+
+/* Tutorial cards also show a preview image of the tutorial's result,
+   written by the documentation build; the card body puts it on top. */
+.hm-tutorial-cards .sd-card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.hm-tutorial-cards img.hm-card-thumb {
+    order: -1;
+    display: block;
+    width: calc(100% + 2 * var(--hm-card-pad, 1rem));
+    max-width: none;
+    margin: calc(-1 * var(--hm-card-pad, 1rem)) calc(-1 * var(--hm-card-pad, 1rem)) 0.75rem;
+    aspect-ratio: 16 / 10;
+    object-fit: contain;
+    background: #fff;
+    border-bottom: 1px solid var(--pst-color-border);
+}
+
+.hm-tutorial-cards .sd-card-title {
+    font-size: 1.05rem;
+}

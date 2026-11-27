@@ -211,8 +211,14 @@ function onSelection(v) {
   if (v.Plotly) draw(v);
 }
 
+// In a snapshot only the anatomy slice has values saved for every choice.
+function snapshotAnswers(v, update) {
+  const names = Object.keys(update);
+  return names.length === 1 && names[0] === "anatomy" && Boolean(v.model.get("_anatomy_slices"));
+}
+
 function sendControls(v, update) {
-  if (v.isSnapshot) {
+  if (v.isSnapshot && !snapshotAnswers(v, update)) {
     v.status.textContent = "This snapshot has no Python behind it; open the notebook to change this.";
     return;
   }
@@ -221,8 +227,10 @@ function sendControls(v, update) {
   if (v.tool === "polygon" && v.pending.length > 2) finishPolygon(v);
   const controls = structuredClone(v.model.get("_controls"));
   Object.assign(controls, update);
-  v.requestSentAt = performance.now();
-  v.status.textContent = "Python is preparing a new block ...";
+  if (!v.isSnapshot) {
+    v.requestSentAt = performance.now();
+    v.status.textContent = "Python is preparing a new block ...";
+  }
   v.model.set("_controls", controls);
   v.model.save_changes();
 }

@@ -26,8 +26,6 @@ jobs:
           python -m pip install -e ".[dev,docs]"
 
       - name: Validate source and documentation
-        env:
-          HYPERMRI_ZENODO_TOKEN: ${{ secrets.HYPERMRI_ZENODO_TOKEN }}
         run: |
           python scripts/audit_public_snapshot.py
           ruff check src tests scripts

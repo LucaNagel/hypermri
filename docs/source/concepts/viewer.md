@@ -44,5 +44,7 @@ a {class}`~hypermri.Study` and lay one under another.
 writes the current view to one HTML file: the viewer code, the data of the
 shown plane and either the full Plotly.js (`plotly_js="inline"`, works
 offline) or a link to it (`"cdn"`, smaller). Everything that runs in the
-browser keeps working there; controls that need Python are greyed out. The
-interactive frames in this documentation are such snapshots.
+browser keeps working there. With an anatomy under the map, every anatomy
+slice is saved as well, so its slider still works. Other controls that need
+Python are greyed out. The interactive frames in this documentation are such
+snapshots.

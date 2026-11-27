@@ -78,7 +78,10 @@ of a view with the same browser code into one HTML file;
 ``browser/snapshot.js`` stands in for the Python half. Control groups listed
 in ``PYTHON_GROUPS`` in ``browser/viewer.js`` are switched off there; a new
 control group that needs Python belongs in that list, and a single input in an
-otherwise browser-only group is marked with ``needsPython``. The documentation's viewer frames
+otherwise browser-only group is marked with ``needsPython``. The anatomy slice
+is the one Python answer saved for every choice: ``to_html`` stores the
+changed traits per slice as ``_anatomy_slices``, and the snapshot model shows
+them when the slider sends its controls. The documentation's viewer frames
 are written by ``scripts/build_docs_snapshots.py``; run it after a visible
 change to the viewer.
 

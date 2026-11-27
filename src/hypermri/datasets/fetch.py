@@ -416,7 +416,8 @@ def is_dataset_cached(
     Parameters
     ----------
     name : str
-        Registry name of the dataset, for example ``"hp_pyruvate_csi_mouse"``.
+        Registry name of the dataset; :func:`list_datasets` returns the
+        released names.
     data_home : str or pathlib.Path, optional
         Cache root. Defaults to the environment variable ``HYPERMRI_DATA`` or,
         without it, to the user cache folder of the operating system.
@@ -803,9 +804,8 @@ def fetch_example_data(
 
     The packaged registry names each released dataset, its download URL and
     the checksum of the file. A registry entry with ``access_token_env``
-    accepts a Zenodo share-link token from that environment variable
-    (``HYPERMRI_ZENODO_TOKEN`` for ``"hp_pyruvate_csi_mouse"``); the token
-    opens restricted files and is never printed or written to the cache.
+    accepts a Zenodo share-link token from that environment variable; the
+    token opens restricted files and is never printed or written to the cache.
     Without the variable the download is attempted without a token. The first
     call downloads the file into
     ``<data_home>/.downloads``, verifies the checksum, unpacks archives safely
@@ -816,8 +816,7 @@ def fetch_example_data(
     Parameters
     ----------
     name : str
-        Registry name of the dataset, for example
-        ``"hp_pyruvate_csi_mouse"``. :func:`list_datasets` returns the names
+        Registry name of the dataset. :func:`list_datasets` returns the names
         that can be downloaded. The default ``"tutorial"`` is a reserved
         placeholder that is not released.
     data_home : str or pathlib.Path, optional
@@ -852,7 +851,7 @@ def fetch_example_data(
     --------
     >>> from hypermri import Study
     >>> from hypermri.datasets import fetch_example_data
-    >>> path = fetch_example_data("hp_pyruvate_csi_mouse")  # doctest: +SKIP
+    >>> path = fetch_example_data("example_session")  # doctest: +SKIP
     >>> study = Study(path)  # doctest: +SKIP
     """
     registry = load_registry(registry_path)

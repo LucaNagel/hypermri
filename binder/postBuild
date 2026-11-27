@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-# Download the released example data once while the image is built, so a
-# notebook started on Binder finds it in the cache without waiting.
-hypermri-download-example-data hp_pyruvate_csi_mouse

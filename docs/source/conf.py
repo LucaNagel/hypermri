@@ -126,26 +126,6 @@ else:
     os.environ["HYPERMRI_DOCS_PHANTOM"] = _phantom
     nb_execution_excludepatterns = []
 
-# The pyruvate CSI tutorial downloads its Zenodo files, which may be
-# restricted. It runs where the data are cached or the access token is set
-# (GitHub Actions secret and Read the Docs private variable); builds without
-# either, such as pull requests from forks, show its code without output.
-CSI_DATASET = "hp_pyruvate_csi_mouse"
-CSI_PAGE = "tutorials/hp_pyruvate_csi.md"
-
-
-def _csi_data_reachable() -> bool:
-    """Return whether the CSI tutorial can load or download its data."""
-    from hypermri.datasets import get_dataset_info, is_dataset_cached
-
-    token_env = get_dataset_info(CSI_DATASET).get("access_token_env", "")
-    has_token = bool(token_env and os.environ.get(token_env, "").strip())
-    return has_token or is_dataset_cached(CSI_DATASET)
-
-
-if not _csi_data_reachable():
-    nb_execution_excludepatterns.append(CSI_PAGE)
-
 templates_path = ["_templates"]
 exclude_patterns = [
     "api/generated/**",
@@ -226,3 +206,34 @@ def setup(app):
                 node["reftarget"] = "builtins.type"
 
     app.connect("doctree-read", _qualify_builtin_type_references)
+    app.connect("build-finished", _write_tutorial_thumbnails)
+
+
+def _write_tutorial_thumbnails(app, exception):
+    """Photograph the tutorial card images into the finished HTML build.
+
+    The images come from the built pages and are not kept in the repository.
+    Without Playwright, a browser or network access the cards show only
+    their icon and text, so a failure is reported and never stops the build.
+    """
+    import importlib.util
+    from pathlib import Path
+
+    from sphinx.util import logging
+
+    if exception is not None or app.builder.format != "html":
+        return
+    logger = logging.getLogger(__name__)
+    script = (
+        Path(__file__).resolve().parents[2] / "scripts" / "build_docs_thumbnails.py"
+    )
+    spec = importlib.util.spec_from_file_location("build_docs_thumbnails", script)
+    thumbnails = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = thumbnails  # dataclasses look up their module
+    try:
+        spec.loader.exec_module(thumbnails)
+        written = thumbnails.build_thumbnails(Path(app.outdir))
+    except Exception as error:  # noqa: BLE001 - the images are optional
+        logger.info("Tutorial card images skipped: %s", error)
+    else:
+        logger.info("Tutorial card images written: %d", len(written))

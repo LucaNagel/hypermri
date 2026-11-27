@@ -35,6 +35,11 @@ repos:
           be committed
         language: fail
         files: (?i)(^internal/|paravision.*\.pdf$|^docs/[^/]+\.pdf$)
+      - id: check-image-sizes
+        name: "Refuse images larger than 500 kB"
+        entry: python scripts/hooks/check_image_sizes.py
+        language: system
+        files: (?i)\.(png|jpe?g|gif|svg|webp|bmp|tiff?|ico|avif)$
       - id: unit-tests
         name: "Require passing unit tests"
         entry: bash scripts/hooks/run_tests.sh

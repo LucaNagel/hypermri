@@ -21,13 +21,10 @@ from hypermri.datasets.fetch import (
 )
 
 
-def test_packaged_registry_releases_only_the_pyruvate_csi_example():
-    """Only the approved Zenodo example is released; the placeholder stays blocked."""
-    assert list_datasets() == ["hp_pyruvate_csi_mouse"]
-    assert list_datasets(include_unavailable=True) == [
-        "hp_pyruvate_csi_mouse",
-        "tutorial",
-    ]
+def test_packaged_registry_releases_no_example_yet():
+    """No example is released; the placeholder stays blocked."""
+    assert list_datasets() == []
+    assert list_datasets(include_unavailable=True) == ["tutorial"]
 
     info = get_dataset_info("tutorial")
     assert info["enabled"] is False
@@ -60,33 +57,14 @@ def test_packaged_registry_refuses_fetch_before_filesystem_or_network_access(
     assert not cache.exists()
 
 
-def test_pyruvate_csi_example_is_pinned_to_one_zenodo_version():
-    """The example fetches one fixed Zenodo file, verified by its SHA-256.
-
-    Provenance: Zenodo record 20429962 (version 2, CC-BY-4.0), the data of
-    Gottwald et al., npj Imaging 3, 19 (2025). Its MD5 as listed by Zenodo is
-    ea5ee88db62b8c9114b567a22e5c6be8; the SHA-256 below was computed from the
-    same download.
-    """
-    info = get_dataset_info("hp_pyruvate_csi_mouse")
-    assert info["doi"] == "10.5281/zenodo.20429962"
-    assert info["license"] == "CC-BY-4.0"
-    assert info["source"] == "archive"
-    assert info["archive_url"].startswith("https://zenodo.org/records/20429962/")
-    assert info["archive_size_bytes"] == 29025981
-    assert info["checksum"] == (
-        "sha256:e78098b8176f07e32d1bf2774a146c4542da94f9ca926c13a8c30022e4007578"
-    )
-    assert {"13/fid", "19/pdata/1/2dseq", "22/fid"} <= set(info["required_paths"])
-
-
-def test_dataset_cli_list_names_the_released_example(capsys):
-    """The CLI lists each released example with its description."""
+def test_dataset_cli_list_says_when_nothing_is_released(capsys):
+    """The CLI list states that no example is released instead of printing nothing."""
     from hypermri.datasets.fetch import main
 
     assert main(["--list"]) == 0
-    lines = capsys.readouterr().out.strip().splitlines()
-    assert [line.split("\t", 1)[0] for line in lines] == ["hp_pyruvate_csi_mouse"]
+    assert capsys.readouterr().out.strip() == (
+        "No public example datasets are currently released."
+    )
 
 
 def test_fetch_example_data_extracts_archive_from_registry(tmp_path: Path):
@@ -401,12 +379,6 @@ class _FakeResponse(io.BytesIO):
 
     def __exit__(self, *_args):
         self.close()
-
-
-def test_pyruvate_csi_example_reads_its_token_from_one_variable():
-    """The CSI example accepts a Zenodo share-link token from HYPERMRI_ZENODO_TOKEN."""
-    info = get_dataset_info("hp_pyruvate_csi_mouse")
-    assert info["access_token_env"] == "HYPERMRI_ZENODO_TOKEN"
 
 
 @pytest.mark.parametrize("token", [None, "s3cret-token"])
