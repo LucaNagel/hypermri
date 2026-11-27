@@ -13,7 +13,7 @@ const DISPLAY_SWITCHES = [
   ["show_tooltips", "tooltips", "Values under the mouse: voxel, position and mask coverage on the map, values on the spectrum and time course"],
   ["show_crosshair", "crosshair", "Dotted lines through the selected voxel"],
   ["show_masks", "masks", "Masks over the map (hidden masks are kept)"],
-  ["show_mask_outlines", "outlines", "Drawn mask outlines at full precision (dashed: erased)"],
+  ["show_mask_outlines", "outlines", "Drawn mask outlines at full precision"],
 ];
 
 // Grid lines of every panel, as show_grid_lines in plot.

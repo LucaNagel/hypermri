@@ -59,10 +59,11 @@ function finishPolygon(v) {
   if (v.Plotly) drawImagePanel(v);
 }
 
-// "Close outline" (or Enter) commits the polygon clicked in this view or in a
-// mask-linked one: the button sits in the first image only, but corners may
-// have been clicked in another. Drawing then stops in all linked views.
-function closeOutline(v) {
+// "Finish ROI" (or Enter) stores the polygon clicked in this view or in a
+// mask-linked one and stops drawing in all linked views: the button sits in
+// the first image only, but corners may have been clicked in another. With
+// the freehand tool every outline is already stored, so it only stops drawing.
+function finishRoi(v) {
   finishPolygon(v);
   const link = v.model.get("_mask_link");
   if (link) {
@@ -133,16 +134,15 @@ function maskControls(v) {
     v.el.focus({ preventScroll: true });
   });
   const mode = toggle(["add", "erase"], v.erase ? "erase" : "add");
+  mode.classList.add("hm-csi-add-erase");
   mode.addEventListener("change", () => {
     v.erase = mode.value === "erase";
     shareMaskTool(v);
     if (v.Plotly) drawImagePanel(v);
   });
-  const close = button("Close outline", "Commit the clicked polygon (Enter)");
-  close.disabled = v.tool !== "polygon";
-  close.addEventListener("click", () => closeOutline(v));
-  const undo = button("Undo", "Undo the last outline");
-  undo.addEventListener("click", () => sendMask(v, "undo"));
+  const finish = button("Finish ROI", "Store the clicked polygon (Enter) and stop drawing");
+  finish.disabled = v.tool === "off";
+  finish.addEventListener("click", () => finishRoi(v));
   const remove = button("Delete", "Delete the selected mask");
   remove.disabled = !active;
   remove.addEventListener("click", () => {
@@ -188,8 +188,7 @@ function maskControls(v) {
     labelled("opacity", opacity),
     labelled("draw", toolChoice),
     labelled("mode", mode),
-    close,
-    undo,
+    finish,
     remove,
     ...roi,
     info,

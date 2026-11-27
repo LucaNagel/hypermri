@@ -471,6 +471,82 @@ def outline_to_shown(
     }
 
 
+def drawn_area_boundaries(
+    outlines: Sequence[Mapping[str, Any]],
+    extent: Sequence[float],
+    *,
+    resolution: int = 600,
+) -> list[dict[str, list[float]]]:
+    """Return the boundary of the area left by the drawn outlines of one plane.
+
+    The outlines are applied in the order they were drawn: an outline in add
+    mode adds its area, one in erase mode removes it. Without an erasing
+    outline the drawn polygons are returned unchanged. Otherwise the area is
+    sampled on a fine grid over the shown plane and its boundary traced, so
+    an erased part leaves neither its own line nor the cut-away part of an
+    earlier outline.
+
+    Parameters
+    ----------
+    outlines : sequence of mapping
+        Outlines of the shown plane as returned by :func:`outline_to_shown`:
+        ``x`` and ``y`` in the displayed axis units and ``erase``. Outlines
+        of three or more points are closed polygons; two points are a line,
+        which is kept when it added area and left out when it erased.
+    extent : sequence of float
+        Directed cell-edge bounds ``[xmin, xmax, ymin, ymax]`` of the shown
+        plane, in the displayed axis units.
+    resolution : int, optional
+        Number of grid samples along the longer side of the plane when an
+        outline erased area. The traced boundary is accurate to about one
+        sample spacing.
+
+    Returns
+    -------
+    list of dict
+        Lines ``{"x": [...], "y": [...]}`` in the displayed axis units. A
+        traced boundary is closed (its last point repeats the first).
+        Deterministic; the inputs are not modified.
+    """
+    lines = [o for o in outlines if len(o["x"]) == 2 and not o["erase"]]
+    polygons = [o for o in outlines if len(o["x"]) > 2]
+    if not any(o["erase"] for o in polygons):
+        return [{"x": list(o["x"]), "y": list(o["y"])} for o in polygons + lines]
+    # Imported here: only planes with an erasing outline need the tracing.
+    from matplotlib.path import Path
+    from skimage.measure import approximate_polygon, find_contours
+
+    x_low, x_high = sorted(extent[:2])
+    y_low, y_high = sorted(extent[2:])
+    width, height = x_high - x_low, y_high - y_low
+    spacing = max(width, height) / resolution
+    n_x, n_y = max(2, round(width / spacing)), max(2, round(height / spacing))
+    step_x, step_y = width / n_x, height / n_y
+    centres_x = x_low + (np.arange(n_x) + 0.5) * step_x
+    centres_y = y_low + (np.arange(n_y) + 0.5) * step_y
+    grid_x, grid_y = np.meshgrid(centres_x, centres_y)
+    samples = np.column_stack([grid_x.ravel(), grid_y.ravel()])
+
+    area = np.zeros(n_x * n_y, dtype=bool)
+    for outline in polygons:
+        inside = Path(np.column_stack([outline["x"], outline["y"]])).contains_points(
+            samples
+        )
+        area = area & ~inside if outline["erase"] else area | inside
+    # A border of empty samples closes boundaries that touch the plane edge.
+    padded = np.pad(area.reshape(n_y, n_x).astype(float), 1)
+    boundaries = []
+    for contour in find_contours(padded, 0.5):
+        contour = approximate_polygon(contour, tolerance=0.5)
+        boundaries.append(
+            {
+                "x": np.round(x_low + (contour[:, 1] - 0.5) * step_x, 6).tolist(),
+                "y": np.round(y_low + (contour[:, 0] - 0.5) * step_y, 6).tolist(),
+            }
+        )
+    return boundaries + [{"x": list(o["x"]), "y": list(o["y"])} for o in lines]
+
+
 def _index_step(indices: np.ndarray) -> tuple[int, int] | None:
     """Return (first index, step) of an evenly stepped index run, else None."""
     indices = np.asarray(indices, dtype=int)

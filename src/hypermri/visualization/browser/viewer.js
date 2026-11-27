@@ -216,6 +216,9 @@ function sendControls(v, update) {
     v.status.textContent = "This snapshot has no Python behind it; open the notebook to change this.";
     return;
   }
+  // The new block clears the clicked corners: store the polygon first, on
+  // the plane it was clicked on (Python handles the messages in order).
+  if (v.tool === "polygon" && v.pending.length > 2) finishPolygon(v);
   const controls = structuredClone(v.model.get("_controls"));
   Object.assign(controls, update);
   v.requestSentAt = performance.now();
@@ -260,7 +263,7 @@ function onKey(v, event) {
   if (event.target.closest("input, select, button")) return;
   if (v.tool === "polygon" && v.pending.length) {
     const edits = {
-      Enter: () => closeOutline(v),
+      Enter: () => finishRoi(v),
       Escape: () => (v.pending = []),
       Backspace: () => v.pending.pop(),
     };
@@ -404,6 +407,7 @@ function render({ model, el }) {
     maskMessage: "",
     fitAdvanced: false,
     fitShowResults: true,
+    showTutorial: false,
     maskShowStatistics: true,
   };
   showPlotHeight(v);

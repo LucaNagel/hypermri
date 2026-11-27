@@ -790,7 +790,6 @@ def test_drawn_outline_is_kept_and_shown_where_it_was_drawn(rotation):
     (shown,) = view._mask_planes[0]["outlines"]
     np.testing.assert_allclose(shown["x"], [p[0] for p in drawn], atol=1e-6)
     np.testing.assert_allclose(shown["y"], [p[1] for p in drawn], atol=1e-6)
-    assert shown["erase"] is False
 
 
 def test_undo_and_remove_forget_the_drawn_outline():
@@ -799,7 +798,8 @@ def test_undo_and_remove_forget_the_drawn_outline():
     view.draw_polygon(_voxel_square(view, 0, 0), mask="roi")
     view.draw_polygon(_voxel_square(view, 0, 0), mask="roi", erase=True)
     assert [o["erase"] for o in view.mask_outlines["roi"]] == [False, True]
-    assert [o["erase"] for o in view._mask_planes[0]["outlines"]] == [False, True]
+    # The square is erased completely: no boundary is left to show.
+    assert view._mask_planes[0]["outlines"] == []
     view.undo_mask_edit()
     assert [o["erase"] for o in view.mask_outlines["roi"]] == [False]
     view.remove_mask("roi")
@@ -899,8 +899,21 @@ def test_browser_mask_messages_and_errors(monkeypatch):
     )
     assert sent == [{"type": "mask_error", "message": sent[0]["message"]}]
     assert "exists" in sent[0]["message"]
-    view._handle_custom_message(view, {"type": "mask", "action": "undo"}, [])
+    view._handle_custom_message(
+        view,
+        {
+            "type": "mask",
+            "action": "draw",
+            "mask": "roi",
+            "vertices": vertices,
+            "erase": True,
+        },
+        [],
+    )
     assert not view.masks["roi"].values.any()
+    # The browser has no undo button any more; the action is unknown.
+    view._handle_custom_message(view, {"type": "mask", "action": "undo"}, [])
+    assert "unknown mask action 'undo'" in sent[-1]["message"]
 
 
 def _source_voxel(view, row, column):

@@ -138,15 +138,17 @@ without an explicit ``state`` starts from them. A view of a bare DataArray has
 no scan to store them on.
 
 The mask toolbar adds, colours, fades and deletes masks and draws polygon
-(click corners, Enter or "Close outline" closes the outline and switches
-drawing off, Backspace removes the last corner, Escape cancels) or freehand
+(click corners, Enter or "Finish ROI" closes the outline and switches
+drawing off; with freehand "Finish ROI" only switches drawing off, Backspace removes the last corner, Escape cancels) or freehand
 outlines in add or erase mode. Each edit is stored at once
 in ``scan.masks`` as float32 coverage between 0 and 1 per
 voxel on the scan grid ``(read_idx, phase_idx, slice_idx)``. The drawn
 outlines themselves are kept beside the coverage at the precision they were
 drawn (``view.mask_outlines``, stored with the masks) and drawn as lines in
-the mask colour over the voxel coverage; outlines drawn in erase mode are
-dashed. The display switch "outlines"
+the mask colour over the voxel coverage; after an outline in erase mode,
+the boundary of the drawn area that remains is shown instead. Changing the
+slice while a polygon is being clicked closes and stores it first. The
+display switch "outlines"
 (``view.set_display(show_mask_outlines=False)``) hides them. The same edits are
 available from Python; outline points are (x, y) in the units of the map
 axes. "ROI mean" replaces the voxel curve by means inside the selected mask,
@@ -443,7 +445,7 @@ copied to the others (each of their voxels takes the coverage of the drawn
 image's voxel at its centre, for the edited slice only). Only the first
 image shows the inputs of the mask tool; the others show the chosen mask
 with its volume, and outlines can be drawn on every image: corners
-clicked in another image are closed by "Close outline" of the first. Each scan stores
+clicked in another image are closed by "Finish ROI" of the first. Each scan stores
 the mask on its own grid in ``scan.masks`` and uses it for its ROI mean and
 volume. ``view.show_slices_of(other)``, ``view.link_pointer(other)`` and
 ``view.link_masks(other)`` link views made separately;
@@ -586,13 +588,19 @@ menu; "none" hides them all. Masks stay drawn on the map whichever tool is
 chosen. ``TOOLS`` in ``layout.py`` lists the tools in menu order, and
 ``view.tool = "masks"`` chooses one from Python. A new tool is a control
 group as above whose name is added to ``TOOLS`` instead of one of the
-places. The mask drawing menu is labelled "draw".
+places. The mask drawing menu is labelled "draw". The mask and fit tools
+also offer a "Tutorial" box; ticked, it lists the steps of the tool above
+its inputs.
 
 The "fit" tool is offered for spectra (not for fit results or images). It
-holds a table of spectral lines: "Detect lines" replaces the table with the
-lines found by ``detect_csi_peaks`` using the inputs before the button,
-"Add at cursor" adds a line at the spectral position chosen in the
-spectrum, and each row sets the start frequency and its full search width
+holds a table of spectral lines. The row "Find lines" offers three ways to
+fill it: "Detect lines" replaces the table with the lines found by
+``detect_csi_peaks`` using the row "Detection" (smallest peak height in
+multiples of the noise, and how many of the strongest lines to keep; 0 keeps
+all), "Add at cursor" adds a line at the spectral position chosen in the
+spectrum, and "Use lines of earlier fit" is described below. Detected and
+added lines start with the search range and T2* bounds of the row "Defaults
+for new lines". Each row of the table sets the start frequency and its full search width
 in Hz, the T2* start value and bounds in ms, whether frequency or T2* stay
 fixed and whether the line is fitted at all. "Run fit" fits every voxel of
 the data with ``fit_spectrum`` (Lorentz or Voigt lineshape; "workers" is
@@ -604,7 +612,7 @@ fit parameters and a copy of the fitted data), where the review of
 (``hypermri.visualization.fit_tool``); the browser only sends edits.
 
 "Advanced" shows the remaining settings of the notebook peak selector.
-Detection: peak prominence in noise units, peaks taken per voxel, smallest
+Detection (added to the row "Detection"): peak prominence in noise units, peaks taken per voxel, smallest
 peak distance in one spectrum, B0 tolerance (how far a line may shift
 between voxels), line separation (weaker neighbouring lines are dropped; 0
 keeps them) and the fit SNR factor (amplitude threshold in multiples of
@@ -658,7 +666,7 @@ the two "residual Hz" values for one more line and adds it only when the
 data need it. After a fit, an empty range starts at ±10 Hz around the start
 frequency of the first line of the table.
 
-"show parameters" below the plots opens the measurement parameters of the
+"show parameters" below the plots (on its own line below an open tool) opens the measurement parameters of the
 scan (``scan.get_parameters()``, grouped as ``PARAMETER_SCHEMA``) as a
 table with a text filter. While it is open, "original names" adds the
 scanner's own name after each parameter, for example ``PVM_Matrix`` after

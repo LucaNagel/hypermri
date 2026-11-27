@@ -19,6 +19,7 @@ from hypermri.visualization.mask_editing import (
     DEFAULT_MASK_COLOR,
     MaskedMeanCurve,
     combine_plane_coverage,
+    drawn_area_boundaries,
     empty_mask,
     mask_dims,
     masked_mean_curve,
@@ -506,8 +507,6 @@ class _Masks:
                 mask=name,
                 erase=bool(content.get("erase", False)),
             )
-        elif action == "undo":
-            self.undo_mask_edit()
         else:
             raise ValueError(f"ScanView: unknown mask action {action!r}.")
 
@@ -527,11 +526,14 @@ class _Masks:
             shown = self._shown_coverage(mask)
             if shown is not None:
                 entry["plane"] = np.round(shown.astype(float), 4).tolist()
-                entry["outlines"] = [
+                shown_outlines = [
                     drawn
                     for outline in self._mask_outlines.get(name, [])
                     if (drawn := outline_to_shown(outline, self._mask_plane))
                 ]
+                entry["outlines"] = drawn_area_boundaries(
+                    shown_outlines, self._mask_plane["extent"]
+                )
             result.append(entry)
         return result
 

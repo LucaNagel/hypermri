@@ -12,6 +12,7 @@ from hypermri.visualization.mask_editing import (
     DEFAULT_MASK_ALPHA,
     DEFAULT_MASK_COLOR,
     combine_plane_coverage,
+    drawn_area_boundaries,
     empty_mask,
     mask_dims,
     masked_mean_curve,
@@ -330,3 +331,43 @@ def test_dataset_round_trip_keeps_outlines():
     dataset["roi"].attrs["outlines"] = "not json"
     with pytest.raises(ValueError, match="'outlines' attr of mask 'roi'"):
         masks_from_dataset(dataset)
+
+
+def _square(x0, x1, y0, y1, *, erase=False):
+    return {"x": [x0, x1, x1, x0], "y": [y0, y0, y1, y1], "erase": erase}
+
+
+def test_boundaries_without_erasing_are_the_drawn_outlines():
+    outlines = [_square(1, 3, 1, 3), {"x": [0, 4], "y": [2, 2], "erase": False}]
+    assert drawn_area_boundaries(outlines, [0, 10, 0, 10]) == [
+        {"x": [1, 3, 3, 1], "y": [1, 1, 3, 3]},
+        {"x": [0, 4], "y": [2, 2]},
+    ]
+
+
+def test_erasing_leaves_only_the_boundary_of_the_remaining_area():
+    # The right half of a square is erased; a reversed y axis must not matter.
+    outlines = [_square(2, 6, 2, 6), _square(4, 8, 0, 10, erase=True)]
+    (boundary,) = drawn_area_boundaries(outlines, [0, 10, 10, 0], resolution=500)
+    # Tolerance: one grid sample (10 / 500 = 0.02 axis units).
+    np.testing.assert_allclose(
+        [min(boundary["x"]), max(boundary["x"])], [2, 4], atol=0.02
+    )
+    np.testing.assert_allclose(
+        [min(boundary["y"]), max(boundary["y"])], [2, 6], atol=0.02
+    )
+    assert (boundary["x"][0], boundary["y"][0]) == (
+        boundary["x"][-1],
+        boundary["y"][-1],
+    )
+
+
+def test_erased_completely_or_drawn_again_follows_the_drawing_order():
+    erased = [_square(2, 4, 2, 4), _square(1, 5, 1, 5, erase=True)]
+    assert drawn_area_boundaries(erased, [0, 10, 0, 10]) == []
+    # An erasing line removes no shown outline; a later square comes back.
+    again = [*erased, {"x": [0, 9], "y": [1, 1], "erase": True}, _square(6, 8, 6, 8)]
+    (boundary,) = drawn_area_boundaries(again, [0, 10, 0, 10], resolution=500)
+    np.testing.assert_allclose(
+        [min(boundary["x"]), max(boundary["x"])], [6, 8], atol=0.02
+    )
