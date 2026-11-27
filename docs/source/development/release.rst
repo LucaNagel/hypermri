@@ -29,9 +29,10 @@ Before exporting or publishing a release:
 4. Confirm that the PyPI project owners and maintainers are correct.
 5. Confirm that every public URL in ``pyproject.toml`` resolves, including the
    Read the Docs documentation. After the release tag is pushed, check that the
-   ``stable`` documentation version shows the new release.
-6. Confirm that the license in ``pyproject.toml``, ``LICENSE``, GitHub, and
-   PyPI matches the completed rights review.
+   ``stable`` documentation version shows the new release. Set ``version`` and
+   ``date-released`` in ``CITATION.cff`` to the release before tagging it.
+6. Confirm that the license in ``pyproject.toml``, ``LICENSE``, ``CITATION.cff``,
+   GitHub, and PyPI matches the completed rights review.
 7. Review the historical roster in ``CONTRIBUTORS.md`` for completeness and
    spelling. Use only explicitly approved public names and optional public
    GitHub, ORCID, or contact identifiers; never infer contact details from
