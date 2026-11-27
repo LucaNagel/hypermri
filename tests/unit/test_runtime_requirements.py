@@ -13,7 +13,7 @@ _PROJECT = tomllib.loads(
 )["project"]
 _KERNEL_REQUIREMENTS = [
     requirement
-    for declaration in _PROJECT["optional-dependencies"]["notebook"]
+    for declaration in _PROJECT["dependencies"]
     if (requirement := Requirement(declaration)).name.lower() == "ipykernel"
 ]
 
@@ -34,8 +34,8 @@ def test_only_python_312_patch_versions_are_supported(python_version, supported)
     assert (python_version in SpecifierSet(_PROJECT["requires-python"])) is supported
 
 
-def test_notebook_extra_requires_the_supported_kernel():
-    """Require the fixed kernel whenever the notebook extra is installed."""
+def test_core_installation_requires_the_supported_kernel():
+    """Require the fixed kernel in every installation."""
     assert len(_KERNEL_REQUIREMENTS) == 1
     assert _KERNEL_REQUIREMENTS[0].marker is None
 
@@ -63,38 +63,32 @@ def test_installed_kernel_satisfies_the_runtime_requirement():
     assert version("ipykernel") in _KERNEL_REQUIREMENTS[0].specifier
 
 
-def test_notebook_and_vendor_extras_are_absent_from_core_requirements():
-    """A core installation must not pull notebook, widget or TWIX runtimes."""
+def test_core_installation_includes_the_viewer_notebook_and_twix_stack():
+    """``pip install hypermri`` provides the viewer, Jupyter and TWIX reading."""
     names = {Requirement(value).name.lower() for value in _PROJECT["dependencies"]}
-    assert names.isdisjoint(
-        {
-            "ipython",
-            "ipywidgets",
-            "ipykernel",
-            "notebook",
-            "nbclassic",
-            "plotly",
-            "anywidget",
-            "traitlets",
-            "ipympl",
-            "cmap",
-            "twixtools",
-            "gitpython",
-            "sympy",
-        }
-    )
+    assert {
+        "ipython",
+        "ipywidgets",
+        "ipykernel",
+        "notebook",
+        "plotly",
+        "anywidget",
+        "traitlets",
+        "ipympl",
+        "cmap",
+        "twixtools",
+    } <= names
+    assert names.isdisjoint({"nbclassic", "simpleitk", "gitpython", "sympy"})
 
 
-def test_test_and_docs_extras_include_the_supported_notebook_stack():
-    """CI and documentation retain widget/kernel coverage after the core split."""
+def test_extras_are_limited_to_motion_tests_development_and_docs():
+    """Only the large motion backend and development tooling stay optional."""
     extras = _PROJECT["optional-dependencies"]
-    assert "hypermri[notebook,siemens]" in extras["test"]
+    assert set(extras) == {"motion", "test", "dev", "docs"}
     assert "hypermri[test]" in extras["dev"]
-    assert "hypermri[notebook]" in extras["docs"]
-    assert "hypermri[visualization]" in extras["notebook"]
     kernels = [
         value
-        for group in extras.values()
+        for group in [_PROJECT["dependencies"], *extras.values()]
         for value in group
         if Requirement(value).name.lower() == "ipykernel"
     ]

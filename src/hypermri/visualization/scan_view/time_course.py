@@ -24,8 +24,8 @@ from hypermri.visualization.view_dimensions import (
     displayed_spatial_dims,
 )
 
-_import_optional("anywidget", "visualization")
-_import_optional("cmap", "visualization")
+_import_optional("anywidget")
+_import_optional("cmap")
 
 from hypermri.visualization.scan_view.options import (  # noqa: E402
     SPECTRAL_DIM,

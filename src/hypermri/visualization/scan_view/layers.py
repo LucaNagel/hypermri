@@ -24,8 +24,8 @@ from hypermri.visualization.volume_outline import (
     AnatomyOutline,
 )
 
-_import_optional("anywidget", "visualization")
-_import_optional("cmap", "visualization")
+_import_optional("anywidget")
+_import_optional("cmap")
 
 from cmap import Color, Colormap  # noqa: E402
 

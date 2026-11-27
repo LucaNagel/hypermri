@@ -202,10 +202,10 @@ assert not any(name.split('.')[0] in blocked for name in sys.modules)
 
 
 @pytest.mark.parametrize("missing", ["plotly", "ipywidgets", "anywidget", "cmap"])
-def test_plot_missing_dependency_names_the_installable_extra(
+def test_plot_missing_dependency_asks_to_reinstall_hypermri(
     tmp_path, missing, package_subprocess_env
 ):
-    """A valid plot request fails before viewer creation with installation guidance."""
+    """A plot request in a broken environment fails before viewer creation."""
     _run(
         f"blocked = {{{missing!r}}}\n"
         + _BLOCKER
@@ -216,7 +216,7 @@ from hypermri.visualization import plot
 try:
     plot(xr.DataArray(np.ones((2, 3)), dims=('read_idx','phase_idx')))
 except ImportError as exc:
-    assert 'hypermri[visualization]' in str(exc), str(exc)
+    assert 'pip install hypermri' in str(exc), str(exc)
     assert isinstance(exc.__cause__, ModuleNotFoundError)
 else:
     raise AssertionError('missing optional dependency must fail')
@@ -238,7 +238,7 @@ def test_optional_import_does_not_relabel_a_broken_dependency(monkeypatch):
 
     monkeypatch.setattr(_optional, "import_module", fail)
     with pytest.raises(ModuleNotFoundError) as caught:
-        _optional._import_optional("plotly", "visualization")
+        _optional._import_optional("plotly")
     assert caught.value is error
 
 
@@ -261,7 +261,7 @@ assert not any(name.split('.')[0] in blocked for name in sys.modules)
     )
 
 
-def test_styled_study_display_reports_the_notebook_extra(
+def test_styled_study_display_reports_a_missing_ipython(
     tmp_path, package_subprocess_env
 ):
     """Fail at the display request before accessing scan metadata or creating UI."""
@@ -273,7 +273,7 @@ from hypermri import Study
 try:
     Study.__new__(Study).display()
 except ImportError as exc:
-    assert 'hypermri[notebook]' in str(exc)
+    assert 'pip install hypermri' in str(exc)
 else:
     raise AssertionError('styled display must require its optional runtime')
 """,

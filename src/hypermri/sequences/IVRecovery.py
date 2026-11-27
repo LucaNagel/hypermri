@@ -416,7 +416,7 @@ class IVRecovery(BaseSpectroscopy):
         NotImplementedError
             If get_ppm preparation is unavailable; checked before constructing widgets.
         ImportError
-            If the optional ``hypermri[notebook]`` runtime is unavailable.
+            If ipywidgets or IPython is missing from the environment.
 
         Notes
         -----
@@ -433,8 +433,8 @@ class IVRecovery(BaseSpectroscopy):
             )
         from hypermri._optional import _import_optional
 
-        widgets = _import_optional("ipywidgets", "notebook")
-        display = _import_optional("IPython.display", "notebook").display
+        widgets = _import_optional("ipywidgets")
+        display = _import_optional("IPython.display").display
 
         M0_slider = widgets.FloatRangeSlider(
             value=[-10.0, 10.0],

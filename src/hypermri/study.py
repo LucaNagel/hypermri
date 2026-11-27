@@ -752,12 +752,11 @@ class Study(Mapping, StandardizedPathMixin):
         Raises
         ------
         ImportError
-            If the optional notebook runtime is missing. Install
-            ``hypermri[notebook]`` to enable styled display.
+            If IPython is missing from the environment.
         """
         from ._optional import _import_optional
 
-        display = _import_optional("IPython.display", "notebook").display
+        display = _import_optional("IPython.display").display
         self._update_summary_columns()
         styles = [
             # tabular headers

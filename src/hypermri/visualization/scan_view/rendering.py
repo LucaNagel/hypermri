@@ -26,8 +26,8 @@ from hypermri.visualization.view_dimensions import (
     view_plane_choices,
 )
 
-_import_optional("anywidget", "visualization")
-_import_optional("cmap", "visualization")
+_import_optional("anywidget")
+_import_optional("cmap")
 
 from cmap import Colormap  # noqa: E402
 

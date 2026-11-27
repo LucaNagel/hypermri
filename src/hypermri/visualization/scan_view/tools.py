@@ -61,8 +61,8 @@ from hypermri.visualization.spatial_overlay import (
     preferred_fit_variable,
 )
 
-_import_optional("anywidget", "visualization")
-_import_optional("cmap", "visualization")
+_import_optional("anywidget")
+_import_optional("cmap")
 
 from hypermri.visualization.scan_view.options import (  # noqa: E402
     CURVE_FIT_OVERLAY_NAME,

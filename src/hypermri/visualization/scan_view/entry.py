@@ -38,7 +38,7 @@ from hypermri.visualization.volume_outline import (
 # The browser viewer needs these at construction; plotly ships the Plotly.js
 # bundle that the widget sends to the browser.
 for _dependency in ("ipywidgets", "anywidget", "cmap", "plotly"):
-    _import_optional(_dependency, "visualization")
+    _import_optional(_dependency)
 
 from hypermri.visualization.scan_view.data_choice import (  # noqa: E402
     _chosen_curve_dim,
