@@ -166,9 +166,11 @@ function toggle(options, value) {
 
 // A slider for the slice of an anatomy or overlay layer. While the layer
 // follows the map, the slider shows the slice drawn now and the button
-// "follow map" is pressed; moving the slider fixes the slice. `send` gets
-// the chosen slice when the slider is let go, or null from the button.
-function layerSliceSlider(count, chosen, drawn, send) {
+// "follow map" is pressed; moving the slider fixes the slice. The slider
+// sits in control group `group` and is sent while it is dragged
+// (sendWhileDragged); update(slice) returns the `_controls` update for a
+// slice, or for null from the button, and null when Python already shows it.
+function layerSliceSlider(v, group, count, chosen, drawn, update) {
   const wrapper = element("span", "hm-csi-range-slider");
   const slider = element("input");
   slider.type = "range";
@@ -177,11 +179,14 @@ function layerSliceSlider(count, chosen, drawn, send) {
   slider.value = chosen ?? drawn ?? 0;
   const value = element("span", "hm-csi-value", slider.value);
   slider.addEventListener("input", () => (value.textContent = slider.value));
-  slider.addEventListener("change", () => send(Number(slider.value)));
+  sendWhileDragged(v, slider, group, update);
   const follow = button("follow map", "Let the slice follow the shown map again");
   follow.classList.toggle("hm-csi-primary", chosen == null);
   follow.disabled = chosen == null;
-  follow.addEventListener("click", () => send(null));
+  follow.addEventListener("click", () => {
+    const followed = update(null);
+    if (followed) sendControls(v, followed);
+  });
   wrapper.append(slider, value, follow);
   return wrapper;
 }

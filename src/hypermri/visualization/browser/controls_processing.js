@@ -54,41 +54,18 @@ function sliceControls(v) {
     slider.max = size - 1;
     slider.value = controls.indices?.[dim] ?? 0;
     const value = element("span", "hm-csi-value", shown(slider.value));
-    // While the slider is dragged, every new index is sent (see
-    // sendSliceIndex), so the image and the slice bands of linked views follow.
-    slider.addEventListener("input", () => {
-      value.textContent = shown(slider.value);
-      v.draggingSlice = true;
-      sendSliceIndex(v, dim, Number(slider.value));
-    });
-    slider.addEventListener("change", () => {
-      v.draggingSlice = false;
-      sendSliceIndex(v, dim, Number(slider.value));
+    // While the slider is dragged, every new index is sent, so the image and
+    // the slice bands of linked views follow.
+    slider.addEventListener("input", () => (value.textContent = shown(slider.value)));
+    sendWhileDragged(v, slider, "slices", (index) => {
+      const indices = v.model.get("_controls").indices ?? {};
+      return indices[dim] === index ? null : { indices: { ...indices, [dim]: index } };
     });
     const group = labelled(dim, slider);
     group.append(value);
     items.push(group);
   }
   return items;
-}
-
-// At most one slice request is on its way to Python. A newer index waits in
-// v.sliceRequest and is sent when the block of the previous one arrives
-// (onNewBlock), so a fast drag skips intermediate slices instead of queueing
-// them. A request older than two seconds counts as lost.
-function sendSliceIndex(v, dim, index) {
-  v.sliceRequest = { dim, index };
-  const busy = v.requestSentAt !== null && performance.now() - v.requestSentAt < 2000;
-  if (!busy) sendWaitingSliceIndex(v);
-}
-
-function sendWaitingSliceIndex(v) {
-  const request = v.sliceRequest;
-  v.sliceRequest = null;
-  if (!request) return;
-  const indices = v.model.get("_controls").indices ?? {};
-  if (indices[request.dim] === request.index) return;
-  sendControls(v, { indices: { ...indices, [request.dim]: request.index } });
 }
 
 // Images get only the complex part; unit and line broadening act on spectra.

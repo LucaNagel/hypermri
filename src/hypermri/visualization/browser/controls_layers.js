@@ -1,7 +1,7 @@
 // Control group "layers" in the top bar: what is needed all the time when
 // the map is drawn over an anatomy or under an overlay. A slider chooses the
 // anatomy slice (Python draws it and, for a map with several slices, moves
-// the map to the nearest one); "follow map" lets the anatomy follow the map
+// the map to the nearest one, also while the slider is dragged); "follow map" lets the anatomy follow the map
 // again. The opacity sliders of the map above the anatomy and of the
 // overlay only redraw. For a single voxel or slab, a slider chooses the
 // anatomy slice under its outline. Empty without anatomy and overlay.
@@ -13,8 +13,8 @@ function layerControls(v) {
   if (anatomy?.shape) {
     const settings = v.model.get("_controls").anatomy;
     if (settings && anatomy.slice_count > 1) {
-      const slice = layerSliceSlider(anatomy.slice_count, settings.slice, anatomy.slice_index, (value) =>
-        sendControls(v, { anatomy: { slice: value } }),
+      const slice = layerSliceSlider(v, "layers", anatomy.slice_count, settings.slice, anatomy.slice_index, (value) =>
+        v.model.get("_controls").anatomy?.slice === value ? null : { anatomy: { slice: value } },
       );
       if (!v.model.get("_anatomy_slices")) {
         for (const input of slice.querySelectorAll("input, button")) needsPython(v, input);

@@ -32,12 +32,10 @@ function overlayControls(v) {
     items.push(labelled("source", source));
   }
   if (options.slice_count > 1) {
-    const slice = layerSliceSlider(
-      options.slice_count,
-      settings.slice,
-      v.view.overlay?.slice_index,
-      (value) => send({ slice: value }),
-    );
+    const slice = layerSliceSlider(v, "overlay", options.slice_count, settings.slice, v.view.overlay?.slice_index, (value) => {
+      const overlay = v.model.get("_controls").overlay;
+      return overlay.slice === value ? null : { overlay: { ...overlay, slice: value } };
+    });
     items.push(labelled(options.slice_dim, slice));
   }
   const cmap = select(options.cmaps, settings.cmap);

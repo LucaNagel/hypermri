@@ -130,10 +130,11 @@ function hideEmptySections(v) {
 // Rebuild every control group except the masks, which keep their own state,
 // the tools, which change only with `_fit_tool`, `_curve_fit_tool`, `_ideal_tool` and
 // `_signal_decay_tool` (so typing in the table
-// survives a new block), the parameters, which never change, and the slices
-// while one of their sliders is dragged.
+// survives a new block), the parameters, which never change, and the group
+// whose slider is being dragged (sendWhileDragged).
 function buildControls(v) {
-  const kept = ["masks", "fit", "curve_fit", "ideal", "signal_decay", "parameters", ...(v.draggingSlice ? ["slices"] : [])];
+  const kept = ["masks", "fit", "curve_fit", "ideal", "signal_decay", "parameters"];
+  if (v.draggedGroup) kept.push(v.draggedGroup);
   buildGroups(v, Object.keys(v.groups).filter((name) => !kept.includes(name)));
 }
 
@@ -235,6 +236,36 @@ function sendControls(v, update) {
   v.model.save_changes();
 }
 
+// Send the value of a slider in control group `group` to Python while it is
+// dragged, so the image follows. update(value) returns the `_controls`
+// update for a value, or null when Python already shows it. At most one
+// request is on its way to Python: a newer value waits in v.waitingUpdate
+// and is sent when the block of the previous one arrives (onNewBlock), so a
+// fast drag skips intermediate values instead of queueing them. A request
+// older than two seconds counts as lost. The dragged slider's group is not
+// rebuilt by the blocks that arrive meanwhile (buildControls).
+function sendWhileDragged(v, slider, group, update) {
+  const send = () => {
+    v.waitingUpdate = () => update(Number(slider.value));
+    const busy = v.requestSentAt !== null && performance.now() - v.requestSentAt < 2000;
+    if (!busy) sendWaitingUpdate(v);
+  };
+  slider.addEventListener("input", () => {
+    v.draggedGroup = group;
+    send();
+  });
+  slider.addEventListener("change", () => {
+    v.draggedGroup = null;
+    send();
+  });
+}
+
+function sendWaitingUpdate(v) {
+  const update = v.waitingUpdate?.();
+  v.waitingUpdate = null;
+  if (update) sendControls(v, update);
+}
+
 function onNewBlock(v) {
   readBlock(v);
   v.cachedHoverIndices = hoverIndices(v);
@@ -247,7 +278,7 @@ function onNewBlock(v) {
     v.requestSentAt = null;
     v.status.textContent += ` · settings round trip ${roundTrip.toFixed(0)} ms`;
   }
-  sendWaitingSliceIndex(v);
+  sendWaitingUpdate(v);
 }
 
 function onCustomMessage(v, message) {
@@ -403,8 +434,8 @@ function render({ model, el }) {
     percentReference: "map",
     mapRangeInputs: null,
     requestSentAt: null,
-    sliceRequest: null,
-    draggingSlice: false,
+    waitingUpdate: null,
+    draggedGroup: null,
     linkedPointer: null,
     lastDrawMs: null,
     saveTimer: null,

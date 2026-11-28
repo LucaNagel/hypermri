@@ -6,7 +6,7 @@
 // single voxel or slab.
 
 // Under a voxel or slab outline: a slider for the anatomy slice (Python
-// draws the new slice and outline). Shown in the top bar (layerControls).
+// draws the new slice and outline, also while the slider is dragged). Shown in the top bar (layerControls).
 function outlineSliceControls(v) {
   const outline = v.view.outline;
   const items = [];
@@ -18,8 +18,8 @@ function outlineSliceControls(v) {
     slider.value = outline.slice_index;
     const value = element("span", "hm-csi-value", slider.value);
     slider.addEventListener("input", () => (value.textContent = slider.value));
-    slider.addEventListener("change", () =>
-      sendControls(v, { anatomy_slice: Number(slider.value) }),
+    sendWhileDragged(v, slider, "layers", (index) =>
+      v.model.get("_controls").anatomy_slice === index ? null : { anatomy_slice: index },
     );
     needsPython(v, slider);
     const group = labelled(`anatomy ${outline.slice_dim}`, slider);
