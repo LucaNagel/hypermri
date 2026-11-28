@@ -370,8 +370,9 @@ class _Overlay:
         overlay = self.state.overlay
         if not self._overlay_names():
             raise ValueError(
-                "plot_scan overlays must be maps without acquisition_idx, such as "
-                "fit amplitudes; use hypermri.plot to overlay spectra."
+                "plot_scan overlays must be maps without acquisition_idx (or "
+                "with one acquisition point), such as fit amplitudes or a field "
+                "map; use hypermri.plot to overlay spectra."
             )
         if overlay.mode != "normal":
             raise ValueError(

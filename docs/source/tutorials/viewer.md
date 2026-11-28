@@ -125,11 +125,11 @@ from hypermri.visualization.scan_view import plot_side_by_side
 plot_side_by_side(study[8], study[3])
 ```
 
-Views with a spectrum or time course get a row of their own below the
-images. To choose the rows yourself, pass one list of rows:
+The views start side by side in one row. The buttons "arrange" above them
+switch while you look at them between this row, rows (views with a spectrum
+or time course get a row of their own below the images) and all views one
+below the other. To choose the rows yourself, pass one list of rows:
 `plot_side_by_side([[study[8], study[3]], [csi]])`.
-The buttons "arrange" above the views switch between these rows, all views
-side by side, and all views one below the other while you look at them.
 The menu "under" of a view lays it under another view while they are shown,
 for example an anatomy under the CSI map; "none" shows both again. The slider
 "anatomy" above the upper view then chooses the slice of the anatomy below,

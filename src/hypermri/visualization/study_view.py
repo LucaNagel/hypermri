@@ -265,7 +265,7 @@ class StudyView(ipywidgets.VBox):
         if len(views) >= 2:
             # A new set of views keeps the arrangement chosen for the last.
             shown_box = self._area.children[0] if self._area.children else None
-            arrangement = getattr(shown_box, "arrangement", "rows")
+            arrangement = getattr(shown_box, "arrangement", None)
             try:
                 box = plot_side_by_side(
                     *views, arrangement=arrangement, under_menus=False
@@ -464,8 +464,9 @@ def plot_study(
     shown scans the views stand next to each other as with
     :func:`~hypermri.visualization.scan_view.plot_side_by_side` (slice bands
     of the others, shared mouse pointer, clicked voxel and masks with one
-    mask tool), in rows that the buttons "arrange" switch between rows, side
-    by side and stacked; ticking more scans keeps the chosen arrangement. The menu "under" of a ticked row lays that scan under the
+    mask tool), side by side in one row at first; the buttons "arrange"
+    switch between rows, side by side and stacked, and ticking more scans
+    keeps the chosen arrangement. The menu "under" of a ticked row lays that scan under the
     chosen scan, for example an anatomy under a CSI map: one view of the
     chosen scan then shows it above the lower scan, each in its own colours,
     and the lower scan gets no view of its own. Several rows may lie under

@@ -59,7 +59,8 @@ function displayControls(v) {
 }
 
 // Set from Python (ScanView.set_display): show the new settings and redraw.
+// The overlay controls hold the overlay's smoothing and tooltips.
 function onDisplay(v) {
-  buildGroups(v, ["display"]);
+  buildGroups(v, ["display", "overlay"]);
   if (v.Plotly) draw(v);
 }

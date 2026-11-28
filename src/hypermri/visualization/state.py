@@ -327,6 +327,12 @@ class OverlayState(SecondarySliceState):
         Overlay blend mode: normal, subtract or percent_difference.
     alpha : float, optional
         Overlay opacity from zero to one.
+    smoothing : str, optional
+        Plotly heatmap smoothing of the drawn overlay: ``"off"`` (each overlay
+        voxel as a square), ``"fast"`` or ``"best"``. Only the drawing is
+        smoothed; the overlay values stay unchanged.
+    show_tooltips : bool, optional
+        Add the overlay value to the hover label of the map.
 
     Notes
     -----
@@ -353,6 +359,8 @@ class OverlayState(SecondarySliceState):
     mode: str = "normal"  # "normal" | "subtract" | "percent_difference"
     # Alpha transparency
     alpha: float = 0.4
+    smoothing: str = "off"
+    show_tooltips: bool = False
 
 
 @dataclass

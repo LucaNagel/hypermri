@@ -191,6 +191,23 @@ def test_tooltips_switch_also_hides_curve_and_time_hover_labels():
     assert "delete trace.hovertemplate;" in helper.group(1)
 
 
+def test_overlay_values_are_shown_in_the_map_label_and_clicks_reach_the_map():
+    # The overlay trace keeps no hover of its own, so a click selects the map
+    # voxel below; its value is added to the map label instead, and it has
+    # its own smoothing.
+    script = browser_script()
+    overlay = re.search(r"function overlayTraces\(v\) \{(.*?)\n\}", script, re.S)
+    assert 'hoverinfo: "skip"' in overlay.group(1)
+    assert "display.overlay_smoothing" in overlay.group(1)
+    template = re.search(
+        r"function mapHoverTemplate\(v, display\) \{(.*?)\n\}", script, re.S
+    )
+    assert "display.show_overlay_tooltips" in template.group(1)
+    assert "%{customdata[3]}" in template.group(1)
+    assert "hovertemplate: mapHoverTemplate(v, display)" in script
+    assert "overlay_smoothing" in script and "show_overlay_tooltips" in script
+
+
 def test_colour_bars_sit_next_to_the_image_at_its_height():
     # The bars stand a few pixels right of the map, as tall as it, and are
     # placed from the panel width: Plotly's own plot width shrinks with the

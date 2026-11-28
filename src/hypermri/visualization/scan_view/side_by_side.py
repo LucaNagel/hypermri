@@ -26,6 +26,9 @@ from hypermri.visualization.scan_view.widget import ScanView
 #: view per row).
 ARRANGEMENTS = ("rows", "side by side", "stacked")
 
+#: Arrangement a new :class:`SideBySideView` starts in without given rows.
+DEFAULT_ARRANGEMENT = "side by side"
+
 _ARRANGEMENT_HINTS = (
     "Given rows, or the images in the first row and each spectrum or time "
     "course in a row of its own",
@@ -77,7 +80,8 @@ class SideBySideView(ipywidgets.VBox):
         they hold every view of *views* once. None places them with
         :func:`automatic_rows`.
     arrangement : str, optional
-        Starting arrangement, one of :data:`ARRANGEMENTS`.
+        Starting arrangement, one of :data:`ARRANGEMENTS`;
+        :data:`DEFAULT_ARRANGEMENT` (all views in one row) by default.
     show_slices, share_masks : bool, optional
         How the shown views are linked; see :func:`link_side_by_side`.
     under_menus : bool, optional
@@ -100,13 +104,15 @@ class SideBySideView(ipywidgets.VBox):
     >>> box.set_underlays({0: 2})  # axial under the CSI  # doctest: +SKIP
     """
 
-    arrangement = traitlets.Enum(ARRANGEMENTS, default_value="rows").tag(sync=True)
+    arrangement = traitlets.Enum(ARRANGEMENTS, default_value=DEFAULT_ARRANGEMENT).tag(
+        sync=True
+    )
 
     def __init__(
         self,
         views: Sequence[ScanView],
         rows: Sequence[Sequence[ScanView]] | None,
-        arrangement: str = "rows",
+        arrangement: str = DEFAULT_ARRANGEMENT,
         *,
         show_slices: bool = True,
         share_masks: bool = True,

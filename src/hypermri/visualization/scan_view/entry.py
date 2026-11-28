@@ -55,6 +55,7 @@ from hypermri.visualization.scan_view.options import (  # noqa: E402
 )
 from hypermri.visualization.scan_view.side_by_side import (  # noqa: E402
     ARRANGEMENTS,
+    DEFAULT_ARRANGEMENT,
     SideBySideView,
 )
 from hypermri.visualization.scan_view.widget import ScanView  # noqa: E402
@@ -226,7 +227,8 @@ def plot_scan(
         ``curve_dim`` names no dimension with more than one entry outside the
         shown plane, ``split_metabolites=True`` is given for data with fewer
         than two repetitions, the data have no curves in a spatial plane, the
-        overlay offers no map without ``acquisition_idx`` or the overlay
+        overlay offers no map (a layer without ``acquisition_idx`` or with
+        one acquisition point, as of a field map scan) or the overlay
         state asks for a difference mode, or a single-voxel scan shown with
         an anatomy has no voxel or slice geometry, an unsupported patient
         position or an anatomy without scanner coordinates.
@@ -431,11 +433,11 @@ def plot_side_by_side(
     *images: Any,
     show_slices: bool = True,
     share_masks: bool = True,
-    arrangement: str = "rows",
+    arrangement: str | None = None,
     under_menus: bool = True,
     show_timings: bool | None = None,
 ) -> SideBySideView:
-    """Show several images in rows, each with the others' slices.
+    """Show several images next to each other, each with the others' slices.
 
     Typical use is an axial and a coronal anatomy of the same session, for
     example to draw a mask on one while seeing where the other's slice lies,
@@ -453,10 +455,12 @@ def plot_side_by_side(
     image shows the inputs of the mask tool; the others show the chosen mask
     with its volume on their own grid.
 
-    Without given rows, the views that show only an image stand in the
-    first row, and each view with a spectrum or time course (a curve panel)
-    gets a row of its own below, in the given order. Pass one list of rows
-    to place the views yourself.
+    The views start next to each other in one row ("side by side"). The
+    arrangement "rows" places, without given rows, the views that show only
+    an image in the first row, and each view with a spectrum or time course
+    (a curve panel) in a row of its own below, in the given order. Pass one
+    list of rows to place the views yourself; the views then start in these
+    rows.
 
     Parameters
     ----------
@@ -475,10 +479,11 @@ def plot_side_by_side(
         needs scanner coordinates and a grid with at least two dimensions of
         more than one voxel for every image; pass False for images that
         cannot hold masks.
-    arrangement : {"rows", "side by side", "stacked"}, optional
+    arrangement : {"rows", "side by side", "stacked"} or None, optional
         Starting arrangement: the rows described above, all views in one
-        row, or one view per row. The buttons "arrange" above the views
-        change it while they are shown.
+        row, or one view per row. None (the default) starts with "rows"
+        when rows are given and with "side by side" otherwise. The buttons
+        "arrange" above the views change it while they are shown.
     under_menus : bool, optional
         Show a menu "under" per view that lays it under another view: the
         upper view is made anew with the lower image underneath (as with
@@ -514,11 +519,13 @@ def plot_side_by_side(
 
     Examples
     --------
-    Two anatomies in the first row, the CSI with its spectrum below:
+    Two anatomies and the CSI with its spectrum in one row, then the CSI in
+    a row of its own below the anatomies:
 
     >>> box = plot_side_by_side(axial_scan, sagittal_scan, csi_scan)  # doctest: +SKIP
+    >>> ((axial, sagittal, csi),) = box.rows  # doctest: +SKIP
+    >>> box.arrangement = "rows"  # doctest: +SKIP
     >>> (axial, sagittal), (csi,) = box.rows  # doctest: +SKIP
-    >>> box.arrangement = "side by side"  # doctest: +SKIP
 
     The axial anatomy laid under the CSI map, as with the menu "under":
 
@@ -528,12 +535,14 @@ def plot_side_by_side(
 
     >>> box = plot_side_by_side([[axial, csi], [sagittal]])  # doctest: +SKIP
     """
-    if arrangement not in ARRANGEMENTS:
+    if arrangement is not None and arrangement not in ARRANGEMENTS:
         raise ValueError(
             f"plot_side_by_side arrangement: {arrangement!r} is unknown; "
-            f"choose from {list(ARRANGEMENTS)}."
+            f"choose from {list(ARRANGEMENTS)} or None."
         )
     given_rows = _given_side_by_side_rows(images)
+    if arrangement is None:
+        arrangement = "rows" if given_rows is not None else DEFAULT_ARRANGEMENT
     rows = [
         [image if isinstance(image, ScanView) else plot_scan(image) for image in row]
         for row in (given_rows if given_rows is not None else [images])

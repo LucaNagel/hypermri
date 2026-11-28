@@ -498,6 +498,8 @@ def test_display_switches_follow_the_state_and_the_browser():
         "show_slice_lines": False,
         "show_masks": True,
         "show_mask_outlines": True,
+        "overlay_smoothing": "off",
+        "show_overlay_tooltips": False,
     }
     assert view._view["smoothing_options"] == ["off", "fast", "best"]
 
@@ -1356,6 +1358,56 @@ def test_overlay_without_scanner_coordinates_inherits_the_csi_grid():
     )
     assert view.state.spatial.coordinate_mode == "xyz"
     np.testing.assert_array_equal(_overlay_plane(view), _expected_fit_plane(view))
+
+
+def test_overlay_with_one_acquisition_point_is_drawn_as_map():
+    # A field map scan keeps an acquisition_idx of length one from its
+    # reconstruction; it holds one value per voxel (here negative and positive
+    # frequencies) and must be drawn with its signs, not as the magnitude the
+    # spectral display (part "Magnitude") would take of spectra.
+    image = _image()
+    field_map = (image.primary_data - 300.0).expand_dims(acquisition_idx=1, axis=-1)
+    view = plot_scan(
+        image, overlay=field_map, coordinate_mode="rps", state=_state(part="Magnitude")
+    )
+
+    plane = _overlay_plane(view)
+    assert plane.min() < 0
+    np.testing.assert_array_equal(plane, _block(view)[..., 0] - 300.0)
+
+
+def test_overlay_smoothing_and_tooltips_are_display_settings():
+    # Both only redraw the map and are kept in the overlay state.
+    image = _image()
+    view = plot_scan(image, overlay=image.primary_data - 300.0, coordinate_mode="rps")
+    overlay = view.state.overlay
+    assert (overlay.smoothing, overlay.show_tooltips) == ("off", False)
+    block, plane = view._block, view._overlay
+    map_smoothing = view._display["smoothing"]
+
+    view._display = {
+        **view._display,
+        "overlay_smoothing": "best",
+        "show_overlay_tooltips": True,
+    }
+    assert (overlay.smoothing, overlay.show_tooltips) == ("best", True)
+    assert view._block is block and view._overlay is plane
+    # The map keeps its own smoothing.
+    assert view._display["smoothing"] == map_smoothing
+
+    view.set_display(overlay_smoothing="fast", show_overlay_tooltips=False)
+    assert (overlay.smoothing, overlay.show_tooltips) == ("fast", False)
+    assert view._display["overlay_smoothing"] == "fast"
+    with pytest.raises(ValueError, match="overlay_smoothing must be one of"):
+        view.set_display(overlay_smoothing="cubic")
+    assert overlay.smoothing == "fast"
+
+
+def test_overlay_of_spectra_is_still_refused():
+    image = _image()
+    spectra = image.primary_data.expand_dims(acquisition_idx=4, axis=-1)
+    with pytest.raises(ValueError, match="maps without acquisition_idx"):
+        plot_scan(image, overlay=spectra, coordinate_mode="rps", state=_state())
 
 
 def test_overlay_controls_change_layer_metabolite_range_and_visibility():
@@ -2761,16 +2813,42 @@ def test_side_by_side_puts_views_with_curves_in_rows_of_their_own():
     first, second = plot_scan(_csi()), plot_scan(_csi())
     axial, coronal = plot_scan(_stacked_anatomy_scan()), plot_scan(_coronal_scan())
     box = plot_side_by_side(
-        first, axial, second, coronal, show_slices=False, share_masks=False
+        first,
+        axial,
+        second,
+        coronal,
+        show_slices=False,
+        share_masks=False,
+        arrangement="rows",
     )
     assert box.rows == ((axial, coronal), (first,), (second,))
     # Colours and the mask tool still follow the given order.
     assert first.layout.border_top != axial.layout.border_top
 
     curves = plot_side_by_side(
-        plot_scan(_csi()), plot_scan(_csi()), show_slices=False, share_masks=False
+        plot_scan(_csi()),
+        plot_scan(_csi()),
+        show_slices=False,
+        share_masks=False,
+        arrangement="rows",
     )
     assert [len(row) for row in curves.rows] == [1, 1]
+
+
+def test_side_by_side_starts_in_one_row_unless_rows_are_given():
+    axial, coronal = plot_scan(_stacked_anatomy_scan()), plot_scan(_coronal_scan())
+    csi = plot_scan(_csi())
+    box = plot_side_by_side(axial, csi, coronal, show_slices=False, share_masks=False)
+    assert box.arrangement == "side by side"
+    assert box.rows == ((axial, csi, coronal),)
+
+    given = plot_side_by_side(
+        [[axial, csi], [coronal]], show_slices=False, share_masks=False
+    )
+    assert given.arrangement == "rows"
+    assert given.rows == ((axial, csi), (coronal,))
+    with pytest.raises(ValueError, match="arrangement: 'grid' is unknown"):
+        plot_side_by_side(axial, csi, arrangement="grid")
 
 
 def test_side_by_side_takes_rows_as_one_list_of_lists():
@@ -2798,7 +2876,10 @@ def test_side_by_side_switches_between_rows_side_by_side_and_stacked():
     coronal = plot_scan(_coronal_scan())
     box = plot_side_by_side(axial, csi, coronal, show_slices=False, share_masks=False)
     switch, _menus, _status, rows_box = box.children
-    assert switch.value == "rows"
+    assert switch.value == "side by side"
+
+    switch.value = "rows"
+    assert box.arrangement == "rows"
     assert box.rows == ((axial, coronal), (csi,))
 
     switch.value = "side by side"
@@ -3013,7 +3094,9 @@ def test_a_click_reaches_a_csi_whose_slab_misses_the_clicked_slice():
     csi_data = _with_scanner_coordinates(_csi())
     csi_data.attrs["slice_thickness_mm"] = 2.0
     csi_scan = SimpleNamespace(primary_data=csi_data, is_spectroscopic=True)
-    box = plot_side_by_side(_coronal_scan(), csi_scan, _stacked_anatomy_scan())
+    box = plot_side_by_side(
+        _coronal_scan(), csi_scan, _stacked_anatomy_scan(), arrangement="rows"
+    )
     (coronal, axial), (csi,) = box.rows
     axial.state.spatial.slice_indices["slice_idx"] = 0  # z = -4 mm
 

@@ -2,7 +2,7 @@
 // Empty when no overlay was given.
 //
 // Layer, metabolite, data source, slice, visibility, colormap and colour range
-// are recomputed in Python; the opacity only redraws.
+// are recomputed in Python; opacity, smoothing and tooltips only redraw.
 
 function overlayControls(v) {
   const settings = v.model.get("_controls").overlay;
@@ -42,10 +42,26 @@ function overlayControls(v) {
   cmap.addEventListener("change", () => send({ cmap: cmap.value }));
   items.push(labelled("colours", cmap));
   items.push(...overlayRangeControls(v, settings, options, send, sendSelection));
+  items.push(...overlayDisplayControls(v));
   if (v.view.overlay?.warning) {
     items.push(element("span", "hm-csi-mask-error", v.view.overlay.warning));
   }
   return items;
+}
+
+// Smoothing and tooltips of the overlay are display settings
+// (ScanView.set_display): they only redraw the map.
+function overlayDisplayControls(v) {
+  const display = v.model.get("_display");
+  const smoothing = select(v.view.smoothing_options, display.overlay_smoothing);
+  smoothing.title = "Smoothing of the overlay between its voxel centres (the values stay the same)";
+  smoothing.addEventListener("change", () => setDisplay(v, { overlay_smoothing: smoothing.value }));
+  const tooltips = element("input");
+  tooltips.type = "checkbox";
+  tooltips.checked = display.show_overlay_tooltips === true;
+  tooltips.title = "Overlay value in the label under the mouse (of the overlay voxel nearest to the map voxel centre)";
+  tooltips.addEventListener("change", () => setDisplay(v, { show_overlay_tooltips: tooltips.checked }));
+  return [labelled("smoothing", smoothing), labelled("tooltips", tooltips)];
 }
 
 // Range mode (percent of the layer or its values) and one slider with two

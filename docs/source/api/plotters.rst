@@ -271,7 +271,13 @@ one slider with two handles, either in percent ("%") of the layer's finite
 value range or as absolute values ("values") in the layer's unit; the
 "overlay opacity" slider stands above the plots; a minimum that is not below the maximum is
 rejected and leaves the settings unchanged. A new layer, metabolite or range
-mode starts from the full range. The overlay slice slider appears when the
+mode starts from the full range. "smoothing" smooths the drawn overlay
+between its voxel centres, as the smoothing of the map, and "tooltips" adds
+the overlay value (of the overlay voxel nearest to the centre of the map voxel
+under the mouse) to the label of the map; both only redraw and are also set
+with ``view.set_display(overlay_smoothing="best", show_overlay_tooltips=True)``.
+A field map scan, whose data keep one acquisition point, is drawn with its
+signs. The overlay slice slider appears when the
 overlay has several slices in the shown orientation. "follow map" (the
 default) draws the overlay plane matching the map. A chosen slice is kept in
 ``state.overlay``; in scanner coordinates (``"xyz"``) the map moves to its
@@ -416,13 +422,15 @@ from Python.
    view.set_frequency_window(None)
 
 Several images of one session, for example an axial and a coronal anatomy,
-can be shown next to each other with ``plot_side_by_side``. Image-only views
-share the first row; each view with a spectrum or time course gets a row of
-its own below, so that its curve has the width of the page. One list of rows,
+can be shown next to each other with ``plot_side_by_side``. The views start
+side by side in one row. In the arrangement "rows", image-only views share
+the first row and each view with a spectrum or time course gets a row of its
+own below, so that its curve has the width of the page. One list of rows,
 such as ``plot_side_by_side([[axial, csi], [coronal]])``, places the views by
-hand. The buttons "arrange" above the views switch at any time between these
-rows, all views side by side in one row, and all views stacked one below the
-other (``box.arrangement``, or ``arrangement="stacked"`` when plotting);
+hand; they then start in these rows. The buttons "arrange" above the views
+switch at any time between the rows, all views side by side in one row, and
+all views stacked one below the other (``box.arrangement``, or
+``arrangement="stacked"`` when plotting);
 views, links and settings stay. ``plot_study`` keeps the chosen arrangement
 when scans are ticked. The menu "under" of each view lays it under another
 view later on: that view is shown again with the image underneath, in the
@@ -477,8 +485,8 @@ the masks over the map; they are kept and still count for the ROI mean.
 .. code-block:: python
 
    box = plot_side_by_side(axial, coronal, csi)
-   (axial_view, coronal_view), (csi_view,) = box.rows
-   box.arrangement = "stacked"  # one view per row; "side by side": one row
+   ((axial_view, coronal_view, csi_view),) = box.rows  # one row
+   box.arrangement = "stacked"  # one view per row; "rows": the CSI below
    box.set_underlays({0: 2})  # the axial anatomy under the CSI map
 
    plot_side_by_side([[axial, csi], [coronal]])  # rows chosen by hand

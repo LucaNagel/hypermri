@@ -859,6 +859,7 @@ class ScanView(
             setattr(getattr(self.state, section), field, bool(settings[name]))
         spatial.cmap = settings["map_cmap"]
         self.state.anatomy.cmap = settings["anatomy_cmap"]
+        self.state.overlay.smoothing = settings["overlay_smoothing"]
         self._show_slice_lines = bool(settings.get("show_slice_lines", False))
         self._show_masks = bool(settings.get("show_masks", True))
         self._show_mask_outlines = bool(settings.get("show_mask_outlines", True))

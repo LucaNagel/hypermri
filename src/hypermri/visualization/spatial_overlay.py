@@ -170,12 +170,17 @@ def prepare_overlay_value(
     -------
     Any
         The labelled overlay data, or source unchanged when it holds no
-        labelled array. Values, units and attributes are not changed; source
-        is not mutated.
+        labelled array. An ``acquisition_idx`` of length one, as a field map
+        scan keeps from its reconstruction, is removed: such data hold one
+        value per voxel and are a map, so they must not pass through the
+        spectral display processing (FFT and complex part) of spectra.
+        Values, units and attributes are not changed; source is not mutated.
     """
     data = _source_xarray(source)
     if data is None:
         return source
+    if data.sizes.get("acquisition_idx") == 1:
+        data = data.squeeze("acquisition_idx", drop=True)
     if str(coordinate_mode).strip().lower() == "xyz" and not has_xyz_coordinates(data):
         geometry_obj = (
             source if not isinstance(source, xr.DataArray | xr.Dataset) else scan

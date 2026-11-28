@@ -48,6 +48,7 @@ _DISPLAY_SWITCHES = {
     "show_grid_lines": ("global_settings", "show_grid_lines"),
     "show_tooltips": ("global_settings", "show_tooltips"),
     "show_crosshair": ("global_settings", "show_crosshair"),
+    "show_overlay_tooltips": ("overlay", "show_tooltips"),
 }
 SCAN_SETTINGS_CONTEXT = "plot_scan"
 # y axis of the curve panel: fitted to the shown curves, the value range of

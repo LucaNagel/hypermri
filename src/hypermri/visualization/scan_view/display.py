@@ -209,13 +209,15 @@ class _Display:
         show_slice_lines: bool | None = None,
         show_masks: bool | None = None,
         show_mask_outlines: bool | None = None,
+        overlay_smoothing: str | None = None,
+        show_overlay_tooltips: bool | None = None,
     ) -> None:
         """Set how the CSI map is drawn, as the display checkboxes of ``plot``.
 
         The settings are stored in :attr:`state` and only redraw the map,
         except the scalebar, whose length Python chooses for the shown plane.
         None keeps a setting. The browser's "display" controls set the same
-        values.
+        values; the two overlay settings are in its "overlay" controls.
 
         Parameters
         ----------
@@ -272,12 +274,23 @@ class _Display:
             drawn area is shown instead. A choice of this view,
             not stored in :attr:`state`; on by default. Only shown while
             ``show_masks`` is on.
+        overlay_smoothing : {"off", "fast", "best"} or None, optional
+            Smoothing of the overlay drawn above the map, as ``smoothing``
+            for the map (``state.overlay.smoothing``, ``"off"`` by default).
+            The overlay values are unchanged.
+        show_overlay_tooltips : bool or None, optional
+            Add the overlay value, with the overlay's colour-bar label, to
+            the hover label of the map (``state.overlay.show_tooltips``, off
+            by default). The value is that of the overlay voxel nearest to
+            the centre of the map voxel under the mouse; outside the overlay
+            none is shown. With ``show_tooltips`` off the label shows the
+            position and the overlay value only.
 
         Raises
         ------
         ValueError
-            If ``smoothing`` is not one of ``"off"``, ``"fast"``, ``"best"``,
-            or a colormap name is unknown.
+            If ``smoothing`` or ``overlay_smoothing`` is not one of
+            ``"off"``, ``"fast"``, ``"best"``, or a colormap name is unknown.
 
         Examples
         --------
@@ -285,6 +298,7 @@ class _Display:
         >>> view.set_display(show_scalebar=True, show_tooltips=True)  # doctest: +SKIP
         >>> view.set_display(map_cmap="inferno", anatomy_cmap="gray")  # doctest: +SKIP
         >>> view.set_display(show_masks=False)  # doctest: +SKIP
+        >>> view.set_display(overlay_smoothing="best", show_overlay_tooltips=True)  # doctest: +SKIP
         """
         given = {
             "smoothing": smoothing,
@@ -299,6 +313,8 @@ class _Display:
             "show_slice_lines": show_slice_lines,
             "show_masks": show_masks,
             "show_mask_outlines": show_mask_outlines,
+            "overlay_smoothing": overlay_smoothing,
+            "show_overlay_tooltips": show_overlay_tooltips,
         }
         settings = dict(self._display_settings())
         settings.update({k: value for k, value in given.items() if value is not None})
@@ -308,11 +324,12 @@ class _Display:
     @staticmethod
     def _check_display(settings: dict[str, Any]) -> None:
         """Fail early on display settings this view cannot draw."""
-        if settings["smoothing"] not in MAP_SMOOTHING_OPTIONS:
-            raise ValueError(
-                "ScanView.set_display: smoothing must be one of "
-                f"{', '.join(MAP_SMOOTHING_OPTIONS)}; got {settings['smoothing']!r}."
-            )
+        for name in ("smoothing", "overlay_smoothing"):
+            if settings[name] not in MAP_SMOOTHING_OPTIONS:
+                raise ValueError(
+                    f"ScanView.set_display: {name} must be one of "
+                    f"{', '.join(MAP_SMOOTHING_OPTIONS)}; got {settings[name]!r}."
+                )
         for name in ("map_cmap", "anatomy_cmap"):
             if not is_cmap_available(settings[name]):
                 raise ValueError(
@@ -330,6 +347,7 @@ class _Display:
             settings[name] = bool(getattr(getattr(self.state, section), field))
         settings["map_cmap"] = spatial.cmap
         settings["anatomy_cmap"] = self.state.anatomy.cmap
+        settings["overlay_smoothing"] = self.state.overlay.smoothing
         settings["show_slice_lines"] = self._show_slice_lines
         settings["show_masks"] = self._show_masks
         settings["show_mask_outlines"] = self._show_mask_outlines

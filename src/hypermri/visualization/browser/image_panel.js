@@ -58,8 +58,40 @@ function hideBelowMinimum(z, zmin) {
   return z.map((line) => line.map((value) => (value < zmin ? null : value)));
 }
 
-// Hover text per voxel: source indices and the coverage of every mask.
+// Index of the voxel centre nearest to `value`, or -1 outside the voxels
+// (more than half a voxel beyond the first or last centre).
+function nearestCentre(centres, value) {
+  if (!centres?.length) return -1;
+  const half = centres.length > 1 ? Math.abs(centres[1] - centres[0]) / 2 : 0.5;
+  let best = -1;
+  let distance = Infinity;
+  centres.forEach((centre, index) => {
+    const gap = Math.abs(centre - value);
+    if (gap < distance) [best, distance] = [index, gap];
+  });
+  return distance <= half * (1 + 1e-6) ? best : -1;
+}
+
+// Overlay value of each map voxel for the hover label: the overlay voxel
+// nearest to the map voxel centre, "" outside the overlay or where it has
+// no finite value.
+function overlayHoverText(v) {
+  const layer = v.view.overlay;
+  if (!v.overlayZ || !layer) return null;
+  const rows = v.view.y.map((y) => nearestCentre(layer.y, y));
+  const columns = v.view.x.map((x) => nearestCentre(layer.x, x));
+  return rows.map((overlayRow) =>
+    columns.map((overlayColumn) => {
+      const value = overlayRow < 0 || overlayColumn < 0 ? null : v.overlayZ[overlayRow]?.[overlayColumn];
+      return Number.isFinite(value) ? `<br>${layer.label} ${Number(value.toPrecision(4))}` : "";
+    }),
+  );
+}
+
+// Hover text per voxel: source indices, the coverage of every mask and the
+// overlay value.
 function hoverIndices(v) {
+  const overlay = overlayHoverText(v);
   return v.view.row_indices.map((rowIndex, row) =>
     v.view.column_indices.map((columnIndex, column) => {
       let text = "";
@@ -67,9 +99,23 @@ function hoverIndices(v) {
         const value = mask.plane?.[row]?.[column] ?? 0;
         if (value > 0) text += `<br>${mask.name} ${(value * 100).toFixed(0)} %`;
       }
-      return [rowIndex, columnIndex, text];
+      return [rowIndex, columnIndex, text, overlay?.[row][column] ?? ""];
     }),
   );
+}
+
+// Hover label of the map: indices, position, value and mask coverage with
+// "tooltips", the overlay value with the overlay's "tooltips"; position and
+// overlay value alone when only the overlay's are on. None without either.
+function mapHoverTemplate(v, display) {
+  const overlay = display.show_overlay_tooltips && v.overlayZ ? "%{customdata[3]}" : "";
+  if (display.show_tooltips) {
+    return (
+      `${v.view.column_dim} %{customdata[1]}, ${v.view.row_dim} %{customdata[0]}` +
+      `<br>x %{x:.4g}, y %{y:.4g}<br>value %{text:.4g}${overlay}%{customdata[2]}<extra></extra>`
+    );
+  }
+  return overlay ? `x %{x:.4g}, y %{y:.4g}${overlay}<extra></extra>` : undefined;
 }
 
 function anatomyShown(v) {
@@ -113,6 +159,7 @@ function anatomyTraces(v) {
 function overlayTraces(v) {
   if (!v.overlayZ) return [];
   const layer = v.view.overlay;
+  const display = v.model.get("_display");
   return [
     {
       type: "heatmap",
@@ -122,11 +169,12 @@ function overlayTraces(v) {
       zmin: layer.zmin ?? undefined,
       zmax: layer.zmax ?? undefined,
       colorscale: layer.colorscale,
+      zsmooth: display.overlay_smoothing && display.overlay_smoothing !== "off" ? display.overlay_smoothing : false,
       opacity: v.model.get("_overlay_opacity"),
       hoverinfo: "skip",
       name: "overlay",
       colorbar: {
-        ...colourBarPlace(v, v.model.get("_display").show_colorbar ? 1 : 0),
+        ...colourBarPlace(v, display.show_colorbar ? 1 : 0),
         title: { text: layer.label, side: "right" },
       },
     },
@@ -558,12 +606,10 @@ function drawImagePanel(v) {
         text: values,
         // "none" (not "skip") keeps the click events that select a voxel.
         // A hovertemplate would show a label even with "none", so it is
-        // only set while tooltips are on.
-        hoverinfo: display.show_tooltips ? undefined : "none",
-        hovertemplate: display.show_tooltips
-          ? `${view.column_dim} %{customdata[1]}, ${view.row_dim} %{customdata[0]}` +
-            "<br>x %{x:.4g}, y %{y:.4g}<br>value %{text:.4g}%{customdata[2]}<extra></extra>"
-          : undefined,
+        // only set while tooltips are on. The overlay above has no hover
+        // of its own, so clicks reach this map; its value is shown here.
+        hoverinfo: mapHoverTemplate(v, display) ? undefined : "none",
+        hovertemplate: mapHoverTemplate(v, display),
         showscale: Boolean(display.show_colorbar),
         colorbar: colourBarPlace(v, 0),
       },
